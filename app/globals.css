@@ -1,0 +1,124 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   ARAZ Scales brand tokens
+   ---------------------------------------------------------------------------
+   Every colour below was contrast-checked against the base background
+   (--color-base, #1C2128). Ratios noted inline. Do not lighten the base or
+   darken the text tokens without re-checking — several pairings sit close to
+   the WCAG AA floor of 4.5:1.
+--------------------------------------------------------------------------- */
+@theme {
+  /* Surfaces — darkest to lightest */
+  --color-base: #1c2128; /* page background, near-black navy */
+  --color-surface: #232a32; /* cards, raised panels */
+  --color-surface-2: #283039; /* hover state on cards */
+
+  /* Hairlines */
+  --color-line: #2e3742; /* default border */
+  --color-line-strong: #3a4552; /* emphasised border, hover */
+
+  /* Brand blue */
+  --color-accent: #1b9ce3; /* 5.21:1 on base — AA for normal text */
+  --color-accent-deep: #0e9ae0; /* pressed / gradient-free hover */
+  --color-accent-ink: #08131b; /* text placed ON accent — 6.3:1 */
+
+  /* Type */
+  --color-ink: #f5f7fa; /* primary text — 15.4:1 */
+  --color-muted: #94a1b2; /* secondary copy — 6.03:1 */
+  --color-faint: #838f9f; /* fine print, labels — 4.82:1 */
+
+  /* Status (human-in-the-loop queue) */
+  --color-pending: #e0a30e; /* amber — 6.9:1 on base */
+  --color-approved: #3fbf7f; /* green — 7.6:1 on base */
+
+  /* Typography — swap the heading stack here to change it everywhere.
+     To move headings to Montserrat: add the font in app/layout.tsx and
+     point --font-display at its CSS variable instead of --font-inter. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Section rhythm — one knob for vertical negative space */
+  --spacing-section: 7rem;
+}
+
+/* --------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* Anchor targets clear the sticky nav instead of hiding beneath it. */
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-base);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 400;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Headings are heavy, wide and uppercase — set once, inherited everywhere. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, high-contrast focus ring on keyboard navigation only. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  /* Respect users who have asked the OS for less motion. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  /* Faint technical grid — the only decorative flourish on the page.
+     Pure CSS, no image request. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+
+  /* Monospace numerals for step counters and prices, so digits align. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
