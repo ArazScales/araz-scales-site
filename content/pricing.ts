@@ -2,127 +2,132 @@
  * ---------------------------------------------------------------------------
  * ARAZ Scales — pricing
  * ---------------------------------------------------------------------------
- * HOW TO SHOW OR HIDE A PRICE
+ * Two published prices:
  *
- *   Hidden : set `setup` and `monthly` to null. The card renders `priceNote`
- *            ("Contact us") instead, and the CTA points at the contact form.
- *   Shown  : set `setup` and `monthly` to the display strings you want.
- *            Write them exactly as they should appear, e.g. "$2,500".
+ *   Website          $300  one-time
+ *   Growth retainer  $500  per month  (ghostwriting + AI-assisted Meta ads)
  *
- * IMPORTANT — why the hidden numbers are commented out rather than left in
- * the object with a `visible: false` flag:
+ * HOW TO CHANGE A PRICE
+ *   Edit `price` and `cadence` below. They are display strings — write them
+ *   exactly as they should appear, currency symbol included.
  *
- *   This site is statically exported. Anything present in this file ends up in
- *   the shipped HTML/JS payload whether or not it is rendered, so a flag would
- *   leave your real Standard and Scale numbers readable in page source by
- *   anyone who opens devtools. Commenting them out is the only way to keep an
- *   unpublished price genuinely unpublished.
- *
- *   To publish a tier: uncomment its two lines and delete the `null` lines
- *   above them. That is the whole change.
+ * HOW TO HIDE A PRICE
+ *   Set `price` to null. The card renders `priceNote` ("Contact us") instead.
+ *   Then DELETE the real number from this file rather than commenting it out
+ *   next to a flag — this site is statically exported, so anything left in
+ *   this file ships inside the HTML payload and is readable in page source
+ *   whether or not it is rendered. Keep unpublished numbers out of the repo.
  * ---------------------------------------------------------------------------
  */
 
-export type PricingTier = {
+export type PricingPlan = {
   id: string;
   name: string;
-  /** Short qualifier shown beside the tier name, e.g. scarcity or scope. */
+  /** Short qualifier beside the plan name, e.g. "One-time". */
   badge?: string;
-  /** One-time onboarding fee. `null` hides the price and shows `priceNote`. */
-  setup: string | null;
-  /** Recurring retainer. `null` hides the price and shows `priceNote`. */
-  monthly: string | null;
-  /** Rendered in place of the numbers when either price is null. */
+  /** Display price. `null` hides it and renders `priceNote` instead. */
+  price: string | null;
+  /** Billing cadence shown next to the price, e.g. "one-time", "/month". */
+  cadence: string;
+  /** Rendered in place of the number when `price` is null. */
   priceNote: string;
-  /** One-line positioning under the tier name. */
+  /** One-line positioning under the plan name. */
   blurb: string;
-  /** Bullet list. Keep these parallel in length across tiers. */
+  /** Bullet list. Keep these parallel in length across plans. */
   features: string[];
-  /** Conditions attached to the tier, shown in smaller type. */
+  /** Conditions attached to the plan, shown in smaller type. */
   conditions?: string;
   cta: { label: string; href: string };
-  /** Exactly one tier should be featured — it gets the accent treatment. */
+  /** Exactly one plan should be featured — it gets the accent treatment. */
   featured: boolean;
 };
 
 export const pricing = {
   eyebrow: "Pricing",
-  heading: "Three ways in.",
+  heading: "Two prices. Both of them on this page.",
   intro:
-    "Every engagement includes the custom build, the hosting, the human editorial pass and the approval queue. Setup is one-time; the retainer covers operation and iteration.",
+    "The website is a one-time fee and the site is yours at handover. The retainer covers the two ongoing services together, month to month. Nothing is quoted on application, and there is no fourth enterprise tier hiding behind a form.",
 
-  tiers: [
+  plans: [
     {
-      id: "pilot",
-      name: "Pilot",
-      badge: "Limited spots",
-      setup: "$1,000",
-      monthly: "$900",
+      id: "website",
+      name: "Website",
+      badge: "One-time",
+      price: "$300",
+      cadence: "one-time",
       priceNote: "Contact us",
-      blurb: "Founding-client rate for teams willing to go on the record.",
+      blurb: "For businesses that don't have a website yet, or have one they don't send people to.",
       features: [
-        "One repository",
-        "All four artifacts per shipped feature",
-        "Human editorial pass before your queue",
-        "Slack digest or publishing queue",
-        "Founding rate held for 12 months",
+        "Up to five pages, written and built for you",
+        "Mobile-first — verified on phone, tablet and desktop",
+        "Contact form to your inbox, click-to-call on mobile",
+        "On-page SEO and analytics installed",
+        "Domain and hosting set up in your name",
+        "One round of revisions included",
       ],
       conditions:
-        "Requires a written testimonial and permission to name you as a client. A small number of spots, then this tier closes.",
-      cta: { label: "Claim a pilot spot", href: "#contact" },
+        "Flat fee, paid half up front and half at handover. Yours outright afterwards — no monthly fee to us, no licence, no lock-in. Domain registration and hosting are billed to you directly by the providers and typically run about $20–30 a year.",
+      cta: { label: "Start a website", href: "/contact" },
+      featured: false,
+    },
+
+    {
+      id: "growth",
+      name: "Growth retainer",
+      badge: "Most clients",
+      price: "$500",
+      cadence: "/month",
+      priceNote: "Contact us",
+      blurb: "Ghostwriting and AI-assisted Meta ads, run together as one engagement.",
+      features: [
+        "Weekly founder content for LinkedIn, X or both",
+        "Voice interview and a voice profile we write against",
+        "20–40 Meta ad creative variants per month",
+        "Structured creative testing and weekly budget reallocation",
+        "Everything approved by you before it publishes",
+        "Monthly report in plain language, not a dashboard link",
+      ],
+      conditions:
+        "Month to month, cancel with 30 days' notice. Ad spend is paid directly to Meta on your own card and is not included in this fee — we never take a percentage of spend. The ads half requires an existing account with at least 60 days of spend history.",
+      cta: { label: "Start a retainer", href: "/contact" },
       featured: true,
     },
-
-    {
-      id: "standard",
-      name: "Standard",
-      badge: "Most common",
-      // Hidden. To publish, delete the two `null` lines and uncomment the two below.
-      setup: null,
-      monthly: null,
-      // setup: "$2,500",
-      // monthly: "$2,000",
-      priceNote: "Contact us",
-      blurb: "The default engagement for a single-product Series A team.",
-      features: [
-        "One repository",
-        "Roughly 12–20 pieces per month",
-        "All four artifacts per shipped feature",
-        "Human editorial pass before your queue",
-        "Monthly review call",
-      ],
-      conditions: "Month-to-month after the first 90 days.",
-      cta: { label: "Talk to us", href: "#contact" },
-      featured: false,
-    },
-
-    {
-      id: "scale",
-      name: "Scale",
-      badge: "Multi-repo",
-      // Hidden. To publish, delete the two `null` lines and uncomment the two below.
-      setup: null,
-      monthly: null,
-      // setup: "$5,000",
-      // monthly: "$4,000",
-      priceNote: "Contact us",
-      blurb: "For teams shipping across several repositories and tracking work in Jira or Linear.",
-      features: [
-        "Multiple repositories",
-        "Jira and Linear integration",
-        "Weekly call and priority turnaround",
-        "Custom voice tuning per author",
-        "Named editor on your account",
-      ],
-      conditions: "Scoped per engagement. Annual agreements available.",
-      cta: { label: "Talk to us", href: "#contact" },
-      featured: false,
-    },
-  ] satisfies PricingTier[],
+  ] satisfies PricingPlan[],
 
   /** Shown directly beneath the pricing grid, in small muted type. */
   footnote:
-    "Prices in USD, billed monthly. Setup covers the custom build and voice calibration. Cancel with 30 days' notice.",
+    "Prices in USD. Taking the website and the retainer together is common — the site is where the content and the ads send people.",
+
+  /* --------------------------------------------------------------- faq --- */
+  faq: {
+    heading: "Before you ask",
+    items: [
+      {
+        q: "Can I take just the ghostwriting, or just the ads?",
+        a: "The retainer is sold as one package at $500/month. Both halves are written against the same positioning, so running one without the other means doing the same groundwork twice for less than half the result. If only one is genuinely relevant to your business, say so on the call and we'll tell you honestly whether the retainer is worth it for you.",
+      },
+      {
+        q: "Is the ad spend included in the $500?",
+        a: "No. Your ad budget is paid straight to Meta on your own card, in your own account. Our fee covers the work — the creative, the testing, the weekly decisions and the reporting. We take no percentage of spend, so we have no reason to push your budget up.",
+      },
+      {
+        q: "Why is the website only $300?",
+        a: "Because it's a scoped build, not an open-ended design project. We're not designing a brand system, running a discovery phase or building a custom app — we're building a fast, clear, five-page site for a business that needs one to exist. The scope is what keeps the price honest.",
+      },
+      {
+        q: "What does \"AI-assisted\" actually mean here?",
+        a: "For ads, it means generative tooling produces creative variants at a volume a two-person team couldn't hand-make — different hooks, formats and cuts of angles that are already proven in your account. For content, it means drafting against a voice profile built from a recorded interview with you. In both cases a person reviews everything, and you approve everything, before it reaches an audience.",
+      },
+      {
+        q: "Do I own the work?",
+        a: "Yes. The site, the domain, the ad account and the content are all in your name on your accounts. If you stop working with us you keep all of it, and nothing needs to be migrated off our infrastructure, because it was never on it.",
+      },
+      {
+        q: "How do I pay?",
+        a: "Invoice on a 7-day term — card or bank transfer. The website is half up front and half at handover. The retainer bills monthly in advance and cancels with 30 days' notice.",
+      },
+    ],
+  },
 };
-// Note: deliberately not `as const`. Deep-readonly tiers would not satisfy the
-// mutable `PricingTier` shape the Pricing component takes as a prop.
+// Note: deliberately not `as const`. Deep-readonly plans would not satisfy the
+// mutable `PricingPlan` shape the Pricing component takes as a prop.
