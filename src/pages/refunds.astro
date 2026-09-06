@@ -1,0 +1,145 @@
+---
+/**
+ * Refund Policy. Draft. Needs a human read before launch.
+ *
+ * The terms on this page are a business decision, not a template: a $150
+ * deposit that stops being refundable once work starts, a balance that is
+ * simply not charged if the client leaves before launch, and a month to month
+ * retainer with fourteen days notice. Do not soften or invent around these
+ * without asking, because they are what the FAQ on the homepage promises too.
+ */
+import Legal from "../layouts/Legal.astro";
+import { business } from "../config/business";
+import { plans } from "../content/pricing";
+
+const [website, retainer] = plans;
+---
+
+<Legal
+  title={`Refund policy: ${business.name}`}
+  description="What happens to your money if you cancel a website build or stop the monthly retainer, including how the deposit is treated and the notice period."
+  path="/refunds"
+  heading="Refund policy"
+  standfirst="What happens to your money if you change your mind. Written so you can work out where you stand without emailing us."
+>
+  <h2>The short version</h2>
+  <ul>
+    <li>
+      A website is {website.amount}, paid as $150 to start and $150 when it
+      goes live. The first $150 is not refundable once we begin work. The
+      second $150 is never charged if you cancel before launch.
+    </li>
+    <li>
+      The {retainer.amount} a month retainer runs month to month. Give us
+      fourteen days notice and it stops. The month you are in is not refunded.
+    </li>
+  </ul>
+  <p>The rest of this page is the detail behind those two lines.</p>
+
+  <h2>The website build</h2>
+
+  <h3>The deposit</h3>
+  <p>
+    The $150 deposit is what lets us start. Once we have it we begin writing
+    your text, which is the bulk of the job and happens before you see
+    anything. That work cannot be given back, so the deposit is not refundable
+    once we have started.
+  </p>
+  <p>
+    There is one exception. If you pay the deposit and then cancel before we
+    have started work, we refund it in full. In practice that means telling us
+    within two business days, because we usually start the next morning. Ask
+    and we will tell you honestly whether we have begun.
+  </p>
+
+  <h3>The balance</h3>
+  <p>
+    The remaining $150 is only invoiced on the day the site goes live. If you
+    cancel at any point before then, for any reason or none, you are not
+    charged it. There is nothing to claim back because it was never taken.
+  </p>
+  <p>
+    This is the part worth understanding: the most you can lose by hiring us
+    and changing your mind is $150.
+  </p>
+
+  <h3>If you cancel mid build</h3>
+  <p>
+    Tell us and we will stop. You keep the deposit position described above,
+    you are not invoiced for the balance, and we will send you whatever we have
+    written so far so it is not wasted. We will not hold finished text hostage
+    over a cancelled job.
+  </p>
+
+  <h3>If we cancel</h3>
+  <p>
+    If we walk away from a job for our own reasons, or we cannot finish it, we
+    refund the deposit in full even if we have done the work. That is our
+    problem, not yours. If we cancel because we cannot get the details or
+    photographs we need after sixty days of asking, the deposit stays with us
+    and the balance is not charged.
+  </p>
+
+  <h3>If the site is broken</h3>
+  <p>
+    For thirty days after launch we fix anything broken that is our fault, free
+    and without argument. That is a repair, not a refund. If we cannot get it
+    working, we will refund what you paid for the site.
+  </p>
+
+  <h2>The monthly retainer</h2>
+
+  <h3>Cancelling</h3>
+  <p>
+    The retainer is month to month. There is no minimum term and no annual
+    contract. To stop it, email us at least fourteen days before your next
+    billing date and it will not be charged again.
+  </p>
+  <p>
+    Fourteen days rather than none because posts are written and scheduled
+    ahead of time. When you give notice we finish what is already written and
+    hand it to you, so you are not paying for work you never see.
+  </p>
+
+  <h3>The month you are in</h3>
+  <p>
+    The current month is not refunded, whole or in part. That month's work is
+    already commissioned and mostly already done by the time notice arrives.
+  </p>
+
+  <h3>If you cancel with less than fourteen days notice</h3>
+  <p>
+    The next month is charged and then it stops. You get that month's full
+    eight posts and ad creative. We will not bill a month and then not do the
+    work.
+  </p>
+
+  <h3>If we drop the ball</h3>
+  <p>
+    If we miss the volume we promised in a month, which is eight posts and one
+    round of new ad creative, tell us. We will either make it up in the
+    following month or refund that month, your choice.
+  </p>
+
+  <h2>How a refund is paid</h2>
+  <p>
+    Back to the card or account you paid from, within ten business days of us
+    agreeing it. We do not issue credit notes and we will not push you into
+    taking store credit instead of your money.
+  </p>
+
+  <h2>How to ask</h2>
+  <p>
+    Email <a href={`mailto:${business.email}`}>{business.email}</a> and say what
+    you want to cancel. You do not need a reason. We will reply within two
+    business days confirming what happens to the money, in writing, before
+    anything is processed.
+  </p>
+
+  <h2>What this page does not change</h2>
+  <p>
+    Nothing here removes any right you have under {business.state} law,
+    including under the Texas Deceptive Trade Practices Act. If this page and
+    the law disagree, the law wins.
+  </p>
+</Legal>

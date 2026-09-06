@@ -1,8 +1,0 @@
-<!-- ARAZ Scales mark: an ascending three-bar chart forming the peak of an "A".
-     Keep the 24x24 viewBox — components/ui/icons.tsx draws the same geometry
-     inline for the nav and footer lockups, and the two must stay in step. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="ARAZ Scales">
-  <rect x="2" y="14" width="5" height="8" rx="1.5" fill="#3B9EFF" opacity="0.45"/>
-  <rect x="9.5" y="9" width="5" height="13" rx="1.5" fill="#3B9EFF" opacity="0.72"/>
-  <rect x="17" y="2" width="5" height="20" rx="1.5" fill="#3B9EFF"/>
-</svg>

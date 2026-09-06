@@ -1,0 +1,135 @@
+---
+/**
+ * Privacy Policy. Draft. Needs a human read before launch.
+ *
+ * Written against what the site actually does, which is very little: one
+ * contact form, no analytics, no cookies, no embeds. If any of that changes,
+ * this page has to change with it in the same commit.
+ */
+import Legal from "../layouts/Legal.astro";
+import { business } from "../config/business";
+
+const { form, email } = business.processors;
+---
+
+<Legal
+  title={`Privacy policy: ${business.name}`}
+  description="What our contact form collects, where it goes, how long we keep it, and how to have it deleted. We run no analytics and set no cookies."
+  path="/privacy"
+  heading="Privacy policy"
+  standfirst="This page says exactly what we collect and what we do with it. It is short because we collect very little."
+>
+  <h2>The short version</h2>
+  <p>
+    We collect what you type into the contact form. It is emailed to the three
+    of us so we can reply. We do not sell it, we do not add you to a mailing
+    list, and we do not track you while you read this site.
+  </p>
+
+  <h2>What we collect</h2>
+  <p>The contact form asks for four things:</p>
+  <ul>
+    <li>Your name, so we know who we are replying to.</li>
+    <li>Your email address, so we can reply at all.</li>
+    <li>Your business name, so we can look you up before we call.</li>
+    <li>
+      What you need, so the person who answers is the one who does that kind of
+      work.
+    </li>
+  </ul>
+  <p>
+    A phone number is optional. Leave it blank and the form still works. We
+    only use it if you tell us you would rather be called than emailed.
+  </p>
+  <p>
+    There is one more field in the form that you never see. It is a hidden box
+    called a honeypot. It stays empty when a person fills the form in, and
+    automated spam tends to fill it, which is how we throw spam away. It
+    collects nothing about you.
+  </p>
+
+  <h2>What we do not collect</h2>
+  <ul>
+    <li>
+      No analytics. There is no Google Analytics, no Plausible, no Meta pixel
+      and no session recording on this site. We do not know how many people
+      read this page.
+    </li>
+    <li>
+      No cookies. This site sets none. See the <a href="/cookies">cookie policy</a>
+      for the detail.
+    </li>
+    <li>
+      No hidden capture of your IP address, the page you came from, or the
+      browser you are using.
+    </li>
+    <li>
+      No embedded third party content. No web fonts loaded from Google, no
+      YouTube player, no map iframe, no chat widget. The font on this page is
+      served from this website.
+    </li>
+  </ul>
+  <p>
+    We run ads for clients. We have deliberately not put an advertising pixel
+    on our own site.
+  </p>
+
+  <h2>Where your message goes</h2>
+  <p>
+    Two companies handle your message on the way to us, and only those two.
+  </p>
+  <ul>
+    <li>
+      <strong>{form.name}</strong> {form.role}. When you press send, the form
+      posts straight to them and they forward it to our inbox. They keep a copy
+      of submissions on their own systems. Their privacy policy is at
+      <a href={form.privacyUrl} rel="noopener">{form.privacyUrl}</a>.
+    </li>
+    <li>
+      <strong>{email.name}</strong> {email.role}. Your message sits in our
+      mailbox the same way any email would. Their privacy policy is at
+      <a href={email.privacyUrl} rel="noopener">{email.privacyUrl}</a>.
+    </li>
+  </ul>
+  <p>
+    Nobody else sees it. We do not pass enquiries to other agencies, and we do
+    not have an affiliate arrangement with anyone.
+  </p>
+
+  <h2>How long we keep it</h2>
+  <p>
+    If you become a client, we keep your details for as long as we are working
+    together and for two years afterwards, because that is roughly how long a
+    question about old work takes to arrive.
+  </p>
+  <p>
+    If you do not become a client, we delete the enquiry within twelve months.
+  </p>
+
+  <h2>Having your details deleted</h2>
+  <p>
+    Email <a href={`mailto:${business.email}`}>{business.email}</a> and ask. You
+    do not need to give a reason and you do not need to use any particular
+    wording. We will delete what we hold, tell you we have done it, and ask
+    {form.name} to remove their copy too.
+  </p>
+  <p>
+    Under the Texas Data Privacy and Security Act you can also ask us what we
+    hold about you, ask us to correct it, and ask for a copy of it. Same
+    address, same answer time, which is two business days for the reply and up
+    to forty five days to finish the job.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    This site sells services to businesses. It is not aimed at children and we
+    do not knowingly collect anything from anyone under thirteen.
+  </p>
+
+  <h2>If this page changes</h2>
+  <p>
+    The date at the top changes with it. If we ever add analytics or anything
+    that sets a cookie, we will say so here before we turn it on, and the
+    cookie policy will stop saying that we set none.
+  </p>
+</Legal>

@@ -1,0 +1,39 @@
+---
+/**
+ * One row of the document: the visitor's question on the left, the answer on
+ * the right.
+ *
+ * The outer `.row` is full width and carries the hairline that separates this
+ * record from the one above, so the rule runs to both edges of the viewport.
+ * The inner `.wrap.record` holds the two column grid, which collapses to a
+ * single left aligned column below 60rem.
+ *
+ * The question is the section's h2. The answer line inside the slot is styled
+ * like a heading but marked up as a paragraph, which keeps the document at a
+ * clean h1 > h2 > h3.
+ */
+interface Props {
+  id: string;
+  question: string;
+}
+const { id, question } = Astro.props;
+---
+
+<section class="row" id={id} aria-labelledby={`${id}-question`}>
+  <div class="wrap record">
+    <div class="record-label">
+      <h2 id={`${id}-question`}>{question}</h2>
+    </div>
+    <div class="record-body">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Nothing here fights the grid in global.css. The body column just needs a
+     minimum width so long words do not force a horizontal scrollbar at 320px. */
+  .record-body {
+    min-width: 0;
+  }
+</style>

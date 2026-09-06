@@ -1,0 +1,86 @@
+---
+/**
+ * Cookie Policy. Draft. Needs a human read before launch.
+ *
+ * This site sets no cookies. That claim is the whole point of the page, so it
+ * has to stay true: adding analytics, an embed, or any third party script
+ * means rewriting this page in the same commit. There is deliberately no
+ * consent banner, because a banner on a site that sets nothing is theatre.
+ */
+import Legal from "../layouts/Legal.astro";
+import { business } from "../config/business";
+
+const { form } = business.processors;
+---
+
+<Legal
+  title={`Cookie policy: ${business.name}`}
+  description="This site sets no cookies and loads no third party scripts, so there is no consent banner. Here is what we checked and what we found."
+  path="/cookies"
+  heading="Cookie policy"
+  standfirst="This site does not set cookies. That is the entire policy. The rest of this page explains what we checked so you can hold us to it."
+>
+  <h2>What we found</h2>
+  <p>
+    We loaded every page of this site with a clean browser and looked at what
+    was stored afterwards. The result: no cookies, no local storage, no session
+    storage, nothing in an indexed database. Nothing about you is kept on your
+    device by this website.
+  </p>
+
+  <h2>Why there is no banner asking you to accept cookies</h2>
+  <p>
+    Because there is nothing to accept. A consent banner on a site that stores
+    nothing is decoration, and clicking it would achieve exactly what not
+    clicking it achieves. So we left it off.
+  </p>
+  <p>
+    If we ever add something that does set a cookie, we will build a real
+    consent mechanism that blocks the thing until you say yes, rather than a
+    banner that does nothing. And this page will stop saying what it says now.
+  </p>
+
+  <h2>What the site does load</h2>
+  <p>
+    Everything this site needs comes from this website and nowhere else. When
+    you open a page your browser asks us for the page, one stylesheet, one font
+    file and an icon. There is no request to any other company.
+  </p>
+  <p>That means, specifically:</p>
+  <ul>
+    <li>No analytics of any kind. We cannot tell you how many people read this.</li>
+    <li>No advertising pixel. We run Meta ads for clients and have not put one on our own site.</li>
+    <li>No web fonts from Google. The typeface is served from this website.</li>
+    <li>No embedded video, no embedded map, no chat widget, no social buttons.</li>
+    <li>No session recording and no heatmaps.</li>
+  </ul>
+
+  <h2>The one exception, and it is your choice</h2>
+  <p>
+    If you fill in the contact form and press send, your message is posted to
+    {" "}{form.name}, who {form.role}. That is one request to another company,
+    it only happens because you pressed the button, and it does not put a
+    cookie on your device for this site. What {form.name} stores at their end
+    is covered by their own privacy policy, linked from our
+    {" "}<a href="/privacy">privacy policy</a>.
+  </p>
+  <p>
+    Read the whole site, never touch the form, and no other company is involved
+    at any point.
+  </p>
+
+  <h2>Your browser settings</h2>
+  <p>
+    You do not need to change anything to read this site privately. If you
+    block cookies entirely, everything here still works, including the form.
+  </p>
+
+  <h2>If this page changes</h2>
+  <p>
+    The date at the top changes with it. This is the page most likely to go
+    quietly out of date, so it is worth saying plainly: if you find something
+    on this site setting a cookie, we have made a mistake. Email
+    {" "}<a href={`mailto:${business.email}`}>{business.email}</a> and we will
+    fix it.
+  </p>
+</Legal>

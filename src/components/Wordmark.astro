@@ -1,0 +1,34 @@
+---
+/**
+ * The three ascending bars plus the name.
+ *
+ * The rects are inline rather than an <img src="/icon.svg"> so the header
+ * costs no extra request and the mark cannot flash in after paint. The
+ * geometry is duplicated in public/icon.svg and scripts/generate-icons.mjs.
+ * If you change it here, change it in both of those.
+ */
+interface Props {
+  /** Renders as a link when set. The footer passes nothing. */
+  href?: string;
+  /** The band inverts the mark by inheriting currentColor. */
+  class?: string;
+}
+const { href, class: className } = Astro.props;
+const Tag = href ? "a" : "span";
+---
+
+<Tag class:list={["wordmark", className]} {...href ? { href } : {}}>
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+    focusable="false"
+    fill="currentColor"
+  >
+    <rect x="2" y="14" width="5" height="8" rx="1" opacity="0.45" />
+    <rect x="9.5" y="9" width="5" height="13" rx="1" opacity="0.72" />
+    <rect x="17" y="2" width="5" height="20" rx="1" />
+  </svg>
+  ARAZ Scales
+</Tag>

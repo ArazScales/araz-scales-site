@@ -1,0 +1,9 @@
+<!-- ARAZ Scales mark: three ascending bars, the geometry carried over from the
+     previous site. Recoloured from the old #3B9EFF to the ink of the current
+     palette. src/components/Wordmark.astro draws the same three rects inline
+     for the header and footer, so the two have to stay in step. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="ARAZ Scales">
+  <rect x="2" y="14" width="5" height="8" rx="1" fill="#132A21" opacity="0.45"/>
+  <rect x="9.5" y="9" width="5" height="13" rx="1" fill="#132A21" opacity="0.72"/>
+  <rect x="17" y="2" width="5" height="20" rx="1" fill="#132A21"/>
+</svg>

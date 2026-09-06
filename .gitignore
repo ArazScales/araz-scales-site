@@ -1,33 +1,22 @@
 # dependencies
 /node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/releases
-!.yarn/plugins
-!.yarn/versions
 
-# next.js
-/.next/
-/out/
-next-env.d.ts
-
-# production
-/build
+# astro build output and cache
+/dist/
+/.astro/
 
 # misc
 .DS_Store
-*.pem
 Thumbs.db
+*.pem
 
-# debug
+# debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files — never commit real keys
+# env files, never commit real values
 .env
 .env*.local
 !.env.local.example
@@ -35,11 +24,7 @@ yarn-error.log*
 # vercel
 .vercel
 
-# typescript
-*.tsbuildinfo
-
 # editors
 .idea/
 .vscode/*
 !.vscode/extensions.json
-.env*

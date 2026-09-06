@@ -1,0 +1,225 @@
+---
+/**
+ * Terms and Conditions. Draft. Needs a human read before launch.
+ *
+ * The entity paragraph adapts to whether business.legalName is still a
+ * placeholder. Right now no entity is filed, so the page says so plainly
+ * rather than naming a company that does not exist. The moment an LLC is
+ * registered, filling in legalName in src/config/business.ts switches this
+ * page to the corporate wording.
+ */
+import Legal from "../layouts/Legal.astro";
+import { business, real } from "../config/business";
+import { plans } from "../content/pricing";
+
+const legalName = real(business.legalName);
+const [website, retainer] = plans;
+---
+
+<Legal
+  title={`Terms and conditions: ${business.name}`}
+  description="What each service covers, when payment is due, how revisions work, what we need from you, who owns the finished work, and the limits of our liability."
+  path="/terms"
+  heading="Terms and conditions"
+  standfirst="These are the terms you agree to when you hire us. We have tried to write them in plain English rather than in the usual language."
+>
+  <h2>Who you are contracting with</h2>
+  {
+    legalName ? (
+      <p>
+        {business.name} is a trade name of {legalName}, registered in the state
+        of {business.state}. {legalName} is the party you are contracting with,
+        and these terms are governed by {business.state} law.
+      </p>
+    ) : (
+      <p>
+        {business.name} is the trading name of a partnership between Zain
+        Bahalim, Roshan Mohammad and Abayjit Singh, based in {business.city},
+        {" "}{business.state}. We have not yet registered a company. That means
+        you are contracting with the three of us personally, and these terms
+        are governed by {business.state} law. When we do register an entity,
+        this page will name it and we will tell existing clients in writing.
+      </p>
+    )
+  }
+
+  <h2>What each service covers</h2>
+
+  <h3>{website.name}, {website.amount} {website.unit}</h3>
+  <p>{website.summary} The work covers:</p>
+  <ul>
+    {website.includes?.map((item) => <li>{item}</li>)}
+  </ul>
+  <p><strong>How long.</strong> {website.timeline}</p>
+  <p><strong>Not included.</strong> {website.excludes}</p>
+
+  <h3>{retainer.name}, {retainer.amount} {retainer.unit}</h3>
+  <p>{retainer.summary}</p>
+  {
+    retainer.parts?.map((part) => (
+      <div>
+        <p><strong>{part.name}.</strong> {part.summary}</p>
+        <ul>
+          {part.includes.map((item) => <li>{item}</li>)}
+        </ul>
+        <p><strong>How long.</strong> {part.timeline}</p>
+      </div>
+    ))
+  }
+  <p><strong>Not included.</strong> {retainer.excludes}</p>
+  <p>
+    Taking both services does not change the price of either. There is no
+    bundle rate and no setup fee.
+  </p>
+
+  <h2>Payment</h2>
+  <ul>
+    <li>
+      <strong>The website.</strong> {website.amount} in total, split in two.
+      Half is due before we start and half is due on the day the site goes
+      live. We invoice by email and payment is due within seven days of the
+      invoice.
+    </li>
+    <li>
+      <strong>The monthly retainer.</strong> {retainer.amount} a month, charged
+      in advance on the same date each month. The first month is charged on the
+      day we start.
+    </li>
+  </ul>
+  <p>
+    We do not charge interest on late payment. If an invoice goes more than
+    thirty days past due we will stop work and tell you why, and we will not
+    hand over logins for unpaid work.
+  </p>
+  <p>
+    Prices are in US dollars and do not include any sales tax that may apply.
+  </p>
+
+  <h2>Revisions</h2>
+  <p>
+    <strong>On a website.</strong> Two rounds of changes are included before
+    the site goes live. A round means you send us one list of everything you
+    want changed and we work through it. Sending three items on Monday and two
+    more on Wednesday counts as two rounds, so it is worth collecting them up.
+  </p>
+  <p>
+    After the site is live, tell us what you need and we will quote it in
+    writing before we do anything. If it is a small text change we will show
+    you how to do it yourself on a call at no charge.
+  </p>
+  <p>
+    <strong>On content and ads.</strong> Nothing is published or handed over
+    until you have approved it. Ask for as many changes as you like on each
+    piece. What is fixed is the volume, which is eight posts a month and one
+    round of new ad creative a month, not the number of edits.
+  </p>
+
+  <h2>What we need from you</h2>
+  <p>
+    Almost everything we are late on is something we are waiting for. You are
+    responsible for supplying:
+  </p>
+  <ul>
+    <li>
+      Accurate details about the business: hours, service area, what you charge
+      if you want it listed, and the licences or registrations you want shown.
+    </li>
+    <li>
+      Photographs you own or have permission to use. If you send us a picture,
+      you are telling us you have the right to publish it. We will not use
+      images pulled from a search engine and we will not generate fake ones.
+    </li>
+    <li>
+      Access to your domain and any existing accounts we need, or the authority
+      to register them in your name.
+    </li>
+    <li>Answers within a reasonable time when we ask a question.</li>
+    <li>
+      Approval of anything published under your name, including posts and ad
+      copy. You have the final read.
+    </li>
+  </ul>
+  <p>
+    If we cannot get what we need for more than sixty days, we may close the
+    job and invoice for the work done up to that point.
+  </p>
+
+  <h2>Who owns the finished work</h2>
+  <p>
+    You do, once you have paid in full. That covers the website, its text, its
+    layout, the posts we write for you and the ad creative we build. On the day
+    the site goes live and the balance is paid, the domain is in your name, the
+    hosting account is in your name, and every login is yours.
+  </p>
+  <p>
+    Two things stay ours. The first is the general know how and technique we
+    use, which we obviously go on using for other clients. The second is any
+    open source component in the site, which stays under its own licence, and
+    those licences are recorded in the project.
+  </p>
+  <p>
+    We would like to show your site in our own portfolio and mention that we
+    built it. If you would rather we did not, say so and we will not.
+  </p>
+
+  <h2>Cancelling</h2>
+  <p>
+    Refunds and notice periods are set out in full on the
+    {" "}<a href="/refunds">refund policy</a> page. In short: the deposit on a
+    website covers work already begun and is not refundable, the balance is not
+    charged if you cancel before launch, and the monthly retainer needs
+    fourteen days notice.
+  </p>
+
+  <h2>What we promise, and what we do not</h2>
+  <p>
+    We promise the work will be done with reasonable care and skill, that the
+    site will work on a current phone and desktop browser, and that we will fix
+    anything broken that is our fault, free, for thirty days after launch.
+  </p>
+  <p>
+    We do not promise business results. Nobody honestly can. We cannot promise
+    a particular position in Google, a number of phone calls, a cost per lead,
+    or that any given ad will work. If somebody in this industry offers you a
+    guaranteed ranking, that is a good reason to walk away from them.
+  </p>
+  <p>
+    We do not control the platforms. Google, Meta, your host and your domain
+    registrar all change their rules and their prices without asking us, and
+    any of them can suspend an account for reasons they do not explain. We will
+    help you deal with it, but it is not something we can be held to.
+  </p>
+
+  <h2>Limits on liability</h2>
+  <p>
+    If we get something wrong and it costs you money, our total liability is
+    capped at what you paid us for the work in question. For a website that is
+    {" "}{website.amount}. For the retainer it is the fees you paid us in the
+    three months before the problem.
+  </p>
+  <p>
+    We are not liable for lost profit, lost business, lost data, or costs you
+    incur with a third party, and neither of us is liable for a failure caused
+    by something genuinely outside our control.
+  </p>
+  <p>
+    Nothing in these terms limits any liability that cannot be limited under
+    {" "}{business.state} law, including under the Texas Deceptive Trade
+    Practices Act.
+  </p>
+
+  <h2>Disagreements</h2>
+  <p>
+    Email us first. Almost everything is a misunderstanding that one phone call
+    fixes, and we would rather fix it than argue about it. If that fails, these
+    terms are governed by the law of the state of {business.state} and any
+    dispute goes to the courts of Harris County, Texas.
+  </p>
+
+  <h2>If these terms change</h2>
+  <p>
+    The date at the top changes with them. The terms that apply to your job are
+    the ones in force on the day we agreed the work, and we will not change
+    them mid job without telling you.
+  </p>
+</Legal>

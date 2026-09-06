@@ -1,0 +1,314 @@
+---
+/**
+ * The one action on the site. Every button routes here.
+ *
+ * Fields are exactly the four CLAUDE.md section 4 permits, plus an optional
+ * phone. Nothing hidden is collected: no IP, no referrer, no user agent. The
+ * only extra input is `_gotcha`, the honeypot, which Formspree drops server
+ * side when a bot fills it.
+ *
+ * It works with JavaScript switched off. The form is a plain POST to
+ * Formspree, and native validation handles the required fields. With
+ * JavaScript it submits over fetch instead, so the visitor stays on the page
+ * and gets error text tied to the field it belongs to. No Formspree script is
+ * loaded either way, which is what keeps the page at zero third party
+ * requests.
+ */
+import { business } from "../config/business";
+import { site } from "../content/site";
+
+const f = site.contact.fields;
+
+/**
+ * Read at build time and inlined, which is correct for a Formspree ID: the
+ * endpoint is public by design. Without it the form renders disabled with a
+ * visible notice, rather than looking fine and dropping every lead.
+ */
+const formId = import.meta.env.PUBLIC_FORMSPREE_ID;
+const endpoint = formId ? `https://formspree.io/f/${formId}` : undefined;
+---
+
+<div class="stack" style="--flow: 1.5rem">
+  <p class="answer">{site.contact.heading}</p>
+  <p>{site.contact.intro}</p>
+
+  {
+    !endpoint && (
+      <p class="setup-notice">
+        This form is not connected yet. Set <code>PUBLIC_FORMSPREE_ID</code> in
+        <code>.env.local</code> and on the Vercel project, then rebuild. Until
+        then, email
+        <a href={`mailto:${business.email}`}>{business.email}</a>.
+      </p>
+    )
+  }
+
+  <form
+    class="form"
+    id="contact-form"
+    method="POST"
+    action={endpoint}
+    novalidate
+  >
+    <div class="field" id="field-name">
+      <label for="name">{f.name.label}</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        autocomplete={f.name.autocomplete}
+        required
+        disabled={!endpoint}
+        aria-describedby="error-name"
+      />
+      <p class="field-error" id="error-name" hidden></p>
+    </div>
+
+    <div class="field" id="field-email">
+      <label for="email">{f.email.label}</label>
+      <input
+        id="email"
+        name="email"
+        type="email"
+        autocomplete={f.email.autocomplete}
+        required
+        disabled={!endpoint}
+        aria-describedby="error-email"
+      />
+      <p class="field-error" id="error-email" hidden></p>
+    </div>
+
+    <div class="field" id="field-business">
+      <label for="business">{f.businessName.label}</label>
+      <input
+        id="business"
+        name="business"
+        type="text"
+        autocomplete={f.businessName.autocomplete}
+        required
+        disabled={!endpoint}
+        aria-describedby="error-business"
+      />
+      <p class="field-error" id="error-business" hidden></p>
+    </div>
+
+    <div class="field" id="field-phone">
+      <label for="phone">
+        {f.phone.label} <span class="field-optional">({f.phone.optional})</span>
+      </label>
+      <input
+        id="phone"
+        name="phone"
+        type="tel"
+        autocomplete={f.phone.autocomplete}
+        disabled={!endpoint}
+      />
+    </div>
+
+    <div class="field" id="field-message">
+      <label for="message">{f.message.label}</label>
+      <textarea
+        id="message"
+        name="message"
+        required
+        disabled={!endpoint}
+        aria-describedby="hint-message error-message"></textarea>
+      <p class="field-hint" id="hint-message">{f.message.hint}</p>
+      <p class="field-error" id="error-message" hidden></p>
+    </div>
+
+    <!-- Honeypot. Off screen, never tabbable, hidden from assistive tech. -->
+    <div class="honeypot" aria-hidden="true">
+      <label for="_gotcha">Leave this field empty</label>
+      <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="submit-row">
+      <button class="button" type="submit" disabled={!endpoint}>
+        {site.contact.submit}
+      </button>
+      <p class="form-note">
+        {site.contact.consent}{" "}
+        <a href="/privacy">{site.contact.consentLinkLabel}</a>.
+      </p>
+    </div>
+  </form>
+
+  <!-- Submission outcome. Empty until something happens, so screen readers do
+       not announce anything on load. -->
+  <div
+    id="form-status"
+    class="status"
+    hidden
+    data-success-heading={site.contact.success.heading}
+    data-success-body={site.contact.success.body}
+    data-error-heading={site.contact.error.heading}
+    data-error-body={site.contact.error.body}
+  >
+    <p class="answer" id="status-heading"></p>
+    <p id="status-body"></p>
+  </div>
+</div>
+
+<style>
+  .setup-notice {
+    padding: 0.875rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    background: var(--field);
+    font-size: 0.9375rem;
+    max-width: 34rem;
+  }
+
+  .setup-notice code {
+    font-size: 0.875rem;
+  }
+
+  .submit-row {
+    display: grid;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  @media (min-width: 34rem) {
+    .submit-row {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 1.25rem;
+    }
+  }
+
+  .status {
+    padding: 1.25rem;
+    border-left: 3px solid var(--ink);
+    background: var(--field);
+    max-width: 34rem;
+  }
+
+  .status p + p {
+    margin-top: 0.5rem;
+  }
+</style>
+
+<script>
+  /* Bundled rather than inline, so the Content Security Policy in vercel.json
+     can stay at script-src 'self' with no 'unsafe-inline'. The outcome copy
+     arrives on data attributes of #form-status instead of through
+     define:vars, which keeps every string in src/content/site.ts. */
+  (() => {
+    const form = document.getElementById("contact-form");
+    if (!form || !form.action) return;
+
+    const status = document.getElementById("form-status");
+    const statusHeading = document.getElementById("status-heading");
+    const statusBody = document.getElementById("status-body");
+    const button = form.querySelector("button[type=submit]");
+    const submitLabel = button.textContent.trim();
+
+    /* Error text says how to fix the problem, not that a problem exists. */
+    const rules = [
+      {
+        id: "name",
+        empty: "Enter your name so we know who we are replying to.",
+      },
+      {
+        id: "email",
+        empty: "Enter your email address. It is the only way we can reply.",
+        invalid:
+          "That email address is missing something. Check it over, an @ or a .com for example.",
+      },
+      {
+        id: "business",
+        empty:
+          "Enter the name of the business. If it does not have one yet, put your own name.",
+      },
+      {
+        id: "message",
+        empty:
+          "Tell us what you need, even in one line. A website, posts and ads, or that you are not sure yet.",
+      },
+    ];
+
+    function setError(rule, text) {
+      const input = document.getElementById(rule.id);
+      const wrap = input.closest(".field");
+      const error = document.getElementById(`error-${rule.id}`);
+      if (text) {
+        wrap.setAttribute("data-invalid", "");
+        input.setAttribute("aria-invalid", "true");
+        error.textContent = text;
+        error.hidden = false;
+      } else {
+        wrap.removeAttribute("data-invalid");
+        input.removeAttribute("aria-invalid");
+        error.textContent = "";
+        error.hidden = true;
+      }
+      return input;
+    }
+
+    function validate() {
+      let firstInvalid = null;
+      for (const rule of rules) {
+        const input = document.getElementById(rule.id);
+        const value = input.value.trim();
+        let text = "";
+        if (!value) text = rule.empty;
+        else if (input.type === "email" && !input.checkValidity())
+          text = rule.invalid;
+        setError(rule, text);
+        if (text && !firstInvalid) firstInvalid = input;
+      }
+      return firstInvalid;
+    }
+
+    /* Clear a field's error as soon as it is corrected. */
+    for (const rule of rules) {
+      const input = document.getElementById(rule.id);
+      input.addEventListener("input", () => {
+        if (input.getAttribute("aria-invalid") === "true") {
+          const value = input.value.trim();
+          const ok = value && (input.type !== "email" || input.checkValidity());
+          if (ok) setError(rule, "");
+        }
+      });
+    }
+
+    function announce(kind) {
+      statusHeading.textContent = status.dataset[`${kind}Heading`];
+      statusBody.textContent = status.dataset[`${kind}Body`];
+      status.setAttribute("role", kind === "success" ? "status" : "alert");
+      status.hidden = false;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      status.hidden = true;
+
+      const firstInvalid = validate();
+      if (firstInvalid) {
+        firstInvalid.focus();
+        return;
+      }
+
+      button.disabled = true;
+      button.textContent = "Sending";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (!response.ok) throw new Error(String(response.status));
+        form.hidden = true;
+        announce("success");
+        statusHeading.setAttribute("tabindex", "-1");
+        statusHeading.focus();
+      } catch {
+        button.disabled = false;
+        button.textContent = submitLabel;
+        announce("error");
+      }
+    });
+  })();
+</script>

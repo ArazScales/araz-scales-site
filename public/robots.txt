@@ -1,0 +1,6 @@
+# Everything on this site is meant to be found. Nothing here is private and
+# there is no admin area to keep out of.
+User-agent: *
+Allow: /
+
+Sitemap: https://arazscales.com/sitemap.xml
