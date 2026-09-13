@@ -47,6 +47,22 @@
      Large light-ground moments use `ink` instead. */
   --accent: #039cd8;   /* 6.19:1 on ink. Band only, see above.               */
 
+  /* The accent washed into `stock` at 6%, for a section that needs to lift off
+     the page ground without becoming a card or a box. It is the one way the
+     accent is allowed to appear on the light half of the site, and it is
+     allowed precisely because it carries no text and no meaning: it is a
+     ground, and the rule above bans the accent as text, as a border and as a
+     focus ring, not as a tint.
+
+     Derived, not picked. mix(#039cd8, #f4f5f7, 6%). Keeping it a literal hex
+     rather than a color-mix() is the same decision recorded for the two
+     on-ink variants above: axe-core cannot parse a computed
+     color(srgb ...) and reports every node over it as unverifiable.
+
+     Text checked against it: ink 16.64:1, muted 5.62:1. Both clear AA, so no
+     colour had to be darkened to sit on it. */
+  --wash: #e6f0f5;     /* Section ground. Muted still reads 5.62:1 on it.    */
+
   /* Dark band variants. `muted` only reaches 1.59:1 against the new `ink`, so
      the band needs its own secondary grey and its own divider.
 

@@ -11,15 +11,27 @@
  * The question is the section's h2. The answer line inside the slot is styled
  * like a heading but marked up as a paragraph, which keeps the document at a
  * clean h1 > h2 > h3.
+ *
+ * `wash` puts the section on the tinted ground rather than the page ground.
+ * It is a prop rather than an id selector in global.css so that the decision
+ * reads where the section is declared. Use it sparingly: the point of a
+ * document made of hairlines is that one section lifting off the page means
+ * something, and it stops meaning anything once two do.
  */
 interface Props {
   id: string;
   question: string;
+  /** Sit this record on `--wash` instead of the page ground. */
+  wash?: boolean;
 }
-const { id, question } = Astro.props;
+const { id, question, wash = false } = Astro.props;
 ---
 
-<section class="row" id={id} aria-labelledby={`${id}-question`}>
+<section
+  class:list={["row", { wash }]}
+  id={id}
+  aria-labelledby={`${id}-question`}
+>
   <div class="wrap record">
     <div class="record-label">
       <h2 id={`${id}-question`}>{question}</h2>
@@ -35,5 +47,14 @@ const { id, question } = Astro.props;
      minimum width so long words do not force a horizontal scrollbar at 320px. */
   .record-body {
     min-width: 0;
+  }
+
+  /* Full bleed, because the ground belongs to the whole row rather than to the
+     padded column inside it. The hairlines above and below are the existing
+     `.row + .row` rules and are left alone: they land on the tint's own edges
+     and read as the section being ruled off, which is what they already do
+     everywhere else. */
+  .wash {
+    background: var(--wash);
   }
 </style>
