@@ -4,27 +4,40 @@
  *
  * The terms on this page are a business decision, not a template: a $150
  * deposit that stops being refundable once work starts, a balance that is
- * simply not charged if the client leaves before launch, and a month to month
+ * simply not charged if the client leaves before launch, a landing page that
+ * is refundable in full until work starts and not after, and a month to month
  * retainer with fourteen days notice. Do not soften or invent around these
  * without asking, because they are what the FAQ on the homepage promises too.
+ *
+ * The landing page has its own section rather than a clause bolted onto the
+ * website's, because the website's protection comes from the second $150 not
+ * being taken until launch day and the landing page has no second payment to
+ * hold back. Folding them together would leave a reader unsure which rule
+ * applies to what they bought.
  */
 import Legal from "../layouts/Legal.astro";
 import { business } from "../config/business";
 import { planById } from "../content/pricing";
 
+const landing = planById("landing");
 const website = planById("website");
 const retainer = planById("retainer");
 ---
 
 <Legal
   title={`Refund policy: ${business.name}`}
-  description="What happens to your money if you cancel a website build or stop the monthly retainer, including how the deposit is treated and the notice period."
+  description="What happens to your money if you cancel a landing page, cancel a website build, or stop the monthly retainer, including how the deposit is treated and the notice period."
   path="/refunds"
   heading="Refund policy"
   standfirst="What happens to your money if you change your mind. Written so you can work out where you stand without emailing us."
 >
   <h2>The short version</h2>
   <ul>
+    <li>
+      A landing page is {landing.amount}, paid in full before we start. You get
+      all of it back if you stop us before we begin work. After that, none of
+      it.
+    </li>
     <li>
       A website is {website.amount}, paid as $150 to start and $150 when it
       goes live. The first $150 is not refundable once we begin work. The
@@ -35,7 +48,50 @@ const retainer = planById("retainer");
       fourteen days notice and it stops. The month you are in is not refunded.
     </li>
   </ul>
-  <p>The rest of this page is the detail behind those two lines.</p>
+  <p>The rest of this page is the detail behind those three lines.</p>
+
+  <h2>The landing page</h2>
+  <p>
+    A landing page is {landing.amount} paid in full before we start. That is
+    why it needs its own rules rather than the website's. On a website, most of
+    what protects you is the second $150 not being taken until the day it goes
+    live. Here there is no second payment to hold back, so the protection has
+    to sit somewhere else, and it sits in the window before we begin.
+  </p>
+
+  <h3>Before we start</h3>
+  <p>
+    If you pay and then tell us to stop before we have started work, we refund
+    the {landing.amount} in full. In practice that means telling us within two
+    business days, because we usually start the next morning. Ask and we will
+    tell you honestly whether we have begun. This is the same window as the
+    deposit on a website, for the same reason.
+  </p>
+
+  <h3>Once we start</h3>
+  <p>
+    After that the {landing.amount} is not refundable. It is the same principle
+    as the website deposit: once we start we are writing your text, which is
+    the bulk of the job and happens before you see anything, and that work
+    cannot be handed back.
+  </p>
+  <p>
+    There are no partial refunds. We will not work out how much of a page got
+    written and refund the rest. Nobody can check a number like that, and
+    arguing about it would cost us both more than the page did. Refundable in
+    full before we start, not refundable after. Those are the only two
+    positions.
+  </p>
+
+  <h3>If we cancel, or we cannot get it working</h3>
+  <p>
+    The same as a website. If we walk away for our own reasons, or we cannot
+    finish it, we refund the {landing.amount} in full even if we have done the
+    work. That is our problem, not yours. If the page goes live and we cannot
+    fix something that is our fault, we refund what you paid. If we close the
+    job because we cannot get your details or photographs after sixty days of
+    asking, the {landing.amount} stays with us.
+  </p>
 
   <h2>The website build</h2>
 
@@ -60,8 +116,8 @@ const retainer = planById("retainer");
     charged it. There is nothing to claim back because it was never taken.
   </p>
   <p>
-    This is the part worth understanding: the most you can lose by hiring us
-    and changing your mind is $150.
+    This is the part worth understanding: the most you can lose on a website
+    build, if you change your mind, is $150.
   </p>
 
   <h3>If you cancel mid build</h3>

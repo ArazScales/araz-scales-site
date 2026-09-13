@@ -76,7 +76,7 @@ export const plans: Plan[] = [
     ],
     payment: "$100 in full before we start. There is no second payment.",
     timeline:
-      "Two weeks, counted from the day you send us your photos and details.",
+      "One week, counted from the day you send us your photos and details.",
     excludes:
       "Online payments, booking systems and customer logins are not part of this. If you need more than one page, the $300 website is the one to buy.",
   },

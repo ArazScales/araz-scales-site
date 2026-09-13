@@ -63,8 +63,11 @@ export const site = {
   process: {
     question: "How does it work?",
     heading: "Five steps, and the one that needs you",
+    /* Not "two weeks or two months" any more. Two weeks is the website's
+       timeline and the landing page ships in one, so naming a single figure
+       here contradicted the price list below it. */
     intro:
-      "The third step decides whether this takes two weeks or two months.",
+      "The third step decides whether this takes the time we quoted or two months.",
     steps: [
       {
         title: "You tell us about the business",
@@ -88,7 +91,7 @@ export const site = {
       },
     ],
     /* Sits under the numbered list. The honest part. */
-    note: "If your photos take three weeks, the site takes three weeks. We will chase you, politely.",
+    note: "If your photos take three weeks, the job takes three weeks. We will chase you, politely.",
   },
 
   team: {
@@ -117,7 +120,7 @@ export const site = {
       },
       {
         q: "How long does it take?",
-        a: "Two weeks from the day your photos and details reach us.",
+        a: "A five page website is two weeks. A single landing page is one week. Both are counted from the day your photos and details reach us, not from the day you pay.",
       },
       {
         q: "Who owns the site when it is done?",
@@ -129,7 +132,7 @@ export const site = {
       },
       {
         q: "Can I get my money back?",
-        a: "Yes, within limits. Cancel before we start writing and the $150 deposit comes back in full. We usually start the morning after you pay, so in practice that means telling us within two business days, and you can always ask us where we are. After that the deposit is not refundable, but the second $150 is only charged the day the site goes live. The most you can lose is $150. If we cancel, or we cannot get the site working, you get all of it back. The retainer stops with fourteen days notice.",
+        a: "Yes, within limits, and the limit depends on which one you bought. On either kind of website, cancel before we start writing and you get all of it back. We usually start the morning after you pay, so in practice that means telling us within two business days, and you can always ask us where we are. After that a landing page is not refundable. On a five page site the $150 deposit is not refundable, but the second $150 is only charged the day it goes live, so the most you can lose there is $150. If we cancel, or we cannot get it working, you get everything back. The retainer stops with fourteen days notice.",
         link: { href: "/refunds", label: "Read the full refund policy" },
       },
       {
