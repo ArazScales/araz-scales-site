@@ -19,9 +19,16 @@ interface Props {
   description: string;
   /** Path with a leading slash, for the canonical tag. */
   path: string;
+  /**
+   * JSON-LD blocks for this page, if it has any. Only the homepage does.
+   * These are data blocks, not executable script, so they do not need the
+   * Content Security Policy loosened.
+   */
+  jsonLd?: Record<string, unknown>[];
 }
 
-const { title, description, path } = Astro.props;
+const { title, description, path, jsonLd = [] } = Astro.props;
+const shareImage = new URL("/og.png", business.url).href;
 const canonical = new URL(path, business.url).href;
 const legal = site.footer.legalLinks;
 const phone = real(business.phone);
@@ -58,7 +65,26 @@ const year = new Date().getFullYear();
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta name="twitter:card" content="summary" />
+
+    <!-- Absolute, because a scraper resolves this without a document base.
+         1200x630 is the ratio every one of them crops to, and declaring the
+         dimensions lets the card reserve its space before the image lands. -->
+    <meta property="og:image" content={shareImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={site.meta.shareImageAlt} />
+
+    <!-- summary, the previous value, renders a small square thumbnail and
+         would crop this card to its middle. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={shareImage} />
+    <meta name="twitter:image:alt" content={site.meta.shareImageAlt} />
+
+    {
+      jsonLd.map((block) => (
+        <script type="application/ld+json" set:html={JSON.stringify(block)} />
+      ))
+    }
   </head>
 
   <body>

@@ -13,9 +13,15 @@ import ContactForm from "../components/ContactForm.astro";
 import { site } from "../content/site";
 import { plans, pricingNote } from "../content/pricing";
 import { business, founders } from "../config/business";
+import { professionalService, faqPage } from "../content/structured-data";
 ---
 
-<Base title={site.meta.title} description={site.meta.description} path="/">
+<Base
+  title={site.meta.title}
+  description={site.meta.description}
+  path="/"
+  jsonLd={[professionalService(), faqPage()]}
+>
   <!-- ------------------------------------------------------------- hero -->
   <!-- The one bold thing on the page. A full bleed ink band carrying the
        headline and the price, so the number a visitor came for is the first

@@ -17,6 +17,11 @@ export const site = {
     title: `${business.name}: websites for local businesses, $300`,
     description:
       "We build a five page website for your business for $300, live in two weeks. We also write posts and build Facebook and Instagram ad creative. Three founders in Houston, Texas.",
+
+    /* Read out when a link preview is announced rather than shown. Describes
+       what the card says, because the card is words rather than a picture. */
+    shareImageAlt:
+      "The ARAZ Scales mark and name, above the words Websites for local businesses, the price $300, and the line Houston, Texas.",
   },
 
   /** Anchor links in the header. Keep this to three. */
