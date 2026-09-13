@@ -111,7 +111,7 @@ export const site = {
       },
       {
         q: "Who owns the site when it is done?",
-        a: "You do. The domain and the hosting are in your name, and we hand you every login at the end.",
+        a: "You do, once the balance is paid. The domain and the hosting are in your name, and we hand you every login on the day it goes live.",
       },
       {
         q: "What if I want changes later?",
@@ -119,7 +119,7 @@ export const site = {
       },
       {
         q: "Can I get my money back?",
-        a: "The $150 deposit is not refundable once we begin. The second $150 is only charged when the site goes live. The retainer stops with fourteen days notice.",
+        a: "Yes, within limits. Cancel before we start writing and the $150 deposit comes back in full. We usually start the morning after you pay, so in practice that means telling us within two business days, and you can always ask us where we are. After that the deposit is not refundable, but the second $150 is only charged the day the site goes live. The most you can lose is $150. If we cancel, or we cannot get the site working, you get all of it back. The retainer stops with fourteen days notice.",
         link: { href: "/refunds", label: "Read the full refund policy" },
       },
       {

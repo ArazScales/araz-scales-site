@@ -68,7 +68,7 @@ export const business = {
   },
 
   /** Last substantive edit to the policy pages. Shown at the top of each. */
-  policiesUpdated: "September 6, 2026",
+  policiesUpdated: "September 13, 2026",
 } as const;
 
 export const founders = [
