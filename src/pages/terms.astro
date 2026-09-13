@@ -10,10 +10,12 @@
  */
 import Legal from "../layouts/Legal.astro";
 import { business, real } from "../config/business";
-import { plans } from "../content/pricing";
+import { planById } from "../content/pricing";
 
 const legalName = real(business.legalName);
-const [website, retainer] = plans;
+const landing = planById("landing");
+const website = planById("website");
+const retainer = planById("retainer");
 ---
 
 <Legal
@@ -44,6 +46,14 @@ const [website, retainer] = plans;
   }
 
   <h2>What each service covers</h2>
+
+  <h3>{landing.name}, {landing.amount} {landing.unit}</h3>
+  <p>{landing.summary} The work covers:</p>
+  <ul>
+    {landing.includes?.map((item) => <li>{item}</li>)}
+  </ul>
+  <p><strong>How long.</strong> {landing.timeline}</p>
+  <p><strong>Not included.</strong> {landing.excludes}</p>
 
   <h3>{website.name}, {website.amount} {website.unit}</h3>
   <p>{website.summary} The work covers:</p>
@@ -76,6 +86,12 @@ const [website, retainer] = plans;
   <h2>Payment</h2>
   <ul>
     <li>
+      <strong>The landing page.</strong> {landing.amount} in total, paid in full
+      before we start. There is no second payment and nothing is invoiced on
+      launch day. This is not the same arrangement as the website below, so
+      check which of the two you are buying.
+    </li>
+    <li>
       <strong>The website.</strong> {website.amount} in total, split in two.
       Half is due before we start and half is due on the day the site goes
       live. We invoice by email and payment is due within seven days of the
@@ -98,8 +114,8 @@ const [website, retainer] = plans;
 
   <h2>Revisions</h2>
   <p>
-    <strong>On a website.</strong> Two rounds of changes are included before
-    the site goes live. A round means you send us one list of everything you
+    <strong>On a website or a landing page.</strong> Two rounds of changes are
+    included on either, before it goes live. A round means you send us one list of everything you
     want changed and we work through it. Sending three items on Monday and two
     more on Wednesday counts as two rounds, so it is worth collecting them up.
   </p>
@@ -142,8 +158,8 @@ const [website, retainer] = plans;
   </ul>
   <p>
     If we cannot get what we need for more than sixty days, we may close the
-    job. The deposit stays with us, the balance is not charged, and we will not
-    invoice you for anything beyond the $150 you have already paid. That is the
+    job. The deposit stays with us, any balance is not charged, and we will not
+    invoice you for anything beyond what you have already paid. That is the
     same position as any other cancellation and it is set out in full on the
     {" "}<a href="/refunds">refund policy</a> page.
   </p>
@@ -197,9 +213,9 @@ const [website, retainer] = plans;
   <h2>Limits on liability</h2>
   <p>
     If we get something wrong and it costs you money, our total liability is
-    capped at what you paid us for the work in question. For a website that is
-    {" "}{website.amount}. For the retainer it is the fees you paid us in the
-    three months before the problem.
+    capped at what you paid us for the work in question. For a landing page
+    that is {landing.amount} and for a website {website.amount}. For the
+    retainer it is the fees you paid us in the three months before the problem.
   </p>
   <p>
     We are not liable for lost profit, lost business, lost data, or costs you

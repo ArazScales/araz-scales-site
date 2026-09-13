@@ -14,7 +14,7 @@
 
 import { business, founders } from "../config/business";
 import { site } from "./site";
-import { plans } from "./pricing";
+import { planById } from "./pricing";
 
 const abs = (path: string) => new URL(path, business.url).href;
 
@@ -22,7 +22,9 @@ const abs = (path: string) => new URL(path, business.url).href;
 const amount = (display: string) => display.replace(/[^0-9.]/g, "");
 
 export function professionalService() {
-  const [website, retainer] = plans;
+  const landing = planById("landing");
+  const website = planById("website");
+  const retainer = planById("retainer");
 
   return {
     "@context": "https://schema.org",
@@ -53,6 +55,18 @@ export function professionalService() {
       jobTitle: person.owns,
     })),
     makesOffer: [
+      {
+        "@type": "Offer",
+        name: landing.name,
+        description: landing.summary,
+        price: amount(landing.amount),
+        priceCurrency: "USD",
+        itemOffered: {
+          "@type": "Service",
+          name: landing.name,
+          serviceType: "Landing page design and build",
+        },
+      },
       {
         "@type": "Offer",
         name: website.name,

@@ -56,7 +56,7 @@ export const site = {
     /* Left column of the record. A literal question the visitor is asking,
        answered by the column beside it. Not an eyebrow label. */
     question: "What does it cost?",
-    heading: "Three things, two prices",
+    heading: "Three things, three prices",
     intro: "Everything we charge for is on this page.",
   },
 
@@ -109,7 +109,7 @@ export const site = {
     items: [
       {
         q: "What does a website cost?",
-        a: "$300. You pay $150 to start and $150 the day it goes live. No monthly fee, no setup charge.",
+        a: "A five page website is $300. You pay $150 to start and $150 the day it goes live. A single landing page is $100, paid in full before we start, with no second payment. No monthly fee and no setup charge on either.",
       },
       {
         q: "Why is that so much cheaper than everyone else?",

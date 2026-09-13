@@ -72,9 +72,13 @@ import { professionalService, faqPage } from "../content/structured-data";
                   {plan.includes.map((item) => <li>{item}</li>)}
                 </ul>
               )}
+              <p class="plan-fact">
+                <span class="plan-fact-label">Payment</span>
+                {plan.payment}
+              </p>
               {plan.timeline && (
-                <p class="plan-timeline">
-                  <span class="plan-timeline-label">How long</span>
+                <p class="plan-fact">
+                  <span class="plan-fact-label">How long</span>
                   {plan.timeline}
                 </p>
               )}
@@ -89,8 +93,8 @@ import { professionalService, faqPage } from "../content/structured-data";
                   <ul class="ticks">
                     {part.includes.map((item) => <li>{item}</li>)}
                   </ul>
-                  <p class="plan-timeline">
-                    <span class="plan-timeline-label">How long</span>
+                  <p class="plan-fact">
+                    <span class="plan-fact-label">How long</span>
                     {part.timeline}
                   </p>
                 </div>
@@ -362,11 +366,14 @@ import { professionalService, faqPage } from "../content/structured-data";
     background: var(--ink);
   }
 
-  .plan-timeline {
+  /* Carries both the payment schedule and the timeline. Same treatment for
+     both, because they are the same kind of fact: a labelled line a buyer
+     scans for rather than reads. */
+  .plan-fact {
     max-width: var(--measure);
   }
 
-  .plan-timeline-label {
+  .plan-fact-label {
     display: block;
     font-size: 0.8125rem;
     font-weight: 700;

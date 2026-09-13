@@ -10,9 +10,10 @@
  */
 import Legal from "../layouts/Legal.astro";
 import { business } from "../config/business";
-import { plans } from "../content/pricing";
+import { planById } from "../content/pricing";
 
-const [website, retainer] = plans;
+const website = planById("website");
+const retainer = planById("retainer");
 ---
 
 <Legal

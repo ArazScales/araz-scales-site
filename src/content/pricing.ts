@@ -12,6 +12,10 @@
  * because the two kinds of work have different deliverables and different
  * timelines and a buyer needs to see both, but the array describes one
  * purchase rather than two.
+ *
+ * Order. The list runs cheapest first and renders in that order, so a buyer
+ * meets the $100 page before the $300 site. Nothing may depend on the
+ * position of an entry: use `planById` below.
  */
 
 export type ServicePart = {
@@ -30,6 +34,12 @@ export type Plan = {
   unit: string;
   /** One sentence on what the money buys. */
   summary: string;
+  /**
+   * How the money is actually paid. Required, not optional: the website is
+   * split across two dates and the landing page is not, and a buyer must never
+   * have to work out which schedule applies to the tier they are reading.
+   */
+  payment: string;
   /** For single service plans. Mutually exclusive with `parts`. */
   includes?: string[];
   /** For single service plans. Mutually exclusive with `parts`. */
@@ -45,6 +55,32 @@ export type Plan = {
 
 export const plans: Plan[] = [
   {
+    id: "landing",
+    name: "Landing page",
+    amount: "$100",
+    unit: "one time",
+    summary:
+      "One page, for a business that needs somewhere to send people rather than a whole site.",
+    /* Deliberately the same list as the website below, minus the page count.
+       The only difference between the two tiers is how many pages you get, and
+       repeating the list in full is what makes that visible. Trimming it to
+       "everything in the website tier" would make the cheaper option look like
+       the lesser one on every count. */
+    includes: [
+      "One page: what you do, the area you cover, and how to reach you",
+      "Written for you. You do not have to write any of it",
+      "A contact form that emails you when somebody fills it in",
+      "Built for a phone first, which is where most of your customers will see it",
+      "Set up so Google can read it, and pointed at your Google Business listing",
+      "Your domain, your hosting account, your logins, all handed over at the end",
+    ],
+    payment: "$100 in full before we start. There is no second payment.",
+    timeline:
+      "Two weeks, counted from the day you send us your photos and details.",
+    excludes:
+      "Online payments, booking systems and customer logins are not part of this. If you need more than one page, the $300 website is the one to buy.",
+  },
+  {
     id: "website",
     name: "Website",
     amount: "$300",
@@ -58,6 +94,8 @@ export const plans: Plan[] = [
       "Set up so Google can read it, and pointed at your Google Business listing",
       "Your domain, your hosting account, your logins, all handed over at the end",
     ],
+    payment:
+      "$150 before we start and $150 on the day it goes live. Two payments, not one.",
     timeline:
       "Two weeks, counted from the day you send us your photos and details.",
     excludes:
@@ -70,6 +108,8 @@ export const plans: Plan[] = [
     unit: "a month",
     summary:
       "One monthly service covering the writing and the ad creative, for owners who already have a site.",
+    payment:
+      "$500 charged in advance on the same date each month. Stop it with fourteen days notice.",
     parts: [
       {
         name: "Written content",
@@ -98,6 +138,23 @@ export const plans: Plan[] = [
       "We do not manage your ad account and we do not spend your budget. You keep the account and the card. We build what runs in it.",
   },
 ];
+
+/**
+ * Look a plan up by id.
+ *
+ * /terms, /refunds and the structured data all used to read `plans` by
+ * position, with `const [website, retainer] = plans`. Adding the landing page
+ * at the front of the list silently turned every "website" reference on those
+ * pages into the $100 tier, including the payment terms. Position is not a
+ * stable handle for something a price list will keep growing, so it is not
+ * used as one any more. Throws rather than returning undefined, which turns a
+ * bad id into a build failure instead of a blank space on a policy page.
+ */
+export function planById(id: string): Plan {
+  const plan = plans.find((candidate) => candidate.id === id);
+  if (!plan) throw new Error(`No plan with id "${id}"`);
+  return plan;
+}
 
 /**
  * Sits under the figures. The retainer covers two kinds of work, which invites
