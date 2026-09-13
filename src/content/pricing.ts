@@ -6,11 +6,12 @@
  * grid. `amount` is a display string, not a number: it is set at display size
  * and is deliberately the largest element on the page.
  *
- * Shape note. There are three services but only two prices, because written
- * content and ad creative are sold together for one monthly fee. Rather than
- * print "$500" twice and invite somebody to read it as $1,000, the retainer
- * carries a `parts` array: one figure, two named services underneath it, each
- * with its own deliverables and its own timeline.
+ * Shape note. Written content and Meta ad creative are one service at one
+ * price. They are not two services that happen to be billed together, and they
+ * are never sold separately. The retainer still carries a `parts` array,
+ * because the two kinds of work have different deliverables and different
+ * timelines and a buyer needs to see both, but the array describes one
+ * purchase rather than two.
  */
 
 export type ServicePart = {
@@ -33,7 +34,10 @@ export type Plan = {
   includes?: string[];
   /** For single service plans. Mutually exclusive with `parts`. */
   timeline?: string;
-  /** For a plan covering more than one named service under one price. */
+  /**
+   * For a plan whose single price covers more than one kind of work. Each part
+   * is a strand of the same purchase, not a separately buyable service.
+   */
   parts?: ServicePart[];
   /** Said plainly so nobody buys the wrong thing. */
   excludes: string;
@@ -65,7 +69,7 @@ export const plans: Plan[] = [
     amount: "$500",
     unit: "a month",
     summary:
-      "Two services under one monthly fee, for owners who already have a site.",
+      "One monthly service covering the writing and the ad creative, for owners who already have a site.",
     parts: [
       {
         name: "Written content",
@@ -96,9 +100,11 @@ export const plans: Plan[] = [
 ];
 
 /**
- * Sits under the two figures. The brief is explicit that taking both services
- * earns no discount, and saying so up front is cheaper than answering it on
- * every call.
+ * Sits under the figures. The retainer covers two kinds of work, which invites
+ * the question of what each costs on its own. Neither has a price, because
+ * neither is sold on its own. The previous wording here said that taking both
+ * did not change the price of either, which implied two separate figures a
+ * buyer could compare. There are none.
  */
 export const pricingNote =
-  "Taking both does not change the price of either. There is no bundle rate and no setup fee.";
+  "Content and ads are one service at $500 a month. We do not sell them separately. There is no setup fee.";
