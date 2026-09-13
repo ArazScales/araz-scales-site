@@ -3,4 +3,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://arazscales.com/sitemap.xml
+Sitemap: https://arazscale.com/sitemap.xml

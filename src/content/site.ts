@@ -27,12 +27,20 @@ export const site = {
   ],
 
   hero: {
+    /* Sits above the h1. The one eyebrow on the page: CLAUDE.md section 6
+       bans an eyebrow above *every* heading, so this appears here and
+       nowhere else, in sentence case, not tracked out. */
+    eyebrow: "Websites, content, ads",
+
     /* The one h1 on the page. It has to say what we do and who for, in a
        sentence somebody can finish reading at a red light. */
-    heading:
-      "We build websites for local businesses that do not have one yet.",
-    lede: `$300, paid half up front. Live in two weeks. We are three founders in ${business.city}, Texas.`,
-    body: "If you already have a site, we also write the posts that go out under your name and build the ad creative that runs on Facebook and Instagram.",
+    heading: "We build websites for local businesses.",
+
+    /* The drafted tagline, with the em dash dropped per section 2. */
+    lede: "So your business grows while you focus on running it.",
+
+    /* Reads under the oversized price in the band. */
+    priceNote: "paid half up front. Live in two weeks.",
     action: "Send message",
   },
 
@@ -41,39 +49,38 @@ export const site = {
        answered by the column beside it. Not an eyebrow label. */
     question: "What does it cost?",
     heading: "Three things, two prices",
-    intro:
-      "Everything we charge for is on this page. You will not get a different number on a call.",
+    intro: "Everything we charge for is on this page.",
   },
 
   process: {
     question: "How does it work?",
     heading: "Five steps, and the one that needs you",
     intro:
-      "This is the actual order of a website job. The third step is the one that decides whether it takes two weeks or two months.",
+      "The third step decides whether this takes two weeks or two months.",
     steps: [
       {
         title: "You tell us about the business",
-        body: "Thirty minutes on the phone, or messages if you would rather. We ask what you do, who calls you, and what you want the site to make happen.",
+        body: "Thirty minutes on the phone. We ask what you do and who calls you.",
       },
       {
         title: "We send you a price and a start date",
-        body: "In writing, within two business days. If we are not the right fit for what you need, this is where we say so.",
+        body: "In writing, within two business days. If we are not the right fit, we say so.",
       },
       {
         title: "You send us your details and photos",
-        body: "Business hours, service area, what you charge if you list it, and pictures of your own work. This is the step that holds jobs up. Everything else is on us.",
+        body: "Hours, service area, and pictures of your own work. This step holds jobs up.",
       },
       {
         title: "We write it and build it",
-        body: "You do not write a word. We send you a link to the real working site, not a picture of one, and you look at it on your own phone.",
+        body: "You do not write a word. We send a link to the real site.",
       },
       {
         title: "You tell us what is wrong, then it goes live",
-        body: "Two rounds of changes are included. Then it goes live on your domain, in your hosting account, with every login handed to you.",
+        body: "Two rounds of changes are included. Then it goes live, every login handed to you.",
       },
     ],
     /* Sits under the numbered list. The honest part. */
-    note: "If your photos take three weeks to arrive, the site takes three weeks. We will chase you, politely, because a job sitting half finished helps nobody.",
+    note: "If your photos take three weeks, the site takes three weeks. We will chase you, politely.",
   },
 
   team: {
@@ -92,32 +99,32 @@ export const site = {
     items: [
       {
         q: "What does a website cost?",
-        a: "$300. You pay $150 to start and $150 the day it goes live. That is the whole price. There is no monthly fee for the website and no setup charge.",
+        a: "$300. You pay $150 to start and $150 the day it goes live. No monthly fee, no setup charge.",
       },
       {
         q: "Why is that so much cheaper than everyone else?",
-        a: "We are three people in college with no office and no sales team. A five page site is about a week of work for us. We would rather charge $300 and build a lot of them than charge $3,000 and build three.",
+        a: "Three people in college, no office, no sales team. We would rather build a lot of sites at $300 than three at $3,000.",
       },
       {
         q: "How long does it take?",
-        a: "Two weeks from the day your photos and details reach us. The waiting is almost always on that, not on us.",
+        a: "Two weeks from the day your photos and details reach us.",
       },
       {
         q: "Who owns the site when it is done?",
-        a: "You do. The domain is registered in your name, the hosting account is in your name, and we hand you every login at the end. You could take it to somebody else the next morning and we would not stand in the way.",
+        a: "You do. The domain and the hosting are in your name, and we hand you every login at the end.",
       },
       {
         q: "What if I want changes later?",
-        a: "Two rounds of changes are included before it goes live. After that, tell us what you need and we will quote it in writing before we touch anything. If it is a small text edit, we will show you how to do it yourself on a call for free.",
+        a: "Two rounds are included before it goes live. After that we quote it in writing first. Small text edits, we show you how to do yourself, free.",
       },
       {
         q: "Can I get my money back?",
-        a: "The $150 deposit covers the work we start doing straight away, so it is not refundable once we begin. The second $150 is only charged when the site goes live, so if you walk away before then you are not billed for it. The monthly retainer runs month to month and you can stop it with fourteen days notice.",
+        a: "The $150 deposit is not refundable once we begin. The second $150 is only charged when the site goes live. The retainer stops with fourteen days notice.",
         link: { href: "/refunds", label: "Read the full refund policy" },
       },
       {
         q: "What do you not do?",
-        a: "We do not run your ad account or spend your budget. We do not build online stores, booking systems or customer logins. We do not write posts stuffed with keywords for Google. If you ask us for something we are not good at, we will tell you and point you at somebody who is.",
+        a: "We do not run your ad account or spend your budget. We do not build online stores, booking systems or customer logins.",
       },
     ],
   },

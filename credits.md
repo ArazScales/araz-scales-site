@@ -24,13 +24,30 @@ image and icon on the site is accounted for here.
 
 ## Icons and marks
 
-**The ARAZ Scales mark** (three ascending bars)
+**The ARAZ Scales mark** (the "A" with the ascending bars and node line)
 
-- Original work. Drawn for ARAZ Scales, first for the previous version of this
-  site and recoloured for this one. No external source, no licence needed.
-- Lives in three places that must stay in step: `public/icon.svg`,
-  `src/components/Wordmark.astro` (inline, so the header costs no extra
-  request), and `scripts/generate-icons.mjs` (which rasterises the favicon set).
+- Original work. Commissioned and owned by ARAZ Scales. No external source, no
+  licence needed, nothing to attribute.
+- Supplied as a single raster PNG, 1024x802, with the mark on a slate ground
+  and "arazscale.com" set beneath it. What ships here is that file with the
+  domain text cropped away and the background removed, giving a 574x435
+  transparent master at `src/logo-mark-master.png`. The mark itself was not
+  recoloured, stretched or filtered. Only the canvas around it changed.
+- The mark's blue is **#039CD8**, and it is the source of truth for the brand.
+  The site's `--accent` token was moved to match the mark rather than the mark
+  being repainted to match an earlier `#3B9EFF`.
+- **There is no vector source.** Everything is generated from the raster
+  master, including `public/icon.svg`, which wraps a base64 PNG rather than
+  describing paths. If a real vector arrives, replace that `<image>` with paths
+  and regenerate.
+- Lives in three places that must stay in step: `src/logo-mark-master.png` (the
+  master), `public/logo-mark.png` (96px wide, used by
+  `src/components/Wordmark.astro` in the header and footer), and
+  `scripts/generate-icons.mjs`, which rasterises the favicon set from the
+  master.
+
+**The previous mark** (three ascending bars) was also original ARAZ work. It
+was replaced by the logo above and no longer appears anywhere on the site.
 
 **No icon set is used.** There is no Feather, Lucide, Heroicons or Font Awesome
 in this project. The small rules beside list items and the step numbers are CSS
@@ -55,7 +72,8 @@ engine. Real photographs we own, or nothing.
 
 ## Generated assets
 
-`public/favicon.ico`, `public/apple-touch-icon.png`, `public/icon-192.png` and
-`public/icon-512.png` are all produced from the mark above by
+`public/favicon.ico`, `public/apple-touch-icon.png`, `public/icon-192.png`,
+`public/icon-512.png`, `public/icon.svg` and `public/logo-mark.png` are all
+produced from `src/logo-mark-master.png` by
 `npm run icons`. They are committed so a deploy does not depend on `sharp`
 being installable. Regenerate them rather than editing them by hand.

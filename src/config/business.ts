@@ -50,8 +50,8 @@ export const business = {
    */
   address: TODO,
 
-  domain: "arazscales.com",
-  url: "https://arazscales.com",
+  domain: "arazscale.com",
+  url: "https://arazscale.com",
 
   /** Named explicitly in /privacy as a recipient of form data. */
   processors: {

@@ -230,23 +230,39 @@ The whole page is one continuous document rather than a stack of cards.
 Sections are separated by hairlines that run the full width of the viewport,
 the way rules separate lines on a printed work order.
 
-**Palette.** Five named values in `src/styles/global.css`, with the verified
-contrast ratio recorded next to each one. Two further colours exist on the dark
-footer band, both derived with `color-mix` from those five rather than being
-new values, because `muted` only reaches 2.09:1 against `ink` and had to be
+**Palette.** Six named values in `src/styles/global.css`, with the verified
+contrast ratio recorded next to each one. Two further colours exist for the
+dark bands, written as literal hex rather than `color-mix` so that axe-core can
+parse them, because `muted` only reaches 1.59:1 against `ink` and had to be
 lightened for that context.
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| `--ink` | `#132A21` | 13.04:1 on stock. Text, buttons, footer band |
-| `--stock` | `#EDEEE9` | Page ground. Cool paper, deliberately not white |
+| `--ink` | `#0A0E1A` | 17.65:1 on stock. Text, buttons, hero and footer band |
+| `--stock` | `#F4F5F7` | Page ground. Cool paper, deliberately not white |
 | `--field` | `#FFFFFF` | Inputs and price rows only |
-| `--muted` | `#4E5954` | 6.25:1 on stock. Secondary text, input borders |
-| `--rule` | `#959C90` | 2.42:1 on stock. Hairlines |
+| `--muted` | `#565E70` | 5.96:1 on stock. Secondary text, input borders |
+| `--rule` | `#C2C8D4` | 1.54:1 on stock. Hairlines |
+| `--accent` | `#039CD8` | 6.19:1 on ink. **Band only**, see below |
+| `--muted-on-ink` | `#98A1B5` | 7.43:1 on ink. Band secondary text |
+| `--rule-on-ink` | `#2B3550` | Band dividers. Non-text |
 
-There is **no accent hue**, and that is the design decision rather than an
-omission. Removing it means the loudest thing on the page has to be real
-content, which is the price.
+**`--accent` is a band-only colour, and the restriction is not stylistic.**
+Sampled from the ARAZ mark itself, it reaches 6.19:1 on the ink band and
+carries text safely there. On `stock` it measures 2.85:1, which fails both the
+4.5:1 text
+floor and the 3:1 non-text floor of WCAG 1.4.11. So on the light ground it is
+never text, never a control border, never a focus ring, and never the only
+thing signalling a state. Large light-ground moments use `ink` instead, which
+is why the `$300` and `$500` figures in the pricing rows are ink and not blue.
+
+One consequence worth knowing before you touch the hero button: `.band a` sets
+link colour at specificity (0,1,1) and will silently beat a bare
+`.button-accent` at (0,1,0), repainting it stock-on-accent at 2.30:1. The rule
+in `global.css` is written as `.band a.button-accent` for that reason. Keep the
+prefix.
+
+The loudest thing on the page is still real content: the price.
 
 **Type.** One family, Archivo Variable, self hosted as a single 88 KB latin
 subset. Its width axis does the work a second typeface normally would:

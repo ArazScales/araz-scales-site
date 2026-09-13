@@ -17,13 +17,25 @@ import { business, founders } from "../config/business";
 
 <Base title={site.meta.title} description={site.meta.description} path="/">
   <!-- ------------------------------------------------------------- hero -->
-  <section class="row hero">
-    <div class="wrap stack" style="--flow: 1.25rem">
-      <h1>{site.hero.heading}</h1>
-      <p class="lede">{site.hero.lede}</p>
-      <p>{site.hero.body}</p>
-      <p style="margin-top: 0.75rem">
-        <a class="button" href="#contact">{site.hero.action}</a>
+  <!-- The one bold thing on the page. A full bleed ink band carrying the
+       headline and the price, so the number a visitor came for is the first
+       thing they see rather than the thing they hunt for. The accent only
+       appears inside this band: on the light ground it measures 2.56:1 and
+       may not carry text or meaning. See the token comment in global.css. -->
+  <section class="row hero band">
+    <div class="wrap hero-inner">
+      <div class="stack hero-copy" style="--flow: 1.125rem">
+        <p class="hero-eyebrow">{site.hero.eyebrow}</p>
+        <h1>{site.hero.heading}</h1>
+        <p class="lede">{site.hero.lede}</p>
+        <p class="hero-action">
+          <a class="button button-accent" href="#contact">{site.hero.action}</a>
+        </p>
+      </div>
+
+      <p class="hero-price">
+        <span class="figure tabular">$300</span>
+        <span class="figure-unit">{site.hero.priceNote}</span>
       </p>
     </div>
   </section>
@@ -185,7 +197,77 @@ import { business, founders } from "../config/business";
   /* ------------------------------------------------------------------ hero */
 
   .hero .wrap {
-    padding-block: clamp(3rem, 10vw, 7.5rem) clamp(3rem, 8vw, 6rem);
+    /* Tightened from the old 7.5rem top. The band carries the weight now, so
+       the padding no longer has to do it, and the price clears the fold. */
+    padding-block: clamp(2.75rem, 7vw, 5rem) clamp(2.75rem, 6vw, 4.5rem);
+  }
+
+  /* Headline left, price right, once there is room. Stacked below that, with
+     the price first in the visual order but second in the DOM so the h1 still
+     leads for a screen reader. */
+  .hero-inner {
+    display: grid;
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: center;
+  }
+
+  @media (min-width: 58rem) {
+    .hero-inner {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    }
+  }
+
+  .hero-eyebrow {
+    color: var(--accent);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    font-variation-settings: "wdth" 104;
+    margin-bottom: -0.25rem;
+  }
+
+  /* Louder than the old hero: bigger ceiling, heavier weight, tighter
+     tracking. The display width axis does the rest. */
+  .hero h1 {
+    font-size: clamp(2.5rem, 7.2vw, 5rem);
+    font-weight: 780;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    max-width: 15ch;
+  }
+
+  .hero .lede {
+    color: var(--muted-on-ink);
+    max-width: 34ch;
+  }
+
+  .hero-action {
+    margin-top: 0.5rem;
+  }
+
+  /* The price sits in the accent, which is legible here and only here. */
+  .hero-price {
+    max-width: none;
+  }
+
+  .hero-price .figure {
+    color: var(--accent);
+    font-size: clamp(4.5rem, 15vw, 9.5rem);
+  }
+
+  .hero-price .figure-unit {
+    color: var(--muted-on-ink);
+    max-width: 22ch;
+  }
+
+  @media (min-width: 58rem) {
+    .hero-price {
+      justify-self: end;
+      text-align: right;
+    }
+
+    .hero-price .figure-unit {
+      margin-left: auto;
+    }
   }
 
   /* --------------------------------------------------------------- plans */
