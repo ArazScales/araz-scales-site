@@ -1,7 +1,7 @@
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site: "https://arazscale.com",
+  site: "https://arazscales.com",
 
   /* The dev toolbar draws a floating pill over the bottom of every page, which
      lands in every screenshot taken of the dev server. Nothing on this site

@@ -39,7 +39,7 @@ export const business = {
   /** Where the three of us actually are. Shown in the hero and the about row. */
   city: "Houston",
 
-  email: "hello@arazscales.com",
+  email: "support@arazscales.com",
 
   /** Google Voice line that rings all three of us. Not set up yet. */
   phone: TODO,
@@ -50,8 +50,8 @@ export const business = {
    */
   address: TODO,
 
-  domain: "arazscale.com",
-  url: "https://arazscale.com",
+  domain: "arazscales.com",
+  url: "https://arazscales.com",
 
   /** Named explicitly in /privacy as a recipient of form data. */
   processors: {

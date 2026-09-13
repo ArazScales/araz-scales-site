@@ -33,6 +33,13 @@ image and icon on the site is accounted for here.
   domain text cropped away and the background removed, giving a 574x435
   transparent master at `src/logo-mark-master.png`. The mark itself was not
   recoloured, stretched or filtered. Only the canvas around it changed.
+- **The supplied file prints the wrong domain.** The wordmark beneath the mark
+  reads `arazscale.com`, singular. The company is `arazscales.com`, plural,
+  which is the domain the site serves from and the domain the mailbox is on.
+  Nothing on the site shows that text today, because the master is cropped
+  above it, so this is not a live defect. It does matter the moment the full
+  logo is used anywhere the crop does not apply: a business card, an invoice,
+  a van, an ad. The designer needs to reissue it with the plural spelling.
 - The mark's blue is **#039CD8**, and it is the source of truth for the brand.
   The site's `--accent` token was moved to match the mark rather than the mark
   being repainted to match an earlier `#3B9EFF`.
