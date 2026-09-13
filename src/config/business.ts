@@ -80,7 +80,7 @@ export const founders = [
   },
   {
     name: "Roshan Mohammad",
-    owns: "Meta ads",
+    owns: "Meta ad creative",
     detail:
       "Builds the ad creative, tests it, tells you which cuts did better.",
   },

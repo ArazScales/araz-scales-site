@@ -25,9 +25,11 @@ interface Props {
    * Content Security Policy loosened.
    */
   jsonLd?: Record<string, unknown>[];
+  /** Keeps a page out of the index. Only the 404 sets it. */
+  noindex?: boolean;
 }
 
-const { title, description, path, jsonLd = [] } = Astro.props;
+const { title, description, path, jsonLd = [], noindex = false } = Astro.props;
 const shareImage = new URL("/og.png", business.url).href;
 const canonical = new URL(path, business.url).href;
 const legal = site.footer.legalLinks;
@@ -42,7 +44,15 @@ const year = new Date().getFullYear();
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {
+      /* A 404 is reachable at any address, so a canonical tag on it would
+         claim every mistyped URL as a real page. It gets noindex instead. */
+      noindex ? (
+        <meta name="robots" content="noindex, follow" />
+      ) : (
+        <link rel="canonical" href={canonical} />
+      )
+    }
 
     <!-- Same origin, and the only font on the site, so preloading it removes
          the swap flash without costing a round trip. -->

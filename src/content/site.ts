@@ -89,13 +89,15 @@ export const site = {
   },
 
   team: {
-    question: "Who is this?",
+    /* Not "Who is this?", which reads as though the page is asking who the
+       visitor is rather than introducing us. */
+    question: "Who are we?",
     heading: `Three founders in ${business.city}`,
     intro:
       "We are in college and we run this together. There is no account manager and no ticket queue. When you email us, one of these three people answers you.",
     /* Named people are in src/config/business.ts, since the same names appear
        in the policy pages. */
-    note: "We started this year and we are open about that. We have no client logos to show you yet, so instead the price, the timeline and the process are all written down above, and you can hold us to them.",
+    note: "We started in 2026 and we are open about that. We have no client logos to show you yet, so instead the price, the timeline and the process are all written down above, and you can hold us to them.",
   },
 
   faq: {
@@ -162,6 +164,16 @@ export const site = {
       heading: "That did not send",
       body: `Something went wrong on the way. Email us at ${business.email} and we will pick it up from there.`,
     },
+  },
+
+  notFound: {
+    title: "Page not found",
+    description:
+      "That page does not exist. Links back to the homepage and the contact form.",
+    heading: "That page is not here",
+    body: "The address might be mistyped, or the page might have moved. Nothing is broken at your end.",
+    home: "Back to the homepage",
+    contact: "Or tell us what the business does",
   },
 
   footer: {
