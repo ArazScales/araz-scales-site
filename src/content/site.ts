@@ -41,8 +41,11 @@ export const site = {
        sentence somebody can finish reading at a red light. */
     heading: "We build websites for local businesses.",
 
-    /* The drafted tagline, with the em dash dropped per section 2. */
-    lede: "So your business grows while you focus on running it.",
+    /* Not a growth promise. The drafted tagline said the business would grow,
+       which is the one thing /terms says plainly that we do not promise, and
+       an unsupported claim under section 2. This says what we actually do and
+       what the client ends up holding, both of which /terms commits to. */
+    lede: "We write it, build it and hand it over in your name.",
 
     /* Reads under the oversized price in the band. */
     priceNote: "paid half up front. Live in two weeks.",
