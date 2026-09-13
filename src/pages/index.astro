@@ -156,7 +156,15 @@ import { professionalService, faqPage } from "../content/structured-data";
       {
         founders.map((person) => (
           <li class="founder">
-            <h3>{person.name}</h3>
+            {/* The name itself is the link. A separate labelled button here
+                would sit a few hundred pixels above "Send message" and compete
+                with it, and the brief keeps one action on the page. */}
+            <h3>
+              <a href={person.linkedin} target="_blank" rel="noopener noreferrer">
+                {person.name}{" "}
+                <span class="visually-hidden">on LinkedIn, opens in a new tab</span>
+              </a>
+            </h3>
             <p class="founder-owns">{person.owns}</p>
             <p class="small">{person.detail}</p>
           </li>

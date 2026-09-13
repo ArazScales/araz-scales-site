@@ -71,23 +71,37 @@ export const business = {
   policiesUpdated: "September 13, 2026",
 } as const;
 
+/**
+ * The three of us. `linkedin` is the only outbound personal link on the site
+ * and it is data rather than markup, so all three render identically and a
+ * fourth person cannot be added without one.
+ *
+ * These open in a new tab. That is deliberate: the founders section sits above
+ * the contact form, and a visitor who clicks a name should not lose the form
+ * they were scrolling towards. The accessible name of each link says where it
+ * goes and that it opens a tab, since neither is apparent from the visible
+ * text, which is just the person's name.
+ */
 export const founders = [
   {
     name: "Zain Bahalim",
     owns: "Websites",
     detail:
       "Scopes the job, builds the site, hands it over in your name.",
+    linkedin: "https://www.linkedin.com/in/zainbah/",
   },
   {
     name: "Roshan Mohammad",
     owns: "Meta ad creative",
     detail:
       "Builds the ad creative, tests it, tells you which cuts did better.",
+    linkedin: "https://www.linkedin.com/in/roshan-mohammad24/",
   },
   {
     name: "Abayjit Singh",
     owns: "Written content",
     detail:
       "Interviews you once, then writes the posts that go out under your name.",
+    linkedin: "https://www.linkedin.com/in/abayjit-singh-36251839a/",
   },
 ] as const;
