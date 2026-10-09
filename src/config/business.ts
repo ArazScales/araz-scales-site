@@ -9,8 +9,8 @@
  * ------------------
  * A value we intend to have but do not have yet is the literal string
  * TODO_NEEDS_REAL_VALUE. That is deliberate: it fails a grep before launch
- * (see README, "Before launch"). Two fields are in that state today: the
- * company LinkedIn and Instagram URLs under `social`.
+ * (see README, "Before launch"). No field is in that state today, and the
+ * constant is kept for the next one that is.
  *
  * A value we have decided to ship without is `null`, which is a different
  * statement: not "missing", but "there is none". `address` and
@@ -101,15 +101,14 @@ export const business = {
    * value here is a real URL, so an unset one shows nothing rather than a
    * dead "#" link.
    *
-   * LinkedIn and Instagram exist and are waiting on their URLs, so they are
-   * TODO and block launch. Facebook is still being set up and we are shipping
-   * without it, so it is null. Set any of them to a full https:// URL and the
+   * Facebook is still being set up and we are shipping without it, so it is
+   * null. Set any of them to a full https:// URL and the
    * icon appears in the top bar and the URL joins `sameAs` in the schema.org
    * block on its own.
    */
   social: {
-    linkedin: TODO,
-    instagram: TODO,
+    linkedin: "https://www.linkedin.com/company/araz-scales/",
+    instagram: "https://www.instagram.com/arazscales/",
     facebook: null,
   } as Record<"linkedin" | "instagram" | "facebook", string | null>,
 

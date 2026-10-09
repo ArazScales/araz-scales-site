@@ -124,8 +124,7 @@ The launch blocker check greps for the third:
 grep -rnE "^[[:space:]]*[a-zA-Z_]+:[[:space:]]*TODO,?[[:space:]]*$" src/
 ```
 
-**It currently returns two lines: `social.linkedin` and `social.instagram`.**
-Both accounts exist and are waiting on their URLs. `address` and
+**It currently returns nothing, and nothing is blocking.** `address` and
 `social.facebook` are `null` by decision, not `TODO` by omission, which is why
 the two states are spelled differently.
 
@@ -445,10 +444,10 @@ back to a placeholder.
 
 ### Values that must be filled in
 
-**Two, both company social URLs:** `social.linkedin` and `social.instagram`
-in `src/config/business.ts`. Each icon in the top bar appears only once its
-URL is set, and the URL joins `sameAs` in the schema.org block. Facebook is
-`null`, so it ships without an icon.
+**None. Nothing in `src/config/business.ts` blocks a launch.** The company
+LinkedIn and Instagram URLs are set, so their icons show in the top bar and
+both are in `sameAs` in the schema.org block. Facebook is `null`, so it ships
+without an icon until the page exists.
 
 `legalName` is `ARAZ SCALES LLC`, matching the Texas Certificate of Formation.
 `phone` is the Google Voice line `+1-346-645-0919`. `state`, `city` and

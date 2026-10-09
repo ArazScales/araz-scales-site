@@ -260,8 +260,7 @@ You are writing the copy. Treat it as part of the design.
       and so never returns empty.
 - [ ] A field set to `null` is a decision to ship without it and does not
       block. Only `TODO` blocks. `address` and `social.facebook` are `null`.
-      `social.linkedin` and `social.instagram` are `TODO` until their URLs are
-      supplied. `address` is `null`: we are launching with no
+      `address` is `null`: we are launching with no
       postal address. That is fine for the site and not fine for outreach
       email, which needs one under CAN-SPAM.
 - [ ] Legal entity name, state, email, and phone all pulled from one config file.
