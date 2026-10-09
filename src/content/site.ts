@@ -24,32 +24,16 @@ export const site = {
       "The ARAZ Scales mark and name, above the words Websites for local businesses, the price $300, and the line Houston, Texas.",
   },
 
-  /** Anchor links in the header. Keep this to three. */
+  /** Anchor links in the header, in page order. */
   nav: [
     { label: "What you get", href: "#services" },
     { label: "How it works", href: "#process" },
+    { label: "Who we are", href: "#about" },
+    { label: "FAQ", href: "#faq" },
     { label: "Contact", href: "#contact" },
   ],
 
   hero: {
-    /* Sits above the h1. The one eyebrow on the page: CLAUDE.md section 6
-       bans an eyebrow above *every* heading, so this appears here and
-       nowhere else, in sentence case, not tracked out. */
-    eyebrow: "Websites, content, ads",
-
-    /* The rotating line under the h1. Exactly the three words in the eyebrow
-       above, one at a time, because the three things we sell are the three
-       things worth cycling. Do not add a fourth unless we start selling one.
-
-       These render in place of the eyebrow above, one at a time. A screen
-       reader is given `eyebrow` instead, as one static phrase, because a word
-       replacing itself every two seconds is not something to announce.
-
-       The animation types and deletes these. With prefers-reduced-motion set,
-       or with JavaScript off, the first entry renders as static text, which is
-       why every entry has to work as the only one a visitor ever sees. */
-    rotate: ["websites", "content", "ads"],
-
     /* The one h1 on the page. It has to say what we do and who for, in a
        sentence somebody can finish reading at a red light. */
     heading: "We build websites for local businesses.",
@@ -68,18 +52,68 @@ export const site = {
     priceNote:
       "paid half up front. Live in two weeks. A landing page is $100 in full and live in one week.",
     action: "Send message",
+    secondary: "See pricing",
+  },
+
+  /* The split section under the hero. Every sentence here already appeared
+     elsewhere on the site before the redesign: the heading and the second
+     paragraph are from the "Why is that so much cheaper" FAQ answer, the
+     first paragraph is the meta description. Reused rather than rewritten. */
+  about: {
+    label: "Who we are",
+    heading: "Three people in college, no office, no sales team.",
+    paragraphs: [
+      "We build a five page website for your business for $300, live in two weeks. We also write posts and build Facebook and Instagram ad creative.",
+      "We would rather build a lot of sites at $300 than three at $3,000.",
+    ],
+  },
+
+  /* The blue band. Uppercase is applied in CSS only, so a screen reader reads
+     the words rather than spelling out capitals. */
+  band: {
+    heading: "What you get",
+    cardLink: "See what is included",
+  },
+
+  /* The checklist beside the why-us image. Each line is a fact the site
+     already states, with the sentence it comes from underneath. Nothing here
+     is new: if a line below stops being true elsewhere on the site, it has to
+     come out of here too. */
+  whyUs: {
+    label: "Why us",
+    heading: "What you can hold us to",
+    items: [
+      {
+        title: "Flat prices, written down",
+        body: "Everything we charge for is on this page. There is no setup fee.",
+      },
+      {
+        title: "Live in two weeks",
+        body: "A five page website is two weeks. A single landing page is one week. Both are counted from the day your photos and details reach us.",
+      },
+      {
+        title: "You own every login",
+        body: "The domain and the hosting are in your name, and we hand you every login on the day it goes live.",
+      },
+      {
+        title: "A founder answers your email",
+        body: "There is no account manager and no ticket queue. One of the three of us answers you.",
+      },
+      {
+        title: "Nothing published without your OK",
+        body: "Everything is sent to you before it goes out. Nothing is published without your say so.",
+      },
+    ],
   },
 
   services: {
-    /* Left column of the record. A literal question the visitor is asking,
-       answered by the column beside it. Not an eyebrow label. */
-    question: "What does it cost?",
+    label: "Pricing",
     heading: "Three things, three prices",
     intro: "Everything we charge for is on this page.",
   },
 
   process: {
-    question: "How does it work?",
+    label: "How it works",
     heading: "Five steps, and the one that needs you",
     /* Not "two weeks or two months" any more. Two weeks is the website's
        timeline and the landing page ships in one, so naming a single figure
@@ -113,9 +147,7 @@ export const site = {
   },
 
   team: {
-    /* Not "Who is this?", which reads as though the page is asking who the
-       visitor is rather than introducing us. */
-    question: "Who are we?",
+    label: "Founders",
     heading: `Three founders in ${business.city}`,
     intro:
       "We are in college and we run this together. There is no account manager and no ticket queue. When you email us, one of these three people answers you.",
@@ -125,7 +157,7 @@ export const site = {
   },
 
   faq: {
-    question: "Fair questions",
+    label: "FAQ",
     heading: "The things people ask before they call",
     items: [
       {
@@ -161,7 +193,8 @@ export const site = {
   },
 
   contact: {
-    question: "Talk to us",
+    /* The big centred heading on the navy section. Uppercase in CSS only. */
+    banner: "Get a quote",
     heading: "Tell us what the business does",
     intro:
       "Fill this in and one of us will email you back within two business days with a price and a start date.",
@@ -201,7 +234,12 @@ export const site = {
   },
 
   footer: {
-    /* No tagline, no mission statement. Contact details and the legal pages. */
+    /* The one line under the logo. Lifted from site.webmanifest, which has
+       carried it since launch. Not a tagline: it is the price list in one
+       sentence. */
+    description:
+      "Websites for local businesses, $300. Written content and Meta ad creative on a monthly fee.",
+    /* No mission statement. Contact details and the legal pages. */
     legalLinks: [
       { label: "Privacy", href: "/privacy" },
       { label: "Terms", href: "/terms" },

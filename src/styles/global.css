@@ -1,21 +1,33 @@
 /* ==========================================================================
-   ARAZ Scales: design tokens and base styles.
+   ARAZ Scales: the one stylesheet.
 
-   The site is dark. A deep slate navy ground carries a faint blue grid, and
-   the brand blue from the logo mark is the lead colour. One warm accent,
-   amber, is rationed to three jobs and nothing else: prices, the primary
-   action, and the focus ring.
+   Every rule on the site is in this file. No component carries its own
+   <style> block, so there is one CSS file to read and one request to make.
 
-   The growth motif in the mark drives the motion. Bars rise once on load in
-   the hero, the process line draws itself as it scrolls into view, and the
-   hollow ring node from the mark marks every section heading. Everything
-   honours prefers-reduced-motion.
+   Layout follows the Texas Roadside reference (used with the owner's
+   permission, layout only, none of their assets): a thin info bar, a sticky
+   header, a dark image hero, then alternating light, blue and navy sections.
 
-   Palette: nine named values. Verified contrast ratios sit beside each one.
-   Every pair that carries text has been checked, including the disabled,
-   placeholder, hover and focus states.
+   COLOUR. Navy for the hero, the dark sections and the footer. Bright blue
+   for buttons, label badges and the full width services band. Off-white and
+   white between them. Every pair that carries text is listed with its
+   measured contrast ratio beside the token. Two rules fall out of those
+   numbers and must not be broken:
+
+     1. Text on the bright blue is navy, never white. White on #3B9EFF is
+        2.79:1 and fails. Navy on it is 6.90:1.
+     2. Blue text on a light ground uses --blue-ink, never --blue. #3B9EFF on
+        off-white is 2.60:1 and fails. --blue-ink is 5.26:1.
+
+   If a colour is added, compute it against every ground it can sit on and
+   write the number next to it.
+
+   GRADIENTS. None. The hero overlay is a flat rgba fill, not a blend.
    ========================================================================== */
 
+/* One variable file covers both faces. Headings run the width axis out to
+   125 at weight 800, which is the wide display cut; body copy sits at width
+   100, weight 400, which is a plain grotesque. Self hosted, latin only. */
 @font-face {
   font-family: "Archivo Variable";
   font-style: normal;
@@ -23,22 +35,6 @@
   font-stretch: 62% 125%;
   font-display: swap;
   src: url("/fonts/archivo-latin-variable.woff2") format("woff2-variations");
-  /* Latin only. Our copy is English and the other subsets would be dead weight. */
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
-    U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-/* One weight only. The mono is used for short uppercase labels, the hero's
-   rotating line and step numbers, never for body copy, so 500 alone covers
-   every appearance and a second weight would be 21KB for nothing. Self hosted
-   from our own origin like the Archivo: no Google Fonts call. */
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/fonts/jetbrains-mono-latin-500.woff2") format("woff2");
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
     U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
     U+2212, U+2215, U+FEFF, U+FFFD;
@@ -47,80 +43,111 @@
 :root {
   /* ---------------------------------------------------------------- colour */
 
-  /* The three grounds, deepest first. `deep` carries the hero and the footer,
-     `bg` is the page, `surface` is anything raised off it: a card, a panel,
-     an input. They are close together on purpose. The separation between a
-     card and the page is carried by the border and the shadow, not by a big
-     jump in lightness, which is what keeps the page reading as one object
-     rather than a tray of tiles. */
-  --deep: #141e29;     /* 15.50:1 with text. Hero band and footer.           */
-  --bg: #1b2734;       /* 13.95:1 with text. Page ground.                    */
-  --surface: #223142;  /* 12.19:1 with text. Cards, panels, inputs.          */
+  /* Dark grounds. */
+  --navy: #0a0e1a;        /* Hero, dark sections, footer.                     */
+  --navy-raised: #131b2c; /* Panels and inputs on navy.                       */
+  --navy-deep: #05070d;   /* The thin info bar above the header.              */
 
-  --text: #f2f6fa;     /* Headings and body.                                 */
-  --muted: #a9b8c8;    /* 7.49:1 on bg, 6.54:1 on surface. Secondary text.   */
+  /* Light grounds. */
+  --paper: #f5f7fa;       /* Off-white sections.                              */
+  --white: #ffffff;       /* White sections, cards on paper.                  */
 
-  /* Hairlines and card edges. 1.56:1 on bg, which is deliberate and is not a
-     contrast failure: WCAG 1.4.11 covers boundaries needed to identify a
-     control or its state, and nothing here is either. Every card is already
-     told apart from the page by its own ground, and no state anywhere is
-     signalled by a border colour alone. Raising this to 3:1 would put a hard
-     cage around every panel and lose the quiet the design depends on. */
-  --line: #33465b;
+  /* Text on dark. */
+  --text: #f2f6fa;        /* 17.73:1 navy, 15.84:1 raised.                    */
+  --text-muted: #a9b8c8;  /* 9.51:1 navy, 8.50:1 raised, 9.95:1 deep.         */
+  --link-on-dark: #7ab8ff;/* 9.29:1 navy, 8.30:1 raised.                      */
 
-  /* The lead accent. Lifted off the mark's own #039CD8 to #29A8E9 so it clears
-     4.5:1 as text on all three grounds: the mark's blue only reaches 4.87:1 on
-     bg and 4.20:1 on surface, so it would have failed on a card. The mark
-     itself is never repainted, it stays #039CD8, and the two sit close enough
-     that the header logo and the header link beside it read as one colour. */
-  --blue: #29a8e9;     /* 5.68:1 on bg, 4.96:1 on surface.                   */
+  /* Text on light. */
+  --ink: #0a0e1a;         /* 17.94:1 paper, 19.25:1 white.                    */
+  --ink-muted: #4a5568;   /* 7.01:1 paper, 7.53:1 white.                      */
 
-  /* The same blue opened up, for small mono labels set at 0.75rem where the
-     stroke is thin, and for the growth line, which has to hold its own against
-     a glow. Clears AAA on every ground. */
-  --blue-bright: #4fbcf5; /* 7.10:1 on bg, 6.21:1 on surface.               */
+  /* The brand blue and its two text-safe partners. */
+  --blue: #3b9eff;        /* Fills only. Navy text on it, 6.90:1.             */
+  --blue-hover: #6bb5ff;  /* Hover fill. Navy text on it, 8.87:1.             */
+  --blue-ink: #1a66c2;    /* Blue text on light: 5.26:1 paper, 5.64:1 white.  */
 
-  /* The warm accent. Rationed to three jobs: the price figures, the primary
-     action fill, and the focus ring. It appears nowhere else, which is what
-     stops the page turning into a blue and orange stripe and what makes the
-     price and the button the two things your eye lands on first.
+  /* Errors. On the navy contact section only. 10.53:1 with navy as fill,
+     and well over AA as text on navy. */
+  --amber: #ffb020;
 
-     Chosen over coral and gold on contrast: 8.28:1 on bg against coral's
-     6.49:1, which matters because our buyers read this on a phone outdoors. */
-  --amber: #ffb020;    /* 8.28:1 on bg. Ink on it, 9.88:1.                   */
-
-  /* Text that sits on a blue or amber fill. Darker than `deep` so it clears
-     AA on the blue, which is the tighter of the two at 6.77:1. White on either
-     fill fails: 2.24:1 on the blue, 1.63:1 on the amber. Never use it. */
-  --on-fill: #0e1720;
+  /* Hairlines. Decorative separators, not control boundaries. */
+  --line-light: #dce2ea;
+  --line-dark: #1f2a40;
+  /* Input borders on navy have to identify the control, so they clear the
+     3:1 non-text floor: 3.18:1 on raised. */
+  --field-line: #5b6b85;
 
   /* --------------------------------------------------------------- effects */
+  --glow-blue: 0 8px 28px -8px rgba(59, 158, 255, 0.65);
+  --card-shadow: 0 18px 40px -28px rgba(10, 14, 26, 0.45);
 
-  /* Glows are box-shadows, not gradients. That is not a dodge around the old
-     no-gradient rule, it is the right tool: a shadow spreads a colour outward
-     from the element's own shape, including a pill's round ends, which a
-     gradient cannot follow. */
-  --glow-blue: 0 0 0 1px rgba(41, 168, 233, 0.35), 0 6px 28px -6px rgba(41, 168, 233, 0.45);
-  --glow-amber: 0 6px 28px -8px rgba(255, 176, 32, 0.55);
-  --lift: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
+  /* The settle. The second control point overshoots past 1, so a moving
+     element passes its mark by a hair and comes back to rest. */
+  --ease-settle: cubic-bezier(0.22, 1.2, 0.36, 1);
 
   /* ------------------------------------------------------------------ type */
   --family: "Archivo Variable", system-ui, "Segoe UI", Roboto, Helvetica, Arial,
     sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
-    monospace;
-
-  /* Width axis does the work a second display typeface would normally do. */
-  --width-display: 108;
-  --width-body: 100;
 
   /* ---------------------------------------------------------------- metric */
-  --radius: 6px;          /* Panels and inputs. Buttons are pills, see below.*/
-  --measure: 64ch;        /* Reading width for body copy.                    */
-  --wrap: 72rem;
-  --gutter: clamp(1.25rem, 5vw, 4rem);
-  --band: clamp(3.5rem, 9vw, 6.5rem);     /* Vertical rhythm between rows.   */
-  --node: 0.75rem;                        /* The ring marker from the mark.  */
+  /* Three radii and only three. Buttons are pills. Panels, cards, images,
+     inputs and badges are --radius. Headshots are circles. */
+  --radius: 10px;
+  --measure: 64ch;
+  --wrap: 76rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --section: clamp(3.5rem, 9vw, 6.5rem);
+  --header-h: 4.5rem;
+}
+
+/* ------------------------------------------------------------ section themes
+
+   Every section declares one theme. The theme sets the ground and the
+   handful of colours text, links and the focus ring take inside it, so a
+   component never has to know which ground it is sitting on. */
+
+.theme-dark {
+  --bg: var(--navy);
+  --fg: var(--text);
+  --fg-muted: var(--text-muted);
+  --link: var(--link-on-dark);
+  --surface: var(--navy-raised);
+  --line: var(--line-dark);
+  --focus: var(--blue);           /* 6.90:1 on navy.                         */
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.theme-paper,
+.theme-white {
+  --fg: var(--ink);
+  --fg-muted: var(--ink-muted);
+  --link: var(--blue-ink);
+  --line: var(--line-light);
+  --focus: var(--blue-ink);       /* 5.26:1 paper, 5.64:1 white.             */
+  background: var(--bg);
+  color: var(--fg);
+}
+
+.theme-paper {
+  --bg: var(--paper);
+  --surface: var(--white);
+}
+
+.theme-white {
+  --bg: var(--white);
+  --surface: var(--paper);
+}
+
+.theme-blue {
+  --bg: var(--blue);
+  --fg: var(--navy);              /* 6.90:1.                                 */
+  --fg-muted: var(--navy);
+  --link: var(--navy);
+  --line: rgba(10, 14, 26, 0.25);
+  --focus: var(--navy);           /* 6.90:1 on the blue.                     */
+  background: var(--bg);
+  color: var(--fg);
 }
 
 /* ------------------------------------------------------------------- reset */
@@ -133,26 +160,21 @@
 
 html {
   /* Anchor links land below the sticky header instead of under it. */
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: calc(var(--header-h) + 1rem);
   -webkit-text-size-adjust: 100%;
-  /* Tells the browser to paint form controls, scrollbars and the overscroll
-     area dark, so nothing flashes white at the edges of the page. */
-  color-scheme: dark;
 }
 
 body {
   margin: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--family);
-  font-variation-settings: "wdth" var(--width-body);
+  font-variation-settings: "wdth" 100;
   font-size: 1.0625rem;
   line-height: 1.6;
-  text-rendering: optimizeSpeed;
-  /* Belt and braces against a horizontal scrollbar at 320px. Nothing should
-     overflow, but a glow or a wide figure must never be able to widen the
-     document if one slips through. */
-  overflow-x: hidden;
+  /* A sliding image starts up to 120px past the edge of its section. Clip,
+     not hidden, so the sticky header keeps working. */
+  overflow-x: clip;
 }
 
 h1,
@@ -162,9 +184,8 @@ h4,
 p,
 ul,
 ol,
-dl,
-dd,
-figure {
+figure,
+blockquote {
   margin: 0;
 }
 
@@ -175,8 +196,7 @@ ol {
 }
 
 img,
-svg,
-video {
+svg {
   display: block;
   max-width: 100%;
   height: auto;
@@ -184,61 +204,38 @@ video {
 
 /* ---------------------------------------------------------------- headings */
 
+/* The display cut: the width axis at 125 and a heavy weight. */
 h1,
 h2,
-h3,
-h4,
-.answer,
-.figure {
-  font-variation-settings: "wdth" var(--width-display);
+.display {
+  font-weight: 800;
+  font-variation-settings: "wdth" 125;
+  letter-spacing: -0.015em;
+  line-height: 1.06;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(2rem, 5.6vw, 3.5rem);
-  font-weight: 700;
-  line-height: 1.04;
-  letter-spacing: -0.025em;
-  max-width: 30ch;
+  font-size: clamp(2.25rem, 6.4vw, 4.5rem);
 }
 
 h2 {
-  font-size: clamp(1.375rem, 2.4vw, 1.75rem);
-  font-weight: 650;
-  line-height: 1.15;
-  letter-spacing: -0.015em;
+  font-size: clamp(1.75rem, 4.2vw, 3rem);
 }
 
 h3 {
-  font-size: 1.0625rem;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.005em;
-}
-
-/* The line that opens a section body and answers the heading beside it.
-   Styled like a heading but marked up as a paragraph, so the document keeps a
-   clean h1 > h2 > h3 order. */
-.answer {
-  font-size: clamp(1.5rem, 3.2vw, 2.125rem);
-  font-weight: 700;
-  line-height: 1.12;
-  letter-spacing: -0.022em;
-  max-width: 24ch;
+  font-size: 1.1875rem;
+  font-weight: 750;
+  font-variation-settings: "wdth" 110;
+  line-height: 1.25;
 }
 
 p {
   max-width: var(--measure);
 }
 
-.lede {
-  font-size: clamp(1.125rem, 1.9vw, 1.375rem);
-  line-height: 1.45;
-  font-weight: 500;
-}
-
 .muted {
-  color: var(--muted);
+  color: var(--fg-muted);
 }
 
 .small {
@@ -246,23 +243,8 @@ p {
   line-height: 1.55;
 }
 
-/* Prices, step numbers, anything read as a figure. */
-.tabular {
-  font-variant-numeric: tabular-nums;
-}
-
-/* The mono label. Short, uppercase, tracked out, blue. It is the one place
-   letter-spacing goes positive on the site, because mono caps at this size
-   need the air. Used for section markers and card labels. */
-.mono {
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--blue-bright);
-  /* Mono digits are already tabular, but the fallback stack might not be. */
-  font-variant-numeric: tabular-nums;
+.stack > * + * {
+  margin-top: var(--flow, 1rem);
 }
 
 /* ------------------------------------------------------------------ layout */
@@ -273,190 +255,152 @@ p {
   padding-inline: var(--gutter);
 }
 
-/* The faint grid. A repeating pair of hairlines at 1px, which reads as graph
-   paper behind the content rather than as a pattern you look at. Drawn on a
-   pseudo element so it can be masked, and masked so it fades out downward
-   instead of stopping on a hard edge.
-
-   The grid is inert: it is behind everything, it carries no meaning, and
-   removing it changes nothing but the texture. It is used on three sections
-   only, the hero, the contact form and the 404, because a texture that runs
-   the length of a long document stops being texture.
-
-   CONTRAST. axe cannot resolve the background of text sitting over a pseudo
-   element, so every node in these sections comes back as "incomplete" rather
-   than as a pass. It is not a failure and it was checked by hand instead. The
-   line is #4FBCF5 at 7%, so the worst case ground is that colour composited
-   over the section's own, and the mask only ever makes it fainter:
-
-     over --deep #141E29 -> #182937.  text 13.69:1, muted 7.34:1,
-                                      blue-bright 6.97:1, amber 8.13:1
-     over --bg   #1B2734 -> #1F3142.  text 12.23:1, muted 6.56:1,
-                                      blue-bright 6.23:1, amber 7.26:1
-
-   Every pair clears the 4.5:1 body floor directly on top of a grid line.
-   Re-run those numbers if the line colour or the 7% ever changes. */
-.grid-ground {
-  position: relative;
-  isolation: isolate;
+.section {
+  padding-block: var(--section);
+  /* The slide-ins start outside the section. Clip them at its edge so they
+     can never widen the page. */
+  overflow-x: clip;
 }
 
-.grid-ground::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background-image:
-    repeating-linear-gradient(
-      to right,
-      rgba(79, 188, 245, 0.07) 0 1px,
-      transparent 1px 72px
-    ),
-    repeating-linear-gradient(
-      to bottom,
-      rgba(79, 188, 245, 0.07) 0 1px,
-      transparent 1px 72px
-    );
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 92%);
-  mask-image: linear-gradient(to bottom, #000 0%, transparent 92%);
-  pointer-events: none;
-}
-
-/* A row of the document. Full width, so its ground and its top hairline run
-   to both edges of the viewport. */
-.row {
-  padding-block: var(--band);
-}
-
-.row + .row {
-  border-top: 1px solid var(--line);
-}
-
-/* Section heading with the mark's ring node beside it. The node is the third
-   use of the growth motif and the only decoration that repeats. */
+/* A section's opening: badge, heading, one line of intro. */
 .section-head {
-  display: flex;
+  margin-bottom: clamp(2rem, 5vw, 3.25rem);
+}
+
+.section-head > * + * {
+  margin-top: 1rem;
+}
+
+.section-head .intro {
+  font-size: clamp(1.0625rem, 1.6vw, 1.1875rem);
+  color: var(--fg-muted);
+}
+
+/* Image left or right, text beside it. One column on a phone, image first
+   in the reading order only where the markup puts it first. */
+.split {
+  display: grid;
+  gap: clamp(2rem, 5vw, 4.5rem);
   align-items: center;
-  gap: 0.625rem;
-  margin-bottom: 1.5rem;
 }
 
-.section-head::before {
-  content: "";
-  flex: none;
-  width: var(--node);
-  height: var(--node);
-  border: 2px solid var(--blue);
-  border-radius: 50%;
-  background: var(--bg);
-  box-shadow: 0 0 0 4px rgba(41, 168, 233, 0.12);
+@media (min-width: 56rem) {
+  .split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
-.stack > * + * {
-  margin-top: var(--flow, 1rem);
-}
-
-/* --------------------------------------------------------------- the price */
-
-/* The figure. Still the loudest thing on the page, now in amber so the number
-   and the button are the two things the eye finds first. */
-.figure {
-  display: block;
-  font-size: clamp(3rem, 8vw, 4.5rem);
+/* The small blue label above a heading. Navy on blue, 6.90:1, so it reads
+   the same on every ground. */
+.badge {
+  display: inline-block;
+  padding: 0.3125rem 0.75rem;
+  border-radius: var(--radius);
+  background: var(--blue);
+  color: var(--navy);
+  font-size: 0.8125rem;
   font-weight: 750;
-  font-variation-settings: "wdth" 112;
-  font-variant-numeric: tabular-nums;
-  line-height: 0.85;
-  letter-spacing: -0.045em;
-  color: var(--amber);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
 }
 
-.figure-unit {
-  display: block;
-  margin-top: 0.5rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  color: var(--muted);
+/* Rounded image. Width and height come from the attributes on the <img>,
+   so the box is reserved before the file arrives and nothing shifts. */
+.media {
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--line-light);
+}
+
+.media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ----------------------------------------------------------------- actions */
 
-/* Pills, with a glow on the primary. The radius is a full round rather than a
-   number, so the shape holds at any height. */
+/* Pills. A control you press is round, a surface you read is not. */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.8125rem 1.625rem;
-  border: 1px solid var(--line);
+  min-height: 3rem;
+  padding: 0.75rem 1.625rem;
+  border: 2px solid transparent;
   border-radius: 999px;
-  background: var(--surface);
-  color: var(--text);
   font: inherit;
-  font-weight: 650;
-  font-variation-settings: "wdth" 104;
+  font-weight: 750;
+  font-variation-settings: "wdth" 108;
   line-height: 1.2;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 140ms ease, border-color 140ms ease,
-    color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  transition: background-color 160ms ease, border-color 160ms ease,
+    color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
-.button:hover {
-  border-color: var(--blue);
-  box-shadow: var(--glow-blue);
-}
-
-/* The primary action. Amber fill, dark ink, warm glow. There is one of these
-   per screenful at most and it always goes to the form. */
+/* Solid blue, navy text, a blue glow. */
 .button-primary {
-  background: var(--amber);
-  border-color: var(--amber);
-  color: var(--on-fill);
-  box-shadow: var(--glow-amber);
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--navy);
+  box-shadow: var(--glow-blue);
 }
 
 .button-primary:hover {
-  background: #ffc14d;       /* Ink on it, 11.48:1. Lighter, not darker.     */
-  border-color: #ffc14d;
-  color: var(--on-fill);
-  box-shadow: 0 8px 34px -6px rgba(255, 176, 32, 0.7);
+  background: var(--blue-hover);
+  border-color: var(--blue-hover);
   transform: translateY(-1px);
 }
 
-/* The secondary action. Outlined in the brand blue, used for the LinkedIn and
-   site links on the founder cards, where three amber buttons in a row would
-   outshout the one that matters. */
-.button-secondary {
+/* Outlined. Takes the colour of the text around it, so it works on navy,
+   on paper and on the blue band without a variant. */
+.button-outline {
   background: transparent;
-  border-color: var(--blue);
-  color: var(--blue-bright);   /* 7.10:1 on bg, 6.21:1 on surface.           */
+  border-color: currentColor;
+  color: var(--fg);
 }
 
-.button-secondary:hover {
-  background: var(--blue);
-  border-color: var(--blue);
-  color: var(--on-fill);       /* 6.77:1.                                    */
-  box-shadow: var(--glow-blue);
+.theme-dark .button-outline:hover,
+.hero .button-outline:hover {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--navy);           /* 17.73:1.                                  */
 }
 
-.button-small {
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
+.theme-paper .button-outline:hover,
+.theme-white .button-outline:hover {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--text);
 }
 
 .button:disabled {
-  /* on-fill on muted is 6.40:1, so disabled text stays readable, and the
-     cursor plus the flattened shadow say "disabled" without relying on the
-     colour change alone. */
-  background: var(--muted);
-  border-color: var(--muted);
-  color: var(--on-fill);
+  /* Navy on the muted fill is 9.51:1, so the label stays readable. The
+     flattened shadow and the cursor say "disabled" as well as the colour. */
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+  color: var(--navy);
   box-shadow: none;
   transform: none;
   cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.875rem;
+  max-width: none;
+}
+
+/* Stacked full width on a narrow phone, where two pills side by side wrap
+   into two different widths. */
+@media (max-width: 30rem) {
+  .actions .button {
+    flex: 1 1 100%;
+  }
 }
 
 a {
@@ -469,127 +413,907 @@ a:hover {
   text-decoration-thickness: 2px;
 }
 
-/* An inline link inside body copy, where the underline is doing the work and
-   the colour is a second signal rather than the only one. */
+/* A link inside body copy. Underlined, so the colour is a second signal. */
 .link {
-  color: var(--blue-bright);
-  font-weight: 600;
+  color: var(--link);
+  font-weight: 650;
   text-decoration: underline;
 }
 
-/* Every interactive element gets the same ring. Amber, because it is the one
-   colour that clears AA against all three grounds at once: 8.28:1 on bg,
-   7.24:1 on surface, 9.21:1 on deep.
-
-   The 2px offset matters and is not cosmetic. Amber on the amber button fill
-   is 1.00:1 and on the blue fill 1.46:1, so a ring drawn flush against either
-   would vanish. The offset puts the ring on the page ground every time. */
+/* One ring for every interactive element, coloured by the section theme. */
 :focus-visible {
-  outline: 2px solid var(--amber);
-  outline-offset: 2px;
-  border-radius: var(--radius);
-}
-
-.button:focus-visible {
-  /* Follows the pill rather than cutting its ends square. */
-  border-radius: 999px;
+  outline: 3px solid var(--focus, var(--blue-ink));
+  outline-offset: 3px;
 }
 
 .skip {
   position: absolute;
   left: -9999px;
-  top: 0;
-  z-index: 20;
+  top: 0.75rem;
+  z-index: 50;
   padding: 0.75rem 1.25rem;
-  background: var(--amber);
-  color: var(--on-fill);
   border-radius: 999px;
-  font-weight: 650;
+  background: var(--blue);
+  color: var(--navy);
+  font-weight: 750;
   text-decoration: none;
 }
 
 .skip:focus {
   left: var(--gutter);
-  top: 0.75rem;
+}
+
+.icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex: none;
+}
+
+/* ------------------------------------------------------------ the info bar */
+
+.topbar {
+  --focus: var(--blue);
+  background: var(--navy-deep);
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.topbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.375rem 1.5rem;
+  min-height: 2.5rem;
+  padding-block: 0.375rem;
+}
+
+.topbar-info,
+.social {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.375rem 1.25rem;
+}
+
+.topbar-info li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+}
+
+.topbar-info .icon {
+  width: 0.9375rem;
+  height: 0.9375rem;
+  color: var(--blue);
+}
+
+.topbar a {
+  color: var(--text);
+  text-decoration: none;
+}
+
+.topbar a:hover {
+  text-decoration: underline;
+}
+
+.social a {
+  display: grid;
+  place-items: center;
+  /* 24px is the WCAG 2.2 minimum target. */
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--text-muted);
+  transition: color 140ms ease;
+}
+
+.social a:hover {
+  color: var(--blue);
 }
 
 /* ------------------------------------------------------------------ header */
 
 .header {
+  --focus: var(--blue);
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: rgba(20, 30, 41, 0.88);
-  border-bottom: 1px solid var(--line);
-  /* Progressive. Where it is unsupported the 0.88 alpha still reads as a
-     solid bar against the page, so nothing becomes unreadable. */
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  z-index: 40;
+  background: var(--navy);
+  color: var(--text);
+  border-bottom: 1px solid var(--line-dark);
 }
 
 .header-inner {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  min-height: 4.25rem;
+  gap: 0.5rem 1.5rem;
+  min-height: var(--header-h);
 }
 
 .wordmark {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 700;
-  font-variation-settings: "wdth" 106;
+  margin-right: auto;
+  font-weight: 800;
+  font-variation-settings: "wdth" 118;
+  font-size: 1.125rem;
   letter-spacing: -0.01em;
-  text-decoration: none;
   color: var(--text);
+  text-decoration: none;
 }
 
-/* The global `img { height: auto }` reset would override the height attribute
-   and let the mark grow with its intrinsic size. Pin both axes so the header
-   row cannot shift. The mark is 574x435, ratio 1.32. */
+/* The global img reset would let the mark grow to its intrinsic size. Pin
+   both axes so the header row cannot shift. The mark is 574x435, 1.32. */
 .wordmark img {
-  width: 29px;
-  height: 22px;
+  width: 34px;
+  height: 26px;
   flex: none;
 }
 
-.nav {
-  display: none;
-  align-items: center;
-  gap: 1.75rem;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  /* Uppercase in the presentation only. The labels stay sentence case in
-     src/content/site.ts, so the accessible name a screen reader announces is
-     unaffected and the styling can be lifted in one line. */
-  text-transform: uppercase;
+.nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
 }
 
 .nav a {
-  color: var(--muted);
+  display: inline-block;
+  padding-block: 0.5rem;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.9375rem;
   text-decoration: none;
-  transition: color 140ms ease;
 }
 
 .nav a:hover {
-  color: var(--blue-bright);
+  color: var(--link-on-dark);
   text-decoration: underline;
 }
 
-@media (min-width: 48rem) {
+.nav-toggle {
+  display: none;
+}
+
+.header-cta {
+  display: none;
+}
+
+/* Without JavaScript, the links wrap onto a row of their own under the logo
+   on a phone. With it, they fold behind the menu button. */
+@media (max-width: 63.99rem) {
   .nav {
-    display: flex;
+    flex-basis: 100%;
+    padding-bottom: 0.75rem;
+  }
+
+  .js .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--line-dark);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .nav-toggle .icon {
+    width: 1.375rem;
+    height: 1.375rem;
+  }
+
+  .nav-toggle .icon-close,
+  .nav-toggle[aria-expanded="true"] .icon-open {
+    display: none;
+  }
+
+  .nav-toggle[aria-expanded="true"] .icon-close {
+    display: block;
+  }
+
+  .js .nav {
+    display: none;
+  }
+
+  .js .nav[data-open] {
+    display: block;
+    padding-bottom: 1.25rem;
+  }
+
+  .js .nav ul {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .js .nav li + li {
+    border-top: 1px solid var(--line-dark);
+  }
+
+  .js .nav a {
+    display: block;
+    padding-block: 0.875rem;
+    font-size: 1.0625rem;
   }
 }
 
-/* ------------------------------------------------------------- deep band */
+@media (min-width: 40rem) {
+  .header-cta {
+    display: inline-flex;
+  }
+}
+
+/* Below the desktop breakpoint the row is logo, button, menu toggle, with
+   the nav wrapping underneath. */
+@media (max-width: 63.99rem) {
+  .header-cta {
+    order: 1;
+  }
+
+  .nav-toggle {
+    order: 2;
+  }
+
+  .nav {
+    order: 3;
+  }
+}
+
+@media (min-width: 64rem) {
+  .header-inner {
+    flex-wrap: nowrap;
+  }
+}
+
+/* -------------------------------------------------------------------- hero */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: min(44rem, 88vh);
+  padding-block: clamp(4.5rem, 12vw, 8rem);
+  background: var(--navy);
+  color: var(--text);
+  text-align: center;
+  --fg: var(--text);
+  --focus: var(--blue);
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* A flat navy wash over the photo, not a gradient. At 0.78 the brightest
+   possible pixel underneath, pure white, composites to #40434C. Text on that
+   worst case: --text 9.10:1, --text-muted 4.88:1. Both
+   clear AA, so any real photo can go in without re-checking. Do not lower
+   the 0.78 without re-running those two numbers. */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(10, 14, 26, 0.78);
+}
+
+.hero-content {
+  display: grid;
+  justify-items: center;
+  gap: 1.375rem;
+}
+
+.hero h1 {
+  max-width: 16ch;
+}
+
+.hero-lede {
+  font-size: clamp(1.125rem, 2vw, 1.375rem);
+  font-weight: 500;
+  max-width: 40ch;
+}
+
+.hero-price {
+  color: var(--text-muted);
+  max-width: 48ch;
+}
+
+.hero-price strong {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.hero .actions {
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* ---------------------------------------------------------- who we are */
+
+.about-text > * + * {
+  margin-top: 1.125rem;
+}
+
+.about-text .actions {
+  margin-top: 1.75rem;
+}
+
+.about-text p:not(.badge) {
+  color: var(--fg-muted);
+}
+
+/* ------------------------------------------------------ the services band */
 
 .band {
-  background: var(--deep);
+  padding-block: clamp(3.5rem, 8vw, 6rem);
+  overflow-x: clip;
+}
+
+.band-head {
+  text-align: center;
+  margin-bottom: clamp(2rem, 5vw, 3.25rem);
+}
+
+.band-heading {
+  font-size: clamp(2.5rem, 9vw, 5.5rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+}
+
+.band-head p {
+  margin: 1rem auto 0;
+  font-weight: 600;
+}
+
+.service-cards {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 44rem) {
+  .service-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 66rem) {
+  .service-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Cards are white with navy ink: 19.25:1. The whole card is the link,
+   through the stretched ::after on the one anchor inside it, so there is
+   one tab stop per card and one accessible name. */
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: var(--card-shadow);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.service-card:hover {
+  box-shadow: 0 24px 44px -26px rgba(10, 14, 26, 0.6);
+}
+
+.service-card img {
+  width: 100%;
+  aspect-ratio: 8 / 5;
+  object-fit: cover;
+}
+
+.service-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  flex: 1;
+  padding: 1.5rem;
+}
+
+.service-card .price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.price-figure {
+  font-size: 2.25rem;
+  font-weight: 800;
+  font-variation-settings: "wdth" 120;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.price-unit {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.service-card-summary {
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.service-card-link {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  color: var(--blue-ink);
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.service-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+/* The ring goes round the whole card rather than round the words, since the
+   whole card is what clicks. */
+.service-card-link:focus-visible {
+  outline: none;
+}
+
+.service-card:has(.service-card-link:focus-visible) {
+  outline: 3px solid var(--navy);
+  outline-offset: 4px;
+}
+
+/* -------------------------------------------------------- detailed pricing */
+
+.plan-rows {
+  display: grid;
+}
+
+.plan-row {
+  display: grid;
+  gap: 1.5rem clamp(2rem, 5vw, 4rem);
+  padding-block: clamp(2rem, 4vw, 2.75rem);
+  border-top: 1px solid var(--line);
+}
+
+.plan-row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 56rem) {
+  .plan-row {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+}
+
+.plan-summary > * + * {
+  margin-top: 0.875rem;
+}
+
+.plan-summary .price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.plan-summary .price-figure {
+  font-size: clamp(2.75rem, 6vw, 3.5rem);
+  color: var(--blue-ink);
+}
+
+.plan-intro {
+  color: var(--ink-muted);
+}
+
+.facts {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.fact {
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.fact-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--blue-ink);
+}
+
+.plan-detail > * + * {
+  margin-top: 1.25rem;
+}
+
+.plan-part + .plan-part {
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.plan-part > * + * {
+  margin-top: 0.625rem;
+}
+
+.plan-part h4 {
+  font-size: 1.0625rem;
+  font-weight: 750;
+}
+
+.excludes {
+  padding-left: 0.875rem;
+  border-left: 3px solid var(--blue);
+  font-size: 0.9375rem;
+  color: var(--ink-muted);
+}
+
+.plan-note {
+  margin-top: 1.75rem;
+  color: var(--ink-muted);
+}
+
+/* A tick list. The tick is a Lucide glyph in a blue disc. */
+.ticks {
+  display: grid;
+  gap: 0.625rem;
+}
+
+.ticks li {
+  display: grid;
+  grid-template-columns: 1.375rem minmax(0, 1fr);
+  gap: 0.625rem;
+  align-items: start;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.ticks .icon {
+  width: 1.375rem;
+  height: 1.375rem;
+  padding: 0.25rem;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--navy);
+  stroke-width: 3;
+}
+
+/* ------------------------------------------------------------------ why us */
+
+.why-text > * + * {
+  margin-top: 1.125rem;
+}
+
+.checklist {
+  display: grid;
+  gap: 1.375rem;
+  margin-top: 2rem;
+}
+
+.checklist li {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.checklist .icon {
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  background: var(--blue);
+  color: var(--navy);
+  stroke-width: 3;
+}
+
+.checklist h3 {
+  font-size: 1.125rem;
+}
+
+.checklist p {
+  margin-top: 0.25rem;
+  color: var(--fg-muted);
+  font-size: 0.9375rem;
+}
+
+/* ------------------------------------------------------------ how it works */
+
+.steps {
+  display: grid;
+  gap: 1.25rem;
+  counter-reset: none;
+}
+
+@media (min-width: 40rem) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 72rem) {
+  .steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.step-number {
+  font-size: 2.75rem;
+  font-weight: 800;
+  font-variation-settings: "wdth" 125;
+  line-height: 1;
+  color: var(--blue-ink);
+}
+
+.step p:not(.step-number) {
+  color: var(--fg-muted);
+  font-size: 0.9375rem;
+}
+
+.process-note {
+  margin-top: 2rem;
+  padding-left: 0.875rem;
+  border-left: 3px solid var(--blue);
+}
+
+/* ---------------------------------------------------------------- founders */
+
+.founders {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 52rem) {
+  .founders {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.founder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: clamp(1.5rem, 3.5vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.founder-photo {
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-bottom: 0.75rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--blue);
+}
+
+.founder-name a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--blue);
+  text-decoration-thickness: 2px;
+}
+
+.founder-name a:hover {
+  color: var(--blue-ink);
+}
+
+.founder-name .icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--blue-ink);
+}
+
+.founder-role {
+  font-size: 0.8125rem;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--blue-ink);
+}
+
+.founder-major {
+  font-weight: 600;
+}
+
+.founder-detail {
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.founder-site {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-size: 0.9375rem;
+}
+
+/* The honesty block. A panel with a blue bar, so it reads as a statement
+   set apart from the cards rather than a fourth card. */
+.honesty {
+  margin-top: clamp(2rem, 5vw, 3rem);
+  padding: 1.5rem clamp(1.25rem, 3vw, 2rem);
+  border-left: 4px solid var(--blue);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.honesty p {
+  max-width: 70ch;
+}
+
+/* --------------------------------------------------------------------- faq */
+
+.faq {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 56rem;
+}
+
+.faq-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.faq-item summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.125rem clamp(1.125rem, 3vw, 1.5rem);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--radius);
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item summary:hover .faq-q {
+  color: var(--blue-ink);
+}
+
+.faq-q {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-variation-settings: "wdth" 108;
+  line-height: 1.35;
+}
+
+/* A plus that becomes a minus, in a blue disc. The open state is also
+   carried by the answer showing and by the browser's own announcement. */
+.faq-sign {
+  position: relative;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--blue);
+}
+
+.faq-sign::before,
+.faq-sign::after {
+  content: "";
+  position: absolute;
+  left: 0.5625rem;
+  top: calc(50% - 1px);
+  width: 0.875rem;
+  height: 2px;
+  background: var(--navy);
+  transition: transform 180ms ease, opacity 180ms ease;
+}
+
+.faq-sign::after {
+  transform: rotate(90deg);
+}
+
+.faq-item[open] .faq-sign::after {
+  transform: rotate(0deg);
+  opacity: 0;
+}
+
+.faq-a {
+  padding: 0 clamp(1.125rem, 3vw, 1.5rem) 1.375rem;
+}
+
+.faq-a p {
+  color: var(--fg-muted);
+}
+
+.faq-a p + p {
+  margin-top: 0.75rem;
+}
+
+/* ------------------------------------------------------------ get a quote */
+
+.quote-banner {
+  margin-bottom: clamp(2.5rem, 6vw, 4rem);
+  text-align: center;
+  font-size: clamp(2.5rem, 9vw, 5.5rem);
+  text-transform: uppercase;
+  line-height: 0.95;
+}
+
+.quote .split {
+  align-items: start;
+}
+
+/* Portrait beside the form on a wide screen. On a phone the image sits above
+   the form, and at 5:6 it pushed the first field a full screen down, so it is
+   cropped to a letterbox there instead. */
+.quote .media {
+  aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 56rem) {
+  .quote .media {
+    aspect-ratio: 5 / 6;
+  }
+}
+
+.contact-head > * + * {
+  margin-top: 0.75rem;
+}
+
+.contact-head h3 {
+  font-size: clamp(1.375rem, 2.6vw, 1.75rem);
+  font-weight: 800;
+  font-variation-settings: "wdth" 118;
+}
+
+.contact-panel {
+  margin-top: 1.75rem;
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.setup-notice {
+  margin-top: 1.25rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--amber);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+}
+
+.setup-notice code {
+  font-size: 0.875rem;
+  color: var(--amber);
+}
+
+.contact-alt {
+  margin-top: 1.5rem;
+  color: var(--fg-muted);
 }
 
 /* ------------------------------------------------------------------- forms */
@@ -601,78 +1325,72 @@ a:hover {
 
 .field label {
   display: block;
+  margin-bottom: 0.4375rem;
   font-size: 0.9375rem;
   font-weight: 650;
-  margin-bottom: 0.4375rem;
 }
 
 .field-optional {
   font-weight: 400;
-  color: var(--muted);
+  color: var(--fg-muted);
 }
 
 .field input,
 .field textarea {
   width: 100%;
   padding: 0.75rem 0.875rem;
-  border: 1px solid var(--line);
+  border: 1px solid var(--field-line);
   border-radius: var(--radius);
-  background: var(--deep);
+  background: var(--navy);
   color: var(--text);
   font: inherit;
   /* iOS zooms the page on focus for anything under 16px. */
   font-size: 1rem;
-  transition: border-color 140ms ease, box-shadow 140ms ease;
+  transition: border-color 140ms ease;
 }
 
 .field input:hover,
 .field textarea:hover {
-  border-color: var(--muted);
+  border-color: var(--text-muted);
 }
 
 .field input:focus,
 .field textarea:focus {
   border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(41, 168, 233, 0.18);
 }
 
 .field textarea {
-  min-height: 7.5rem;
+  min-height: 8rem;
   resize: vertical;
 }
 
 .field input::placeholder,
 .field textarea::placeholder {
-  /* 8.32:1 on the deep field ground. Placeholders are hints, never labels. */
-  color: var(--muted);
+  color: var(--text-muted);     /* 9.51:1 on the navy field. Hints only.     */
   opacity: 1;
 }
 
 .field input:disabled,
 .field textarea:disabled {
-  /* Muted text on the field ground is 8.32:1, so a disabled field is still
-     readable rather than a grey smear, and the cursor says why. */
-  color: var(--muted);
+  color: var(--text-muted);
   cursor: not-allowed;
 }
 
 .field-hint {
   margin-top: 0.4375rem;
   font-size: 0.875rem;
-  color: var(--muted);
-  max-width: none;
+  color: var(--fg-muted);
 }
 
-/* Errors are announced, tied to their field, and say how to fix the problem.
-   The left bar means the state is not carried by colour alone. */
+/* Errors are announced, tied to their field, and say how to fix the
+   problem. The left bar means the state is not carried by colour alone. */
 .field-error {
   margin-top: 0.4375rem;
   padding-left: 0.625rem;
   border-left: 3px solid var(--amber);
   font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--amber);          /* 8.28:1 on bg, 7.24:1 on surface.          */
-  max-width: none;
+  font-weight: 650;
+  color: var(--amber);
 }
 
 .field[data-invalid] input,
@@ -690,28 +1408,150 @@ a:hover {
   overflow: hidden;
 }
 
-.form-note {
-  font-size: 0.875rem;
-  color: var(--muted);
-  max-width: 44ch;
+.submit-row {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.25rem;
 }
 
-/* ------------------------------------------------------------------ prose */
+.submit-row .button {
+  width: 100%;
+}
 
-/* Long form legal pages. Same document feel, narrower measure. */
+.form-note {
+  font-size: 0.875rem;
+  color: var(--fg-muted);
+}
+
+/* Success and failure. The left bar carries the outcome as well as the
+   colour, and the heading is focused after a send. */
+.status {
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 4px solid var(--blue);
+}
+
+.status[data-kind="error"] {
+  border-left-color: var(--amber);
+}
+
+.status-heading {
+  font-size: 1.375rem;
+  font-weight: 800;
+  font-variation-settings: "wdth" 118;
+}
+
+.status p + p {
+  margin-top: 0.5rem;
+  color: var(--fg-muted);
+}
+
+/* ------------------------------------------------------------------ footer */
+
+.footer {
+  padding-block: clamp(3rem, 7vw, 4.5rem) 1.75rem;
+  border-top: 1px solid var(--line-dark);
+}
+
+.footer-grid {
+  display: grid;
+  gap: 2.25rem;
+}
+
+@media (min-width: 40rem) {
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .footer-grid {
+    grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
+  }
+}
+
+.footer-brand p {
+  margin-top: 1rem;
+  max-width: 34ch;
+}
+
+.footer h2 {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  font-weight: 750;
+  font-variation-settings: "wdth" 112;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.footer-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.footer-list a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.footer-list a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.footer-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+.footer-list .icon {
+  width: 1rem;
+  height: 1rem;
+  color: var(--blue);
+}
+
+.footer-bottom {
+  margin-top: clamp(2.5rem, 6vw, 3.5rem);
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line-dark);
+  max-width: none;
+}
+
+/* ------------------------------------------------------------ legal pages */
+
+.legal {
+  padding-block: clamp(2.5rem, 7vw, 5rem);
+}
+
+.legal-head > * + * {
+  margin-top: 1rem;
+}
+
+.legal-head h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+}
+
+.legal-head .lede {
+  font-size: clamp(1.0625rem, 1.8vw, 1.25rem);
+  font-weight: 500;
+}
+
 .prose {
-  max-width: 40rem;
+  max-width: 44rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
 }
 
 .prose h2 {
   margin-top: 2.5rem;
   margin-bottom: 0.75rem;
+  font-size: clamp(1.375rem, 2.6vw, 1.75rem);
 }
 
 .prose h3 {
   margin-top: 1.75rem;
   margin-bottom: 0.5rem;
-  color: var(--blue-bright);
+  color: var(--blue-ink);
 }
 
 .prose p,
@@ -721,18 +1561,18 @@ a:hover {
 }
 
 .prose a {
-  color: var(--blue-bright);
-  font-weight: 600;
+  color: var(--link);
+  font-weight: 650;
+  /* The processors' policy URLs are printed in full and are longer than a
+     320px line. Let them break anywhere rather than widen the page. */
+  overflow-wrap: anywhere;
 }
 
 .prose ul {
-  list-style: none;
   padding-left: 1.25rem;
   margin-bottom: 1.25rem;
 }
 
-/* A short blue rule rather than a disc, matching the deliverable lists on the
-   pricing cards so the whole site marks a list the same way. */
 .prose li {
   position: relative;
 }
@@ -741,25 +1581,47 @@ a:hover {
   content: "";
   position: absolute;
   left: -1.25rem;
-  top: 0.7em;
+  top: 0.55em;
   width: 0.5rem;
-  height: 2px;
-  border-radius: 1px;
+  height: 0.5rem;
+  border-radius: 50%;
   background: var(--blue);
 }
 
 .prose dt {
-  font-weight: 700;
+  font-weight: 750;
   margin-top: 1.25rem;
 }
 
+.prose dd {
+  margin-left: 0;
+}
+
 .prose code {
-  font-family: var(--mono);
   font-size: 0.875em;
   padding: 0.1em 0.35em;
-  border-radius: 3px;
-  background: var(--surface);
-  color: var(--blue-bright);
+  border-radius: var(--radius);
+  background: var(--line-light);
+}
+
+.back {
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  font-weight: 650;
+  max-width: none;
+}
+
+/* --------------------------------------------------------------------- 404 */
+
+.notfound {
+  min-height: 60vh;
+  display: grid;
+  align-items: center;
+}
+
+.notfound .stack > p {
+  color: var(--fg-muted);
 }
 
 /* -------------------------------------------------------------- utilities */
@@ -775,46 +1637,115 @@ a:hover {
   white-space: nowrap;
 }
 
-/* ---------------------------------------------------------------- motion */
+/* ==========================================================================
+   MOTION
 
-/* Scroll reveal. The element starts shifted and transparent, and a single
-   IntersectionObserver in Base.astro sets data-shown once it enters the
-   viewport. It never runs backwards, so nothing re-animates on scroll up.
+   Two systems and nothing else.
 
-   Written so that if the script never runs, for any reason, every element is
-   visible: the observer adds the hidden state itself on init rather than it
-   being in the markup. See the no-js guard below. */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 520ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
-  transition-delay: var(--reveal-delay, 0ms);
-}
+   1. The hero rises once on load: headline, lines and buttons fade up in
+      sequence. Pure CSS, keyed off the .js class.
 
-[data-reveal][data-shown] {
-  opacity: 1;
-  transform: none;
-}
+   2. Scroll entrances. Mark an element data-animate="slide-left",
+      "slide-right", "slide-up" or "fade", plus an optional data-delay in ms.
+      site.js adds .is-visible once, the first time it enters the viewport,
+      and then stops watching it. Nothing replays on the way back up.
 
-/* Honour the preference for real. The reveals, the bar rise, the line draw and
-   the typewriter all check this in script as well, so the motion is not run
-   and then hidden: it never starts. */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+   "slide-left" comes in from the left, "slide-right" from the right. Images
+   (anything with .media, or a .founder-photo) start 120px out on a desktop
+   and 40px on a phone, and scale from 0.96. Text never scales. Only
+   transform and opacity animate.
+
+   All of it sits inside prefers-reduced-motion: no-preference, so a visitor
+   who asked for less motion never sees an element hidden or moving. And all
+   of it is keyed off .js, which a one line script in the <head> sets. With
+   JavaScript off the class is never set and every element renders in place.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 
-  [data-reveal] {
+  /* -------------------------------------------------------- hero on load */
+
+  .js .hero-rise {
+    animation: hero-rise 900ms var(--ease-settle) both;
+    animation-delay: var(--rise-delay, 0ms);
+  }
+
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(32px);
+    }
+  }
+
+  /* --------------------------------------------------- scroll entrances */
+
+  .js [data-animate] {
+    opacity: 0;
+    transition:
+      opacity 700ms ease var(--delay, 0ms),
+      transform 900ms var(--ease-settle) var(--delay, 0ms);
+  }
+
+  .js [data-animate="slide-up"] {
+    transform: translateY(40px);
+  }
+
+  .js [data-animate="slide-left"] {
+    transform: translateX(-40px);
+  }
+
+  .js [data-animate="slide-right"] {
+    transform: translateX(40px);
+  }
+
+  .js .media[data-animate="slide-left"],
+  .js .founder-photo[data-animate="slide-left"] {
+    transform: translateX(-40px) scale(0.96);
+  }
+
+  .js .media[data-animate="slide-right"],
+  .js .founder-photo[data-animate="slide-right"] {
+    transform: translateX(40px) scale(0.96);
+  }
+
+  .js .media[data-animate="slide-up"] {
+    transform: translateY(40px) scale(0.96);
+  }
+
+  @media (min-width: 48rem) {
+    .js .media[data-animate="slide-left"] {
+      transform: translateX(-120px) scale(0.96);
+    }
+
+    .js .media[data-animate="slide-right"] {
+      transform: translateX(120px) scale(0.96);
+    }
+  }
+
+  .js [data-animate].is-visible {
     opacity: 1;
     transform: none;
   }
 
-  .button-primary:hover {
+  /* Hover lift on cards. Off under reduced motion with everything else. */
+  .service-card:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button-primary:hover,
+  .service-card:hover {
     transform: none;
+  }
+
+  .button,
+  .service-card,
+  .faq-sign::before,
+  .faq-sign::after {
+    transition: none;
   }
 }

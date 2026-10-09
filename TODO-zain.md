@@ -53,29 +53,28 @@ and ideally from an address that is not an arazscales.com one.
 - Break it on purpose once. Put the site into airplane mode mid submit and
   confirm the error state appears and shows the support address as a fallback.
 
-## 4. Register the other spelling and redirect it
+## 4. Two domains, and both are right
 
-The company is **arazscales.com**, plural. The site, the mailbox and the
-canonical URL all agree on that now.
+**The website is `arazscale.com`, singular. Email is `arazscales.com`,
+plural.** Do not change either to match the other. The canonical URL, the
+sitemap, `robots.txt`, `astro.config.mjs` and the schema.org block all use the
+singular. The mailbox, `support@arazscales.com`, and the SPF, DKIM and DMARC
+records in item 1 are on the plural. An earlier version of this file said the
+opposite and told you to redirect the singular to the plural. That was wrong
+and has been withdrawn.
 
-- Register `arazscale.com`, singular, before somebody else does. It is one
-  keystroke from your real domain and it is what your own logo currently
-  prints.
-- 301 it to `https://arazscales.com`, at the registrar or as a Vercel domain
-  redirect. A 301 rather than a frame or a 302.
-- Do the same for `www.arazscales.com`.
+- Add `www.arazscale.com` in Vercel and let it redirect to the bare domain.
+- `arazscales.com` currently serves a Squarespace "Coming Soon" page. Decide
+  what it should do for visitors: either leave it, or 301 it to
+  `https://arazscale.com`. Either way its MX and email records must stay
+  pointed at Google Workspace, because that is where the mailbox lives.
 
-## 5. Get the logo reissued
+## 5. Ask the designer for a vector logo
 
 The logo file you were supplied has **arazscale.com**, singular, set beneath
-the mark. It is wrong.
-
-Nothing on the site shows it, because the master in this repo is cropped above
-that text, so this is not a live defect. It becomes one the moment the full
-logo is used where the crop does not apply: business cards, invoices, a van,
-an ad, a letterhead. Ask the designer for a corrected file, and a vector while
-you are asking, since there is no vector source and every icon on the site is
-currently rasterised from a PNG.
+the mark. That is the correct website domain, so the file does not need
+reissuing for the text. It does need a vector: there is no vector source and
+every icon on the site is currently rasterised from a PNG.
 
 ## 6. Google Business Profile
 
@@ -88,7 +87,18 @@ other. Which means the next item blocks this one.
 
 ## 7. Values the site still does not have
 
-**None. Nothing in `src/config/business.ts` blocks the launch.**
+**Two, both social links:**
+
+- **`social.linkedin`**: the company LinkedIn page URL.
+- **`social.instagram`**: the company Instagram URL.
+
+Both are `TODO` in `src/config/business.ts`. Paste the full `https://` URL
+over each and its icon appears in the top bar, and it is added to `sameAs` in
+the schema.org block. Until then the icon is simply not shown, so nothing on
+the page is broken, but the pre-launch grep will list them.
+
+`social.facebook` is `null`: the page is still being set up and we are
+shipping without it. Set it to the URL when it exists.
 
 `address` moved out of this list: it is `null` by decision rather than
 missing, the site ships without it, and it is now item 7b below because it
@@ -150,7 +160,7 @@ and is not affected. This is about cold outreach only.
 - **Check the link preview** by pasting the URL into iMessage and into Slack.
   Both cache aggressively, so get it right before you share it widely. X and
   LinkedIn both have their own cache-busting inspectors.
-- **Submit the sitemap** at `https://arazscales.com/sitemap.xml` in Google
+- **Submit the sitemap** at `https://arazscale.com/sitemap.xml` in Google
   Search Console.
 
 ## 9. Analytics: the decision, written down

@@ -10,9 +10,11 @@
  * It works with JavaScript switched off. The form is a plain POST to
  * Formspree, and native validation handles the required fields. With
  * JavaScript it submits over fetch instead, so the visitor stays on the page
- * and gets error text tied to the field it belongs to. No Formspree script is
- * loaded either way, which is what keeps the page at zero third party
- * requests.
+ * and gets error text tied to the field it belongs to. That logic is in
+ * src/scripts/site.js. No Formspree script is loaded either way, which is
+ * what keeps the page at zero third party requests.
+ *
+ * Styles are in src/styles/global.css under "forms" and "get a quote".
  */
 import { business } from "../config/business";
 import { site } from "../content/site";
@@ -28,9 +30,9 @@ const formId = import.meta.env.PUBLIC_FORMSPREE_ID;
 const endpoint = formId ? `https://formspree.io/f/${formId}` : undefined;
 ---
 
-<div class="stack" style="--flow: 1.5rem">
-  <div class="stack" style="--flow: 0.875rem">
-    <p class="answer">{site.contact.heading}</p>
+<div class="contact">
+  <div class="contact-head">
+    <h3>{site.contact.heading}</h3>
     <p class="muted">{site.contact.intro}</p>
   </div>
 
@@ -148,216 +150,8 @@ const endpoint = formId ? `https://formspree.io/f/${formId}` : undefined;
       data-error-heading={site.contact.error.heading}
       data-error-body={site.contact.error.body}
     >
-      <p class="answer" id="status-heading"></p>
+      <p class="status-heading" id="status-heading"></p>
       <p id="status-body"></p>
     </div>
   </div>
 </div>
-
-<style>
-  /* The form sits in its own panel, the way the pricing and founder cards do,
-     so the one thing the whole page routes to reads as an object rather than
-     as text at the bottom of a scroll. */
-  .contact-panel {
-    padding: clamp(1.5rem, 4vw, 2.25rem);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: var(--surface);
-    box-shadow: var(--lift);
-    max-width: 38rem;
-  }
-
-  .setup-notice {
-    padding: 0.875rem 1rem;
-    border: 1px solid var(--amber);
-    border-left-width: 3px;
-    border-radius: var(--radius);
-    background: var(--deep);
-    font-size: 0.9375rem;
-    max-width: none;
-  }
-
-  .setup-notice code {
-    font-family: var(--mono);
-    font-size: 0.8125rem;
-    color: var(--blue-bright);
-  }
-
-  .submit-row {
-    display: grid;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 0.25rem;
-  }
-
-  @media (min-width: 34rem) {
-    .submit-row {
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: 1.25rem;
-    }
-  }
-
-  .submit-row .button {
-    /* Full width on a phone, where a button the width of your thumb beside a
-       paragraph is the thing people miss. */
-    width: 100%;
-  }
-
-  @media (min-width: 34rem) {
-    .submit-row .button {
-      width: auto;
-    }
-  }
-
-  /* Success and failure. The left bar carries the outcome as well as the
-     colour, and the heading is focused after a send so a screen reader lands
-     on it rather than on an empty form. */
-  .status {
-    /* No outer border: it sits inside the panel, which already has one, and a
-       box drawn inside a box reads as a mistake. The left bar alone carries
-       the outcome. */
-    padding: 0.25rem 0 0.25rem 1rem;
-    border-left: 3px solid var(--blue);
-    max-width: none;
-  }
-
-  .status[data-kind="error"] {
-    border-left-color: var(--amber);
-  }
-
-  .status p + p {
-    margin-top: 0.5rem;
-    color: var(--muted);
-  }
-
-  .status .answer {
-    font-size: clamp(1.25rem, 2.6vw, 1.5rem);
-  }
-</style>
-
-<script>
-  /* Bundled rather than inline, so the Content Security Policy in vercel.json
-     can stay at script-src 'self' with no 'unsafe-inline'. The outcome copy
-     arrives on data attributes of #form-status instead of through
-     define:vars, which keeps every string in src/content/site.ts. */
-  (() => {
-    const form = document.getElementById("contact-form");
-    if (!form || !form.action) return;
-
-    const status = document.getElementById("form-status");
-    const statusHeading = document.getElementById("status-heading");
-    const statusBody = document.getElementById("status-body");
-    const button = form.querySelector("button[type=submit]");
-    const submitLabel = button.textContent.trim();
-
-    /* Error text says how to fix the problem, not that a problem exists. */
-    const rules = [
-      {
-        id: "name",
-        empty: "Enter your name so we know who we are replying to.",
-      },
-      {
-        id: "email",
-        empty: "Enter your email address. It is the only way we can reply.",
-        invalid:
-          "That email address is missing something. Check it over, an @ or a .com for example.",
-      },
-      {
-        id: "business",
-        empty:
-          "Enter the name of the business. If it does not have one yet, put your own name.",
-      },
-      {
-        id: "message",
-        empty:
-          "Tell us what you need, even in one line. A website, posts and ads, or that you are not sure yet.",
-      },
-    ];
-
-    function setError(rule, text) {
-      const input = document.getElementById(rule.id);
-      const wrap = input.closest(".field");
-      const error = document.getElementById(`error-${rule.id}`);
-      if (text) {
-        wrap.setAttribute("data-invalid", "");
-        input.setAttribute("aria-invalid", "true");
-        error.textContent = text;
-        error.hidden = false;
-      } else {
-        wrap.removeAttribute("data-invalid");
-        input.removeAttribute("aria-invalid");
-        error.textContent = "";
-        error.hidden = true;
-      }
-      return input;
-    }
-
-    function validate() {
-      let firstInvalid = null;
-      for (const rule of rules) {
-        const input = document.getElementById(rule.id);
-        const value = input.value.trim();
-        let text = "";
-        if (!value) text = rule.empty;
-        else if (input.type === "email" && !input.checkValidity())
-          text = rule.invalid;
-        setError(rule, text);
-        if (text && !firstInvalid) firstInvalid = input;
-      }
-      return firstInvalid;
-    }
-
-    /* Clear a field's error as soon as it is corrected. */
-    for (const rule of rules) {
-      const input = document.getElementById(rule.id);
-      input.addEventListener("input", () => {
-        if (input.getAttribute("aria-invalid") === "true") {
-          const value = input.value.trim();
-          const ok = value && (input.type !== "email" || input.checkValidity());
-          if (ok) setError(rule, "");
-        }
-      });
-    }
-
-    function announce(kind) {
-      statusHeading.textContent = status.dataset[`${kind}Heading`];
-      statusBody.textContent = status.dataset[`${kind}Body`];
-      status.setAttribute("role", kind === "success" ? "status" : "alert");
-      /* Drives the colour of the left bar. The bar is a second signal: the
-         heading and body already say which outcome this is in words. */
-      status.dataset.kind = kind;
-      status.hidden = false;
-    }
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      status.hidden = true;
-
-      const firstInvalid = validate();
-      if (firstInvalid) {
-        firstInvalid.focus();
-        return;
-      }
-
-      button.disabled = true;
-      button.textContent = "Sending";
-
-      try {
-        const response = await fetch(form.action, {
-          method: "POST",
-          body: new FormData(form),
-          headers: { Accept: "application/json" },
-        });
-        if (!response.ok) throw new Error(String(response.status));
-        form.hidden = true;
-        announce("success");
-        statusHeading.setAttribute("tabindex", "-1");
-        statusHeading.focus();
-      } catch {
-        button.disabled = false;
-        button.textContent = submitLabel;
-        announce("error");
-      }
-    });
-  })();
-</script>

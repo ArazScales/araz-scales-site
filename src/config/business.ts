@@ -9,11 +9,12 @@
  * ------------------
  * A value we intend to have but do not have yet is the literal string
  * TODO_NEEDS_REAL_VALUE. That is deliberate: it fails a grep before launch
- * (see README, "Before launch"). No field is in that state today, and the
- * constant is kept for the next one that is.
+ * (see README, "Before launch"). Two fields are in that state today: the
+ * company LinkedIn and Instagram URLs under `social`.
  *
  * A value we have decided to ship without is `null`, which is a different
- * statement: not "missing", but "there is none". `address` is the only one.
+ * statement: not "missing", but "there is none". `address` and
+ * `social.facebook` are the two.
  *
  * Read both through `real()` rather than interpolating them directly. It
  * returns null for either case, and every component omits the row rather
@@ -87,8 +88,30 @@ export const business = {
    */
   address: null as string | null,
 
-  domain: "arazscales.com",
-  url: "https://arazscales.com",
+  /**
+   * TWO DOMAINS, AND BOTH ARE RIGHT. The website is arazscale.com, singular.
+   * Email is arazscales.com, plural, which is why `email` above ends in an s
+   * and these two do not. Do not change either to match the other.
+   */
+  domain: "arazscale.com",
+  url: "https://arazscale.com",
+
+  /**
+   * Company social profiles. Each icon in the top bar renders only when its
+   * value here is a real URL, so an unset one shows nothing rather than a
+   * dead "#" link.
+   *
+   * LinkedIn and Instagram exist and are waiting on their URLs, so they are
+   * TODO and block launch. Facebook is still being set up and we are shipping
+   * without it, so it is null. Set any of them to a full https:// URL and the
+   * icon appears in the top bar and the URL joins `sameAs` in the schema.org
+   * block on its own.
+   */
+  social: {
+    linkedin: TODO,
+    instagram: TODO,
+    facebook: null,
+  } as Record<"linkedin" | "instagram" | "facebook", string | null>,
 
   /** Named explicitly in /privacy as a recipient of form data. */
   processors: {
@@ -157,60 +180,58 @@ export function phoneHref(): string | null {
  * that card and the other two cards simply do not get one, rather than the
  * layout reserving an empty slot for a link that does not exist.
  *
- * PHOTO. `photo` is the filename of a headshot in public/team/. None of us
- * has supplied one yet, so the field is absent on all three and every card
- * falls back to the person's initials, which is a finished state and not a
- * placeholder. To add one: drop the file in public/team/, add
- * `photo: "zain.jpg"` here, and record the source in credits.md. Nothing in
- * the layout changes. Do not substitute a stock photo or an AI image.
+ * PHOTO. `photo` names a slot in public/assets/img/ (see src/content/images.ts
+ * and the image table in the README). Each slot holds a neutral placeholder
+ * until a real headshot replaces the file. Swap the file, keep the name, and
+ * record the source in credits.md. Do not substitute a stock photo or an AI
+ * image.
+ *
+ * BIO. There is a bio slot on each card, marked <!-- BIO: fill in --> in
+ * src/pages/index.astro. It renders nothing until a real bio is written. Do
+ * not invent one.
  */
 export type Founder = {
   readonly name: string;
   /** The service this person is responsible for. Shown under the name. */
   readonly owns: string;
   readonly detail: string;
+  /** What the person studies. Supplied by them, shown under the role. */
+  readonly major: string;
   readonly linkedin: string;
   /** A personal site, if the person has one. Only Zain does. */
   readonly site?: string;
-  /** Filename of a headshot in public/team/. None supplied yet. */
-  readonly photo?: string;
+  /** Slot name of the headshot in public/assets/img/, without extension. */
+  readonly photo: string;
 };
 
 export const founders: readonly Founder[] = [
   {
     name: "Zain Bahalim",
     owns: "Websites",
+    major: "Computer Science student",
     detail:
       "Scopes the job, builds the site, hands it over in your name.",
     linkedin: "https://www.linkedin.com/in/zainbah/",
+    photo: "founder-zain",
     site: "https://zainbahalim.dev/",
   },
   {
     name: "Roshan Mohammad",
     owns: "Meta ad creative",
+    major: "Architecture student",
     detail:
       "Builds the ad creative, tests it, tells you which cuts did better.",
     linkedin: "https://www.linkedin.com/in/roshan-mohammad24/",
+    photo: "founder-roshan",
   },
   {
     name: "Abayjit Singh",
     owns: "Written content",
+    major: "Finance & Business student",
     detail:
       "Interviews you once, then writes the posts that go out under your name.",
     linkedin: "https://www.linkedin.com/in/abayjit-singh-36251839a/",
+    photo: "founder-abayjit",
   },
 ];
 
-/**
- * "Zain Bahalim" to "ZB". Drives the initials shown on a founder card until a
- * real headshot lands in public/team/. Derived rather than stored, so adding a
- * fourth person cannot produce a card with somebody else's initials on it.
- */
-export function initials(name: string): string {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((part) => part[0].toUpperCase())
-    .slice(0, 2)
-    .join("");
-}

@@ -24,38 +24,16 @@ const copy = site.notFound;
   path="/404"
   noindex
 >
-  <section class="row grid-ground">
+  <section class="section theme-dark">
     <div class="wrap notfound">
-      <div class="stack" style="--flow: 1rem">
+      <div class="stack" style="--flow: 1.25rem">
         <h1>{copy.heading}</h1>
-        <p class="lede">{copy.body}</p>
+        <p class="hero-lede">{copy.body}</p>
+        <div class="actions" style="align-items: center; margin-top: 1.5rem">
+          <a class="button button-primary" href="/">{copy.home}</a>
+          <a class="link" href="/#contact">{copy.contact}</a>
+        </div>
       </div>
-
-      <p class="actions">
-        <a class="button button-primary" href="/">{copy.home}</a>
-        <a class="link" href="/#contact">{copy.contact}</a>
-      </p>
     </div>
   </section>
 </Base>
-
-<style>
-  .notfound {
-    /* Taller than a normal row. The page is three lines, and without this it
-       sits squashed against the header on a desktop viewport. */
-    padding-block: clamp(4rem, 14vw, 9rem);
-  }
-
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem 1.75rem;
-    margin-top: 2.5rem;
-    max-width: none;
-  }
-
-  .notfound .lede {
-    color: var(--muted);
-  }
-</style>

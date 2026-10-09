@@ -2,8 +2,9 @@
 /**
  * Shell for the four policy pages.
  *
- * Same document feel as the homepage, narrower measure, and a back link
- * instead of the in page anchors. The "last updated" date comes from
+ * Same header and footer as the homepage, the content on the off-white
+ * ground at a reading measure, and a back link instead of the in page
+ * anchors. Styles are under "legal pages" in src/styles/global.css. The "last updated" date comes from
  * business.policiesUpdated so all four pages move together.
  *
  * These pages are drafts. Nobody here is a lawyer. See the handoff notes in
@@ -34,9 +35,10 @@ const legalName = real(business.legalName);
 ---
 
 <Base title={title} description={description} path={path}>
-  <section class="row">
+  <section class="theme-paper">
     <div class="wrap legal">
-      <div class="stack" style="--flow: 1rem">
+      <div class="legal-head">
+        <p class="badge">Policy</p>
         <h1>{heading}</h1>
         <p class="lede muted">{standfirst}</p>
         <p class="small muted">
@@ -70,26 +72,3 @@ const legalName = real(business.legalName);
     </div>
   </section>
 </Base>
-
-<style>
-  .legal {
-    padding-block: clamp(2.5rem, 7vw, 5rem);
-  }
-
-  .legal h1 {
-    /* Shorter than the homepage h1. These are documents, not a pitch. */
-    font-size: clamp(1.875rem, 4.4vw, 2.75rem);
-  }
-
-  .prose {
-    margin-top: clamp(2rem, 5vw, 3rem);
-  }
-
-  .back {
-    margin-top: 3rem;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--line);
-    font-weight: 600;
-    max-width: none;
-  }
-</style>

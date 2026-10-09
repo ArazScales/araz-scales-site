@@ -4,6 +4,17 @@ Paste this whole file into Claude Code as the opening message, or save it as `CL
 
 ---
 
+**Website domain is arazscale.com (singular). Email domain is arazscales.com (plural). Do not change either to match the other.**
+
+**The October 2026 redesign overrides earlier rules.** The homepage was rebuilt
+to follow the layout of texasroadside.org (owner's permission, layout only),
+with a navy and bright blue palette, slide-in animations and image slots. Where
+this file describes that design it is current. Do not revert it to the older
+dark slate, amber, mono-label design, and do not remove the animations, the
+palette, the layout or the placeholder images on the grounds of an older rule.
+
+---
+
 ## 1. What you are building
 
 A marketing site for **ARAZ Scales**, a three-person growth studio (Zain, Roshan, Abayjit). Static, fast, no CMS, no login, no dashboard. Its only job is to make a small business owner understand what we do in about eight seconds and then contact us.
@@ -27,38 +38,43 @@ These are non-negotiable. If a rule conflicts with something you'd normally do, 
 
 **Never put these on the site:**
 
-- Purple gradients. No gradient as a decorative colour blend anywhere. The one
-  permitted use is the faint blue grid on the hero, the contact section and the
-  404, which is a `repeating-linear-gradient` drawing 1px hairlines plus a
-  `linear-gradient` mask that fades it out. That is a texture, not a colour
-  wash, and it is the only gradient in the stylesheet. Anything that blends two
-  colours across a shape is still banned.
+- Gradients. There are none in the stylesheet and none may be added. The hero
+  overlay is a flat `rgba` navy fill over the photo, not a gradient. Anything
+  that blends two colours across a shape is banned.
 - Vague hero text. No "Elevate your digital presence" or "We help brands grow." The hero must say literally what we do and who for.
 - Fake counters or animated number tickers.
 - Fake reviews or testimonials. Not as placeholders, not as "example" content, not commented out for later.
 - Fake metrics. No "500+ clients," no "3x average ROI," no invented percentages.
 - Unsupported claims of any kind. Every factual statement on the site has to be something we could defend if a client asked us to prove it. No "guaranteed results," no "#1 in Texas," no "industry leading," no implied certifications or partnerships we don't have.
 - Parallax. Still banned outright.
-- Scroll reveals are permitted, at the level currently built and no further: a
-  section fades up 12px once as it enters the viewport, never replaying on the
-  way back up, and the process timeline draws its growth line once. They are
-  driven by a single IntersectionObserver that unobserves each element after it
-  fires. Every one is skipped, not merely hidden, under
-  `prefers-reduced-motion`, and the page renders complete with JavaScript off.
-  Do not add a second kind of reveal, and do not animate anything on a scroll
-  position rather than on a one-time entry.
-- Buttons are pills, `border-radius: 999px`, with a glow on the primary. Panels
-  and inputs use the flat `--radius` instead. Those are the only two radii on
-  the site and the split is deliberate: a control you press is round, a surface
-  you read is not. Keep it that way rather than introducing a third.
+- Scroll entrances are permitted, as built in the redesign and no further.
+  Elements carry `data-animate="slide-left" | "slide-right" | "slide-up" |
+  "fade"` and an optional `data-delay` in ms. One IntersectionObserver in
+  `src/scripts/site.js` (threshold 0.15) adds `.is-visible` once and then
+  unobserves the element, so nothing replays. Images start 120px to the side
+  on desktop and 40px on mobile and scale from 0.96 (images only, never text).
+  Slide-up starts 40px low. Easing is `cubic-bezier(0.22, 1.2, 0.36, 1)` over
+  about 900ms, so images land and settle. Text beside an image starts 150ms
+  after it, and card rows stagger by 150ms. Only transform and opacity
+  animate. Hidden start states are keyed off a `js` class set by a hashed
+  inline script in the head, so the page renders complete with JavaScript off,
+  and all of it sits inside `prefers-reduced-motion: no-preference`, so it is
+  skipped entirely under reduced motion. Animated sections use
+  `overflow-x: clip`. Do not animate anything on a scroll position rather than
+  on a one-time entry.
+- Three radii and no more. Buttons are pills, `border-radius: 999px`, with a
+  blue glow on the primary. Panels, cards, images, inputs and badges use
+  `--radius`. Founder headshots are circles. A control you press is round, a
+  surface you read is not.
 - Emoji icons. No emoji anywhere in the UI or copy. If you need icons, use a real icon set with a permissive license and record the license in the README.
 - Cursor animations. No custom cursor, no cursor-following blobs, no magnetic buttons.
-- AI-generated images. Use real photos or no photos.
+- AI-generated images. Use real photos, or the generated neutral placeholders
+  in `public/assets/img/` until real photos exist.
 - Em dashes. Not in headings, not in body copy, not in alt text. Use a period, a comma, or a colon.
 - Any "made with AI" or "built with" badge.
 - AI-sounding copy. See section 8.
 
-**Image sourcing:** every image on the site must be one we have the right to use. Real photos we took, or images from a source with a clear license (public domain, CC0, or a stock license we hold). No pulling images from Google. For each image, record the source and license in a `credits.md` file in the repo. If we have no real photos yet, design so the layout does not need them, and leave a clearly marked placeholder comment where a real photo should go.
+**Image sourcing:** every image on the site must be one we have the right to use. Real photos we took, or images from a source with a clear license (public domain, CC0, or a stock license we hold). No pulling images from Google, and nothing from texasroadside.org. For each image, record the source and license in a `credits.md` file in the repo. Until real photos exist, each slot in `src/content/images.ts` holds a flat neutral placeholder made by `npm run placeholders`, marked with a `PHOTO SLOT` comment in the markup, with empty alt text while it is a placeholder. These placeholders are intended and stay until real photos replace them.
 
 **Important honesty constraint:** ARAZ has no completed client work yet. That means no testimonials, no logo wall, no case studies, no "trusted by" strip, and no numbers we cannot prove. Build credibility a different way: be specific about process, pricing, and timeline. Design the layout so it looks finished and intentional without social proof, and so a testimonial section can be added later without a redesign.
 
@@ -72,6 +88,8 @@ Every page below gets real content written for our actual situation, not lorem i
 - **`/terms`**. Terms and Conditions. Scope of each service, payment terms, revision policy, what the client is responsible for supplying, who owns the finished work, and limitation of liability.
 - **`/refunds`**. Refund Policy. Covers both the $300 one-time website fee and the $500/month retainer, including deposit handling, what happens if a client cancels mid-build, and the notice period for cancelling the monthly retainer. Flag this one for me before you write it: I need to make the actual business decision, don't invent terms.
 - **`/cookies`**. Cookie Policy. Only meaningful if we actually set cookies. See section 4.
+
+**Domains.** Website domain is arazscale.com (singular). Email domain is arazscales.com (plural). Do not change either to match the other.
 
 **Real business details.** The site must show, at minimum: the full legal entity name, the state of registration, a real contact email on our own domain, and a real phone number. Do not invent any of these, and do not use a placeholder that could ship by accident. Put them in one config file (`src/config/business.ts` or equivalent) and pull them into the footer and legal pages from there. Where a value isn't finalized yet, leave it as the literal string `TODO_NEEDS_REAL_VALUE` so it fails an obvious grep before launch, and list every one of them in your handoff notes. Where we have decided to ship without a value, set it to `null` instead, which says "there is none" rather than "we forgot" and does not block a launch. Either way it is read through `real()` and the row is omitted, so nothing blank reaches a page. A postal address is deliberately not in the minimum list above: `address` is `null` and the site ships without one.
 
@@ -115,18 +133,19 @@ Before you write any code, produce a short design plan and show it to me. Do not
 
 The plan should cover:
 
-- **Palette:** already decided and built. Deep slate navy grounds
-  (`#141E29` / `#1B2734` / `#223142`), white text, the brand blue `#29A8E9`
-  lifted off the mark's own `#039CD8` so it clears AA as text, and one warm
-  accent, amber `#FFB020`, rationed to prices, the primary action and the focus
-  ring. Every value and every verified ratio is recorded in
-  `src/styles/global.css`. Do not repaint the site. If a colour is added,
-  compute its contrast against all three grounds first and write the number
-  next to the token.
-- **Type:** two typefaces, both self hosted. Archivo for everything you read,
-  its width axis doing the work a display face would. JetBrains Mono at weight
-  500 for section labels, step numbers, the nav and the hero's rotating word,
-  and never for body copy.
+- **Palette:** decided and built in the redesign. Navy `#0A0E1A` for the hero,
+  dark sections and footer, bright blue `#3B9EFF` for buttons, label badges
+  and the full-width services band, off-white `#F5F7FA` and white between
+  them. Text on the blue is always navy (white on it is 2.79:1 and fails).
+  Blue text on a light ground uses `#1A66C2` (5.26:1), never `#3B9EFF`.
+  Amber `#FFB020` is kept for form errors only. Every value and every
+  verified ratio is recorded in `src/styles/global.css`, and every colour is a
+  custom property. Do not repaint the site. If a colour is added, compute its
+  contrast against every ground it can sit on first and write the number next
+  to the token.
+- **Type:** one self-hosted variable family, Archivo. Headings at width 125,
+  weight 800 (the wide display cut), body at width 100, weight 400. No Google
+  Fonts CDN.
 - **Layout:** a one-paragraph concept plus a rough ASCII wireframe of the homepage. State the alignment strategy.
 - **The one bold thing:** name the single element that carries the design. Everything else stays quiet.
 
@@ -134,21 +153,23 @@ Then review your own plan: if any part of it is what you would produce for any g
 
 Additional guardrails:
 
-- Do not chop the page into identical rounded cards with the same soft grey shadow under each.
-- Do not put a tracked-out all-caps eyebrow label above every heading.
+- Cards are used where the redesign uses them (services band, process steps,
+  founders, FAQ). Do not spread them to sections built as rows or splits.
+- The small blue label badge above a section heading is part of the design, in
+  sentence case. The only uppercase headings are "What you get" and "Get a
+  quote", uppercased in CSS only.
 - Do not accent one word in a headline with a different color or italics.
 - Do not use numbered markers (01 / 02 / 03) unless the content is genuinely a sequence. Our process section is a sequence, so numbering is fine there and nowhere else.
 - Do not append arrows to link and button text.
 - Motion, in full, and this is the whole budget:
   1. Hover and focus states.
-  2. One page-load moment: the hero bars rise, the growth line draws and the
-     nodes appear, once.
-  3. The typewriter in the hero eyebrow, cycling the three things we sell.
-  4. The scroll reveals described in section 2.
-  Nothing else moves. Every one of the four is off under
-  `prefers-reduced-motion`, and the fourth also needs the page to be readable
-  with JavaScript disabled, which is what the `scripting: none` and `noscript`
-  blocks in `src/layouts/Base.astro` are for. Do not add a fifth.
+  2. One page-load moment: the hero headline, lines and buttons fade up in
+     sequence, once, in CSS.
+  3. The scroll entrances described in section 2.
+  Nothing else moves. There is no typewriter, bar chart or growth line any
+  more. All of it is off under `prefers-reduced-motion`, and the page must be
+  readable with JavaScript disabled, which the `js` class in
+  `src/layouts/Base.astro` guarantees. Do not add a fourth kind.
 
 Performance floor: Lighthouse 95+ on performance and accessibility, no layout shift, images sized and lazy-loaded below the fold.
 
@@ -189,7 +210,8 @@ You are writing the copy. Treat it as part of the design.
 
 ## 9. Stack
 
-- Static site. Astro, or plain HTML/CSS/JS if Astro is overkill. No React, no Next.js, no Tailwind config sprawl. If you use Tailwind, keep the class soup out of the markup where a component makes more sense.
+- Static site. Astro as a build step only: visitors get plain HTML, one stylesheet (`src/styles/global.css`, no component `<style>` blocks) and one vanilla JS file (`src/scripts/site.js`, no dependencies). No React, no Next.js, no Tailwind, no jQuery.
+- The Content Security Policy in `vercel.json` allows one inline script by its sha256 hash. `npm run build` fails if the hash is stale.
 - No third-party UI kit. No shadcn. No component library defaults.
 - Self-host fonts. No Google Fonts CDN call.
 - Contact form: a service that emails us without a backend (Formspree, Web3Forms, or Netlify Forms). Include honeypot spam protection. Do not build a custom API for this. Whichever you pick, read what it stores and reflect that accurately in the privacy policy.
@@ -216,12 +238,11 @@ You are writing the copy. Treat it as part of the design.
 - [ ] Grep the whole repo for `—` and confirm zero results.
 - [ ] Grep for emoji and confirm zero results.
 - [ ] Every banned word from section 8 grepped and confirmed absent.
-- [ ] Grep for `gradient` and confirm the only hits are the three that draw the
-      grid texture and its fade mask. No colour blend anywhere.
-- [ ] Every button is a pill and every panel and input is `--radius`. No third
-      radius anywhere.
-- [ ] Scroll reveals are the one-time fade-up and the timeline draw, nothing
-      else, and both are skipped under `prefers-reduced-motion`.
+- [ ] Grep `src/` for `gradient` and confirm zero hits in CSS.
+- [ ] Buttons are pills, panels, cards, images, inputs and badges are
+      `--radius`, headshots are circles. No fourth radius.
+- [ ] Scroll entrances are the one-time `data-animate` system, nothing else,
+      and are skipped under `prefers-reduced-motion`.
 - [ ] Load the homepage with JavaScript disabled and confirm every section is
       visible and readable.
 - [ ] No testimonial, logo wall, review, or case study anywhere, including commented-out code.
@@ -238,7 +259,9 @@ You are writing the copy. Treat it as part of the design.
       genuinely empty, and searching `:\s*TODO,` matches that definition too
       and so never returns empty.
 - [ ] A field set to `null` is a decision to ship without it and does not
-      block. Only `TODO` blocks. `address` is `null`: we are launching with no
+      block. Only `TODO` blocks. `address` and `social.facebook` are `null`.
+      `social.linkedin` and `social.instagram` are `TODO` until their URLs are
+      supplied. `address` is `null`: we are launching with no
       postal address. That is fine for the site and not fine for outreach
       email, which needs one under CAN-SPAM.
 - [ ] Legal entity name, state, email, and phone all pulled from one config file.

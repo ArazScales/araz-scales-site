@@ -3,9 +3,13 @@
 One page plus four policy pages, for a three person studio in Houston selling
 websites, ghostwritten content and Meta ad creative to local businesses.
 
-Astro 7, TypeScript, hand written CSS, static output, no runtime backend and no
-client framework. The only JavaScript shipped is about 2 KB that makes the
-contact form submit without leaving the page.
+Astro 7 as a build step only. What a visitor receives is plain HTML, one hand
+written stylesheet and one small vanilla JavaScript file (about 2 KB gzipped)
+that runs the mobile menu, the scroll-in animations and the contact form. No
+client framework, no Tailwind, no jQuery, no dependencies in the browser.
+
+**Two domains, both correct.** The website is `arazscale.com`, singular. Email
+is `support@arazscales.com`, plural. Do not change either to match the other.
 
 The brief this was built to is `CLAUDE.md` at the repo root. It applies to every
 session in this repo, and its hard rules win over anything in this file.
@@ -19,9 +23,9 @@ session in this repo, and its hard rules win over anything in this file.
 3. [Change a price](#change-a-price)
 4. [Fill in the business details](#fill-in-the-business-details)
 5. [Wire up the contact form](#wire-up-the-contact-form)
-6. [Add the founder photos](#add-the-founder-photos)
+6. [Swap in real photos](#swap-in-real-photos)
 7. [Deploy to Vercel](#deploy-to-vercel)
-8. [Point arazscales.com at it](#point-arazscalescom-at-it)
+8. [Point arazscale.com at it](#point-arazscalecom-at-it)
 9. [How the design works](#how-the-design-works)
 10. [Project structure](#project-structure)
 11. [Handoff notes, read before launch](#handoff-notes-read-before-launch)
@@ -41,10 +45,12 @@ npm run dev                        # http://localhost:4321
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Dev server with hot reload |
-| `npm run build` | Static build into `./dist` |
+| `npm run build` | Static build into `./dist`, then the CSP hash check (see "Headers") |
 | `npm run preview` | Serves the built `./dist` exactly as production will |
 | `npm run check` | Type checks the `.astro` and `.ts` files |
 | `npm run icons` | Regenerates the favicon set from the mark |
+| `npm run placeholders` | Writes a neutral placeholder for any image slot that has no file. Never overwrites |
+| `npm run csp-hash` | Checks the inline head script's hash against `vercel.json` |
 
 ---
 
@@ -55,8 +61,10 @@ file to change wording.**
 
 | File | What is in it |
 | --- | --- |
-| `src/content/site.ts` | Everything except prices: meta title, nav, hero, section headings, the process steps, the founders' blurbs, the FAQ, the contact form labels, the footer links |
-| `src/content/pricing.ts` | The two prices and what each one buys |
+| `src/content/site.ts` | Everything except prices: meta title, nav, hero, the who-we-are split, the services band, the why-us checklist, section headings and labels, the process steps, the FAQ, the contact form labels, the footer line and links |
+| `src/content/pricing.ts` | The three prices and what each one buys |
+| `src/config/business.ts` | Real world facts, plus the founders' names, roles, majors and LinkedIn links |
+| `src/content/images.ts` | Every image slot, its size and the alt text for its real photo |
 
 The policy pages are the exception. Their text is prose inside
 `src/pages/privacy.astro`, `terms.astro`, `refunds.astro` and `cookies.astro`,
@@ -86,11 +94,10 @@ Two things to know about that file:
 
 - `amount` is a display string, not a number, because it is rendered at display
   size and is deliberately the largest element on the page.
-- There are three services but only two prices, because written content and ad
-  creative are sold together. The retainer therefore carries a `parts` array:
-  one figure, two named services under it, each with its own deliverables and
-  timeline. This is so the page never prints `$500` twice and invites somebody
-  to read it as $1,000.
+- Written content and ad creative are one service at one price. The retainer
+  therefore carries a `parts` array: one figure, two strands of work under it,
+  each with its own deliverables and timeline. This is so the page never
+  prints `$500` twice and invites somebody to read it as $1,000.
 
 If you change a price, the FAQ answers in `src/content/site.ts` and the
 `/refunds` page both quote figures in prose. Search for the old number.
@@ -117,9 +124,10 @@ The launch blocker check greps for the third:
 grep -rnE "^[[:space:]]*[a-zA-Z_]+:[[:space:]]*TODO,?[[:space:]]*$" src/
 ```
 
-**It currently returns nothing, and nothing is blocking.** `address` is `null`
-by decision, not `TODO` by omission, which is why the two states are spelled
-differently.
+**It currently returns two lines: `social.linkedin` and `social.instagram`.**
+Both accounts exist and are waiting on their URLs. `address` and
+`social.facebook` are `null` by decision, not `TODO` by omission, which is why
+the two states are spelled differently.
 
 **Match field assignments, not the bare string.** Two earlier versions of this
 check were wrong in opposite directions. Grepping `TODO_NEEDS_REAL_VALUE`
@@ -143,8 +151,8 @@ See the handoff notes at the bottom for what is currently outstanding.
 
 The form posts to [Formspree](https://formspree.io). No backend, and no
 Formspree script on the page: the form is a plain `POST` that works with
-JavaScript switched off, and our own 2 KB of JavaScript upgrades it to a
-`fetch` so the visitor stays on the page.
+JavaScript switched off, and the form section of `src/scripts/site.js`
+upgrades it to a `fetch` so the visitor stays on the page.
 
 1. Create a form at formspree.io and copy the ID out of its endpoint. The
    endpoint reads `https://formspree.io/f/xxxxxxxx` and you want the `xxxxxxxx`.
@@ -167,26 +175,40 @@ optional. **Do not add a field you do not act on**, and if you add one, update
 
 ---
 
-## Add the founder photos
+## Swap in real photos
 
-The layout is finished without photographs and does not need them. Three
-headshots are expected, one per founder. When they arrive:
+There are no real photos yet. Every image slot holds a flat neutral
+placeholder generated by `npm run placeholders`. The layout is sized from the
+`width` and `height` on each `<img>`, so a real photo drops in without
+anything shifting.
 
-Until they arrive, each card shows that person's initials in a blue ring, built
-to the same size and shape as the photo that will replace it. That is a
-finished state, not a gap. When the photos arrive:
+| Slot file in `public/assets/img/` | Where it shows | Placeholder size | Ideal real photo |
+| --- | --- | --- | --- |
+| `hero.webp` | Behind the hero headline, under a navy overlay | 1920x1080 | 2400x1350 landscape, under 250 KB. Decorative, alt stays empty |
+| `who-we-are.webp` | Who we are split, right side | 1200x900 | 1200x900 (4:3) |
+| `service-landing.webp` | $100 landing page card in the blue band | 800x500 | 800x500 (16:10) |
+| `service-website.webp` | $300 website card in the blue band | 800x500 | 800x500 (16:10) |
+| `service-content-ads.webp` | $500 content and ads card in the blue band | 800x500 | 800x500 (16:10) |
+| `why-us.webp` | Why us, left side, on navy | 1200x900 | 1200x900 (4:3) |
+| `quote.webp` | Get a quote, left of the form | 1000x1200 | 1000x1200 (5:6). Cropped to 16:9 on phones, keep the subject centred |
+| `founder-zain.webp` | Zain's founder card | 400x400 | 400x400 square headshot, face centred |
+| `founder-roshan.webp` | Roshan's founder card | 400x400 | 400x400 square headshot |
+| `founder-abayjit.webp` | Abayjit's founder card | 400x400 | 400x400 square headshot |
 
-1. Put the files in `public/team/`.
-2. Add `photo: "zain.jpg"` to that person's entry in `src/config/business.ts`.
-   That is the only change. The card swaps the ring for the image, the element
-   already carries `width`, `height` and `loading="lazy"` so nothing shifts,
-   and the alt text is built from the person's name and role.
-3. Record each file in `credits.md` with who took it.
+`service-landing.webp` is a tenth slot beyond the nine in the original brief,
+because the blue band has a card for each of the three prices.
 
-Crop them square. They are drawn in a 4.5rem circle with `object-fit: cover`.
+To swap one in:
 
-No stock photography and no AI generated images, per `CLAUDE.md` section 2.
-Real photographs we own, or nothing.
+1. Export the photo as `.webp` at the ideal size, or at least the same ratio,
+   and overwrite the file of the same name.
+2. In `src/content/images.ts`, set `placeholder: false` on that slot. That
+   switches its alt text on. Every slot already has alt text written for the
+   photo it is meant to hold; check it still describes what your photo shows.
+3. Record it in `credits.md` with who took it.
+
+No stock photography we do not hold a licence for, no AI generated images, and
+nothing from texasroadside.org, per `CLAUDE.md` section 2.
 
 ---
 
@@ -216,20 +238,31 @@ party script if one is ever added, which is deliberate.
 
 Two consequences worth knowing before you change anything:
 
-- `script-src` is `'self'` with no `'unsafe-inline'`. Astro inlines small
-  script bundles by default, which the policy would block, so
-  `astro.config.mjs` sets `vite.build.assetsInlineLimit: 0` to force the form
-  script out to its own file. Do not remove that without also relaxing the CSP.
+- `script-src` is `'self'` plus one `sha256` hash, with no `'unsafe-inline'`.
+  The hash allows exactly one inline script: the one line in the `<head>` of
+  `src/layouts/Base.astro` that adds the `js` class before first paint, so the
+  animation start states apply without a flash. **Change one character of it
+  and the hash changes.** `npm run build` runs `scripts/csp-hash.mjs` at the
+  end and fails with the correct value printed if `vercel.json` does not match,
+  so a stale hash cannot reach a deploy unnoticed.
+- Astro inlines small script bundles by default, which the policy would block,
+  so `astro.config.mjs` sets `vite.build.assetsInlineLimit: 0` to force
+  `site.js` out to its own file. Do not remove that.
 - `style-src` does allow `'unsafe-inline'`, because the markup uses a handful of
-  `style="--flow: 1rem"` attributes for vertical rhythm.
+  `style="--rise-delay: 120ms"` attributes for the hero stagger.
 
 ---
 
-## Point arazscales.com at it
+## Point arazscale.com at it
 
-1. In Vercel: **Project, Settings, Domains, Add** `arazscales.com`. Add
-   `www.arazscales.com` as well and let Vercel redirect one to the other.
-2. In Namecheap: **Domain List, Manage, Advanced DNS**. Delete the default
+The website domain is **`arazscale.com`, singular**. The email domain,
+`arazscales.com`, plural, is separate and must keep its own Google Workspace
+MX, SPF, DKIM and DMARC records. Do not point the plural at Vercel in a way
+that disturbs those.
+
+1. In Vercel: **Project, Settings, Domains, Add** `arazscale.com`. Add
+   `www.arazscale.com` as well and let Vercel redirect it to the bare domain.
+2. At the registrar's DNS settings for `arazscale.com`, delete any default
    parking records, then add exactly what Vercel shows you. Normally that is:
 
    | Type | Host | Value | TTL |
@@ -242,123 +275,106 @@ Two consequences worth knowing before you change anything:
 3. Wait for propagation, usually minutes but up to 48 hours, and confirm Vercel
    shows the domain as **Valid**. TLS is issued automatically.
 
-If the domain ever changes, update `url` and `domain` in
-`src/config/business.ts` and the `site` value in `astro.config.mjs`. Between
-them they drive the canonical tags, the sitemap and the Open Graph URLs.
+As of October 2026 `arazscale.com` already serves an older build of this site
+from Vercel, so step 1 is done. The next deploy replaces that build.
+
+If the website domain ever changes, update `url` and `domain` in
+`src/config/business.ts`, the `site` value in `astro.config.mjs` and the
+sitemap line in `public/robots.txt`. Between them they drive the canonical
+tags, the sitemap and the Open Graph URLs.
 
 ---
 
 ## How the design works
 
-The site is dark. A deep slate navy ground carries a faint blue grid, the brand
-blue from the logo mark is the lead colour, and one warm accent is rationed to
-the two things a buyer has to find: the price and the button.
+The layout follows <https://texasroadside.org/> (used as a reference with the
+owner's permission, layout only, none of their assets): a thin info bar, a
+sticky navy header, a dark image hero, then light, blue and navy sections in
+turn, ending on a navy "Get a quote" section and a four column footer.
 
-The logo is an "A" built from rising bars with a line and ring nodes through
-it. That shape drives the page and is used in exactly three places, which is
-the whole budget: the hero bars rise once on load, the process timeline is that
-growth line drawing itself, and the ring node marks every section heading.
+**Sections, top to bottom.** Info bar, header, hero, who we are (split), the
+blue "What you get" band with one card per price, detailed pricing (one two
+column row per plan), why us (image plus checklist), how it works (five
+numbered cards), founders (three profile cards plus the honesty block), FAQ
+(native `<details>`), get a quote (image plus form), footer.
 
-**Palette.** Nine named values in `src/styles/global.css`, with the verified
-contrast ratio recorded next to each one.
+**Palette.** All values are custom properties in `src/styles/global.css`, with
+the measured contrast ratio beside each one.
 
 | Token | Hex | Role |
 | --- | --- | --- |
-| `--deep` | `#141E29` | Hero band, footer, inputs. Text on it 15.50:1 |
-| `--bg` | `#1B2734` | Page ground. Text on it 13.95:1 |
-| `--surface` | `#223142` | Cards and panels. Text on it 12.19:1 |
-| `--text` | `#F2F6FA` | Headings and body |
-| `--muted` | `#A9B8C8` | Secondary text. 7.49:1 on bg, 6.54:1 on surface |
-| `--line` | `#33465B` | Hairlines and card edges. Non-text, see below |
-| `--blue` | `#29A8E9` | Lead accent. 5.68:1 on bg, 4.96:1 on surface |
-| `--blue-bright` | `#4FBCF5` | Small mono labels, the growth line. 7.10:1 on bg |
-| `--amber` | `#FFB020` | Prices, primary action, focus ring. 8.28:1 on bg |
-| `--on-fill` | `#0E1720` | The only text colour allowed on a blue or amber fill |
+| `--navy` | `#0A0E1A` | Hero, dark sections, footer, and the ink on light |
+| `--navy-raised` | `#131B2C` | Panels on navy |
+| `--navy-deep` | `#05070D` | The info bar |
+| `--paper` | `#F5F7FA` | Off-white sections |
+| `--white` | `#FFFFFF` | White sections and cards |
+| `--blue` | `#3B9EFF` | Buttons, badges, the services band. **Fill only** |
+| `--blue-hover` | `#6BB5FF` | Button hover fill |
+| `--blue-ink` | `#1A66C2` | Blue text and links on light. 5.26:1 on paper |
+| `--text` / `--text-muted` | `#F2F6FA` / `#A9B8C8` | Text on navy. 17.73:1 / 9.51:1 |
+| `--ink-muted` | `#4A5568` | Secondary text on light. 7.01:1 on paper |
+| `--link-on-dark` | `#7AB8FF` | Links on navy. 9.29:1 |
+| `--amber` | `#FFB020` | Form errors only |
 
-**The blue is not the mark's blue, and that is deliberate.** The mark is a flat
-`#039CD8` and must not be repainted, but that value only reaches 4.87:1 on the
-page ground and 4.20:1 on a card, so it would have failed as text on a pricing
-card. `--blue` is the same hue opened up to `#29A8E9`, which clears 4.5:1 on
-all three grounds. The two sit close enough that the header logo and the link
-beside it read as one colour.
+**Two rules the numbers force.** White text on `#3B9EFF` is 2.79:1 and fails,
+so every blue fill carries navy text (6.90:1). And `#3B9EFF` as text on a
+light ground is 2.60:1 and fails, so blue text on light uses `--blue-ink`.
 
-**Never put white on a fill.** `#FFFFFF` on the blue is 2.24:1 and on the amber
-1.63:1. Both fail badly. `--on-fill` exists so there is one right answer, and
-it clears AA on both at 6.77:1 and 9.88:1.
+**Section themes.** Each section has one class, `theme-dark`, `theme-paper`,
+`theme-white` or `theme-blue`, which sets its ground, text, link and focus
+ring colours. Components read those variables and never need to know what
+they sit on. The focus ring is 3px with a 3px offset: blue on navy (6.90:1),
+`--blue-ink` on light (5.26:1), navy on the blue band (6.90:1).
 
-**`--line` is 1.56:1 against the page and that is not a failure.** WCAG 1.4.11
-covers boundaries needed to identify a control or its state. Nothing here is
-either: every card is already told apart from the page by its own ground, and
-no state anywhere is signalled by a border colour alone. Raising it to 3:1
-would put a hard cage around every panel.
+**Type.** One self hosted variable file, Archivo, 88 KB latin subset.
+Headings run the width axis to 125 at weight 800, which is the wide display
+cut. Body copy is width 100, weight 400. No CDN call.
 
-**The focus ring is amber with a 2px offset, and the offset is not cosmetic.**
-Amber is the one colour clearing AA against all three grounds at once (8.28,
-7.24 and 9.21:1). Drawn flush it would sit on a button fill instead, where
-amber on amber is 1.00:1 and amber on blue 1.46:1. The offset puts the ring on
-the page ground every time. Do not remove it.
+**Radii.** Three: buttons are pills (`999px`), panels, cards, images, inputs
+and badges are `--radius` (10px), and headshots are circles.
 
-**Type.** Two families, both self hosted, no CDN call.
+**Motion.** Two systems, both at the bottom of `global.css`:
 
-- **Archivo Variable**, 88 KB latin subset, for everything you read. Its width
-  axis does the work a second display face normally would: headings at
-  `wdth 108`, body at `100`, prices at `112`.
-- **JetBrains Mono**, weight 500 only, 21 KB, for section labels, price card
-  labels, step numbers, the nav and the hero's rotating word. Never body copy.
-  One weight covers every appearance, so do not add a second.
+1. *Hero on load.* The headline, the two lines under it and the buttons fade
+   up 32px in sequence, once. Pure CSS.
+2. *Scroll entrances.* Any element with `data-animate="slide-left"`,
+   `"slide-right"`, `"slide-up"` or `"fade"`, plus an optional `data-delay` in
+   milliseconds. `src/scripts/site.js` watches them with one
+   IntersectionObserver at a 0.15 threshold, adds `.is-visible` the first time
+   each one enters, then stops watching it. Nothing replays on the way back
+   up. Images (`.media`) start 120px to the side on a desktop and 40px on a
+   phone, and scale from 0.96. Text never scales. Slide-up starts 40px low.
+   The easing, `cubic-bezier(0.22, 1.2, 0.36, 1)` over 900ms, overshoots very
+   slightly so an image lands and settles rather than stopping dead. In a
+   split section the text starts 150ms after its image, and card rows stagger
+   by 150ms. Only `transform` and `opacity` animate.
 
-**Layout.** Each section is a `Record`: a small mono label with a ring node
-across the top, the content full width beneath it. Pricing, founders and the
-contact form are panels on `--surface`. The pricing cards deliberately do *not*
-stretch to equal height, because matching them to the tallest left a 315px void
-between the last line of the $100 card and its button.
+**Progressive enhancement.** A one line script in the `<head>` adds `js` to
+`<html>`, and every hidden starting state is keyed off `.js`. With JavaScript
+off the class is never set and everything renders in place. If `site.js`
+fails to load, the same snippet removes the class again after four seconds,
+so a blocked script cannot leave sections invisible. Under
+`prefers-reduced-motion` none of the starting states apply at all: the motion
+CSS sits inside `@media (prefers-reduced-motion: no-preference)`. A tab opened
+in the background shows everything up front, because it receives no
+IntersectionObserver callbacks until it is looked at. Every animated section
+has `overflow-x: clip`, so a sliding image can never cause a horizontal
+scrollbar.
 
-**The one bold thing** is the price, in amber, with the primary button in the
-same colour a few inches away. Everything else is blue or quiet. If you make a
-third thing loud, this stops working.
-
-**Motion**, in full. Anything not on this list does not exist and should not be
-added:
-
-1. Hover and focus states.
-2. One page-load moment: the hero bars rise, the growth line draws, the nodes
-   appear.
-3. The typewriter in the hero eyebrow, cycling the three things we sell.
-4. Scroll reveals: a section fades up 12px once on entry, never replaying, and
-   the process timeline draws its line once.
-
-All four are **skipped, not hidden**, under `prefers-reduced-motion`: the
-script checks the query and reveals everything immediately rather than running
-an animation and covering it up. The reveals also need the page to work with
-JavaScript off, which is what the `scripting: none` and `<noscript>` blocks in
-`src/layouts/Base.astro` are for. Both put every element back to full opacity.
-Delete either and a visitor without JavaScript gets a blank page.
-
-**Two traps worth knowing before you touch the timeline.** Both cost real time
-to find.
-
-- An inline `<svg>` is a replaced element with an intrinsic aspect ratio from
-  its viewBox. Given `left`, `right` and `height` with `width: auto`, it sizes
-  itself off its own height instead of stretching between the insets. The
-  desktop track therefore sets an explicit width, and the mobile vertical line
-  is a pseudo element rather than an SVG.
-- Chrome ignores `pathLength` on a stroke carrying
-  `vector-effect="non-scaling-stroke"`. A dash-offset reveal on that line
-  rendered as 141 tiny dashes. The reveal is a `clip-path` instead, which looks
-  identical and depends on neither.
+**Mobile menu.** Below 64rem the links fold behind a button with
+`aria-expanded` and `aria-controls`. Enter or Space opens it, Tab goes
+straight into the links, Escape closes it and returns focus to the button,
+and picking a link closes it. Without JavaScript the button is hidden and the
+links sit in a row under the logo.
 
 ### Things the brief forbids, so that a future session does not add them
 
-No gradient as a colour blend. The only gradients in the stylesheet are the two
-that draw the grid hairlines and the one that fades them out, and that is a
-texture rather than decoration. No parallax and no scroll-position animation,
-only the one-time entry reveals listed above. No emoji. No em dashes. No fake
-testimonials, logo walls, case studies or metrics, not even commented out for
-later. No analytics, pixels or session recording. No third party embeds, and
-self host any font.
-
-Two radii only: `999px` on buttons, `--radius` on panels and inputs. A control
-you press is round, a surface you read is not. Do not introduce a third.
+No gradients of any kind. The hero overlay is a flat `rgba` fill. No parallax
+and no scroll-position animation, only the one-time entrances above. No emoji.
+No em dashes. No fake testimonials, reviews, ratings, logo walls, case studies,
+client names or metrics, not even commented out for later. No invented bio
+details for the founders. No analytics, pixels or session recording. No third
+party embeds, and self host any font.
 
 ---
 
@@ -366,15 +382,17 @@ you press is round, a surface you read is not. Do not introduce a third.
 
 ```
 src/
-  config/business.ts        Every real world fact. Read placeholders via real()
+  config/business.ts        Every real world fact, the founders, social links
   content/site.ts           All copy except prices
   content/pricing.ts        The three prices and what they buy
+  content/images.ts         Every image slot, its size and its alt text
+  content/structured-data.ts JSON-LD, built from the files above
   components/
-    Record.astro            One question and answer row, plus its hairline
-    ContactForm.astro       The form, its validation and its bundled script
-    Wordmark.astro          Inline mark plus name
+    ContactForm.astro       The form markup. Its logic is in site.js
+    Icon.astro              Lucide icons as inline SVG
+    Wordmark.astro          The mark plus the name
   layouts/
-    Base.astro              Head, skip link, header, footer
+    Base.astro              Head, info bar, header, footer
     Legal.astro             Shell for the four policy pages
   pages/
     index.astro             The homepage, every section
@@ -382,18 +400,21 @@ src/
     terms.astro             Draft, needs legal review
     refunds.astro           Draft, needs legal review
     cookies.astro           Draft, needs legal review
+    404.astro               Not found
     sitemap.xml.ts          Five URLs, listed explicitly
-  styles/global.css         Tokens, base styles, the record grid, form styles
+  scripts/site.js           The one script: menu, scroll entrances, form
+  styles/global.css         The one stylesheet: tokens, themes, every section, motion
 public/
+  assets/img/               The ten image slots (placeholders for now)
   fonts/                    Archivo woff2 plus its OFL licence text
-  icon.svg                  Hand authored mark
-  favicon.ico               Generated by npm run icons
-  apple-touch-icon.png      Generated
-  icon-192.png icon-512.png Generated
-  site.webmanifest
-  robots.txt
-scripts/generate-icons.mjs  Rasterises the favicon set
-credits.md                  Font and icon licensing
+  icon.svg favicon.ico apple-touch-icon.png icon-192.png icon-512.png
+  logo-mark.png og.png site.webmanifest robots.txt
+scripts/
+  generate-icons.mjs        Rasterises the favicon set
+  generate-og.mjs           Builds og.png
+  generate-placeholders.mjs Writes missing image slot placeholders
+  csp-hash.mjs              Fails the build if the CSP hash is stale
+credits.md                  Font, icon and image licensing
 vercel.json                 Framework, output dir, security headers
 CLAUDE.md                   The brief. Its rules win over this file
 ```
@@ -424,7 +445,10 @@ back to a placeholder.
 
 ### Values that must be filled in
 
-**None. Nothing in `src/config/business.ts` blocks a launch.**
+**Two, both company social URLs:** `social.linkedin` and `social.instagram`
+in `src/config/business.ts`. Each icon in the top bar appears only once its
+URL is set, and the URL joins `sameAs` in the schema.org block. Facebook is
+`null`, so it ships without an icon.
 
 `legalName` is `ARAZ SCALES LLC`, matching the Texas Certificate of Formation.
 `phone` is the Google Voice line `+1-346-645-0919`. `state`, `city` and
@@ -491,17 +515,16 @@ decisions, not from a template, but check you are happy to keep them:
 ### Data and privacy audit
 
 - **Outbound requests on page load: none to any third party.** Measured on the
-  production build with `npm run preview`. The complete list is eight requests,
-  all to this origin:
+  production build with `npm run preview` and Lighthouse. The homepage makes
+  these requests, all to this origin:
 
   1. the HTML document
-  2. `/_astro/Base.*.css`
-  3. `/_astro/index.*.css`
-  4. `/fonts/archivo-latin-variable.woff2`
-  5. `/fonts/jetbrains-mono-latin-500.woff2`
-  6. `/logo-mark.png`
-  7. `/_astro/Base.astro_astro_type_script_*.js` (reveals and the typewriter)
-  8. `/_astro/ContactForm.astro_astro_type_script_*.js` (form validation)
+  2. `/_astro/Base.*.css` (the one stylesheet)
+  3. `/fonts/archivo-latin-variable.woff2`
+  4. `/_astro/Base.astro_astro_type_script_*.js` (the one script)
+  5. `/logo-mark.png`, `/icon.svg`, `/site.webmanifest`
+  6. `/assets/img/hero.webp`, then each other slot as it nears the viewport
+     (they are `loading="lazy"`)
 
   No font CDN, no analytics, no pixel, no embed. Re-run the measurement if you
   add anything to `<head>`.
@@ -530,11 +553,13 @@ and nothing is a claim about results.
 
 | Number | Where | Basis |
 | --- | --- | --- |
-| `$300` | Hero, price section, FAQ, `/terms` | Our price |
+| `$100` | Services band, price section, FAQ, `/refunds`, `/terms` | Our price for a landing page |
+| `$300` | Hero, who we are, services band, price section, FAQ, `/terms` | Our price |
 | `$150` and `$150` | FAQ, `/refunds`, `/terms` | Our payment split |
 | `$500` | Price section, `/refunds`, `/terms` | Our price |
 | Five pages | Price section, `/terms` | What the website deliverable is |
-| Two weeks | Hero, price section, FAQ, `/terms` | Our delivery commitment |
+| Two weeks | Hero, who we are, why us, price section, FAQ, `/terms` | Our delivery commitment for a website |
+| One week | Hero, why us, price section, FAQ | Our delivery commitment for a landing page |
 | Eight posts a month | Price section, `/refunds`, `/terms` | Our deliverable volume. **Confirm this one**, see above |
 | Two rounds of changes | FAQ, `/terms` | Our revision policy |
 | Two business days | FAQ, contact, `/privacy`, `/refunds` | Our reply commitment |
@@ -547,6 +572,7 @@ and nothing is a claim about results.
 | Thirteen | `/privacy` | Standard children's privacy age |
 | Thirty minutes | Process step 1 | Length of the first call |
 | 1 to 5 | Process steps | Sequence markers, the only place numbering is used |
+| Three founders | Who we are, founders | There are three of us |
 | 2026 | Footer, policy dates | Computed from the build date, and `policiesUpdated` |
 
 **One number to look at again.** The FAQ says "We would rather charge $300 and
@@ -558,10 +584,9 @@ second half of the sentence. It is in `src/content/site.ts` under `faq`.
 
 ### Not built, and worth a decision
 
-- **No 404 page.** `CLAUDE.md` section 7 says to ask before adding any page not
-  on its list, so this was left alone rather than assumed. Without one, a bad
-  URL gets Vercel's default error page. A one screen 404 pointing back at the
-  homepage would take ten minutes.
+- **Founder bios.** Each founder card has a `<!-- BIO: fill in -->` slot that
+  renders nothing. Add a real bio there once each person has written or
+  approved one. Do not invent one.
 
 ### Still to verify by hand
 
@@ -569,28 +594,29 @@ second half of the sentence. It is in `src/content/site.ts` under `faq`.
   in `.env.local`, but confirming a real email arrives means submitting the live
   form, which posts a real message to your inbox. Do that once after the first
   deploy.
-- **The site is not yet serving from arazscales.com over HTTPS.** That needs
-  the deploy and the DNS records above.
-- **The domain spelling is still unconfirmed.** Everything in the repo uses
-  `arazscales.com`, plural: the canonical URLs, `robots.txt`, `astro.config.mjs`
-  and the `support@` mailbox. The singular `arazscale.com` appears only in the
-  supplied logo file's wordmark, which is cropped out and never shown. Confirm
-  which spelling DNS actually points at before launch, and register the other
-  one as a 301 either way. Nothing in the code should change until that is
-  settled.
+- **The live site is an older build.** `arazscale.com` serves from Vercel
+  over HTTPS today, but the build on it predates the LLC name, the phone
+  number, the $100 tier, the JSON-LD and the `support@` address (it still
+  shows the old contact address). The next deploy of this branch replaces it.
+- **The domain question is settled.** The website is `arazscale.com`,
+  singular, and email is `arazscales.com`, plural. Both are correct.
 - **The mailing address is not a launch item any more.** It is `null` by
   decision and the site ships without it. It does gate the first outreach
   email. See "Before any outreach email" above.
 - **The phone number is a temporary Google Voice line.** `+1-346-645-0919`
   rings all three of you. Replace it with a dedicated business line when there
   is one. It is a one-line change in `src/config/business.ts`.
-- **Lighthouse has not been run on this build.** The accessibility side was
-  checked with axe-core on all six pages, which came back with zero violations,
-  but performance needs a Lighthouse run against the deployed site rather than
-  against localhost, where the numbers are meaningless. Run it once the domain
-  is live and paste the result here.
-- **Reduced motion was verified in code, not on a device.** Every animation is
-  behind a `prefers-reduced-motion` check in both the CSS and the script, and
-  the script skips the work rather than hiding it, but nobody has yet loaded
-  the site on a machine with the OS setting actually turned on. Worth five
-  minutes in macOS System Settings, Accessibility, Display, Reduce motion.
+- **Lighthouse was run against `npm run preview` on localhost, October 2026.**
+  Homepage mobile: performance 98, accessibility 100, best practices 100, SEO
+  100. Homepage desktop and `/privacy` on both: 100 across the board. CLS 0 and
+  TBT 0 ms everywhere. Re-run against the live domain after deploy, where
+  compression and the CDN will differ.
+- **axe-core 4.14** on all six pages at 1440px and 375px, every FAQ open and
+  every animated element revealed: zero violations. The six "incomplete"
+  colour contrast items are the hero text over the image overlay, which axe
+  cannot measure through a pseudo element. They were computed by hand against
+  the worst case photo pixel, pure white: 9.10:1 for the headline and 4.88:1
+  for the muted price line.
+- **Reduced motion was verified in headless Chrome with
+  `--force-prefers-reduced-motion`,** not on a device. Worth five minutes in
+  macOS System Settings, Accessibility, Display, Reduce motion.

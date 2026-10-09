@@ -1,19 +1,19 @@
 ---
 /**
- * The shell every page uses: head, skip link, header, footer.
+ * The shell every page uses: head, info bar, header, footer.
  *
  * Outbound requests from a rendered page: none. No analytics, no pixel, no
- * font CDN, no embed. The only network call the browser makes beyond the HTML
- * is for our own stylesheet, our own two font files, our own icons and one
- * small bundled script, all from this origin. The contact form posts to
- * Formspree on submit, which is a user action and not a load time request.
- * CLAUDE.md section 4 requires that this stays true, so anything added here
- * needs checking against it.
+ * font CDN, no embed. The browser asks this origin for the HTML, one
+ * stylesheet, one font file, one script, the logo, the icons and the images
+ * on the page, and nothing else. The contact form posts to Formspree on
+ * submit, which is a user action and not a load time request. CLAUDE.md
+ * section 4 requires that this stays true.
  */
 import "../styles/global.css";
 import { business, real, phoneDisplay, phoneHref } from "../config/business";
 import { site } from "../content/site";
 import Wordmark from "../components/Wordmark.astro";
+import Icon from "../components/Icon.astro";
 
 interface Props {
   title: string;
@@ -37,10 +37,27 @@ const legal = site.footer.legalLinks;
 const phone = phoneDisplay();
 const tel = phoneHref();
 /* The copyright line names the entity, not the brand, because that is the
-   line that asserts who owns the thing. Falls back to the trading name while
-   no entity is filed, so the footer never prints the placeholder. */
+   line that asserts who owns the thing. */
 const owner = real(business.legalName) ?? business.name;
 const year = new Date().getFullYear();
+const place = `${business.city}, ${business.state}`;
+
+/* On the homepage the nav is in-page anchors. Anywhere else it points back
+   at the homepage section. */
+const anchor = (href: string) => (path === "/" ? href : `/${href}`);
+
+/* Only profiles with a real URL get an icon. An unset one renders nothing,
+   so there is never a dead "#" link in the bar. */
+const socialLabels = {
+  linkedin: "LinkedIn",
+  instagram: "Instagram",
+  facebook: "Facebook",
+} as const;
+const socials = (Object.keys(socialLabels) as (keyof typeof socialLabels)[])
+  .map((key) => ({ key, url: real(business.social[key]), label: socialLabels[key] }))
+  .filter((entry): entry is { key: keyof typeof socialLabels; url: string; label: string } =>
+    entry.url !== null
+  );
 ---
 
 <!doctype html>
@@ -48,6 +65,25 @@ const year = new Date().getFullYear();
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!--
+      Marks the document as scripted before the first paint, so the CSS can
+      put animated elements in their starting position without a flash. With
+      JavaScript off this never runs, the class is never set, and every
+      element renders in place.
+
+      It also carries a fail-safe. If site.js has not checked in within four
+      seconds (blocked, failed, or a very slow connection), the class comes
+      off again and everything shows, rather than the page sitting there
+      with hidden sections.
+
+      Inline, so it is allowed by its SHA-256 hash in the Content Security
+      Policy in vercel.json rather than by 'unsafe-inline'. Changing a single
+      character here changes the hash: re-run `npm run csp-hash` and paste
+      the result into vercel.json, or the browser will block it.
+    -->
+    <script is:inline>document.documentElement.classList.add("js");setTimeout(function(){if(!window.ARAZ_READY)document.documentElement.classList.remove("js")},4000);</script>
+
     <title>{title}</title>
     <meta name="description" content={description} />
     {
@@ -60,9 +96,6 @@ const year = new Date().getFullYear();
       )
     }
 
-    <!-- Same origin. Archivo is on the critical path for every heading, so it
-         is preloaded. The mono is not: it only sets small labels, and
-         preloading both would make them compete for the first connection. -->
     <link
       rel="preload"
       href="/fonts/archivo-latin-variable.woff2"
@@ -76,38 +109,8 @@ const year = new Date().getFullYear();
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Matches the header's ground, so the phone's own chrome continues the
-         page instead of capping it with a light bar. -->
-    <meta name="theme-color" content="#141E29" />
-
-    <!--
-      The scroll reveal starts elements at zero opacity, and the script that
-      reveals them cannot run without JavaScript. Both guards below put every
-      element back to its finished state in that case, so the page is fully
-      readable with scripting off rather than blank.
-
-      Two of them because they cover different failures: `scripting: none` is
-      the modern query and handles a browser with JS disabled, `noscript`
-      handles the same case in older browsers. An inline <style> is used rather
-      than an inline <script> because the Content Security Policy in
-      vercel.json allows 'unsafe-inline' for styles and not for scripts.
-    -->
-    <style>
-      @media (scripting: none) {
-        [data-reveal] {
-          opacity: 1;
-          transform: none;
-        }
-      }
-    </style>
-    <noscript>
-      <style>
-        [data-reveal] {
-          opacity: 1;
-          transform: none;
-        }
-      </style>
-    </noscript>
+    <!-- Matches the header, so the phone's own chrome continues it. -->
+    <meta name="theme-color" content="#0A0E1A" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={business.name} />
@@ -123,8 +126,6 @@ const year = new Date().getFullYear();
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={site.meta.shareImageAlt} />
 
-    <!-- summary, the previous value, renders a small square thumbnail and
-         would crop this card to its middle. -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={shareImage} />
     <meta name="twitter:image:alt" content={site.meta.shareImageAlt} />
@@ -139,16 +140,81 @@ const year = new Date().getFullYear();
   <body>
     <a class="skip" href="#main">Skip to main content</a>
 
+    <!-- ------------------------------------------------------- info bar -->
+    <!-- A labelled landmark, so its contents are not orphaned outside every
+         region of the page. -->
+    <aside class="topbar" aria-label="Contact details">
+      <div class="wrap topbar-inner">
+        <ul class="topbar-info">
+          <li>
+            <Icon name="mail" />
+            <a href={`mailto:${business.email}`}>{business.email}</a>
+          </li>
+          <li>
+            <Icon name="map-pin" />
+            <span>{place}</span>
+          </li>
+        </ul>
+
+        {
+          socials.length > 0 && (
+            <ul class="social" aria-label="ARAZ Scales on social media">
+              {socials.map((entry) => (
+                <li>
+                  <a
+                    href={entry.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${business.name} on ${entry.label} (opens in new tab)`}
+                  >
+                    <Icon name={entry.key} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+    </aside>
+
+    <!-- --------------------------------------------------------- header -->
     <header class="header">
       <div class="wrap header-inner">
         <Wordmark href="/" />
-        <nav class="nav" aria-label="Sections of this page">
-          {
-            site.nav.map((item) => (
-              <a href={path === "/" ? item.href : `/${item.href}`}>{item.label}</a>
-            ))
-          }
+
+        <!-- Hidden until site.js runs, and only shown below the desktop
+             breakpoint. Without JavaScript the links simply sit in a row of
+             their own under the logo, so nothing is ever unreachable. -->
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="Menu"
+        >
+          <Icon name="menu" class="icon-open" />
+          <Icon name="x" class="icon-close" />
+        </button>
+
+        <nav class="nav" id="site-nav" aria-label="Main">
+          <ul>
+            {
+              site.nav.map((item) => (
+                <li>
+                  <a href={anchor(item.href)}>{item.label}</a>
+                </li>
+              ))
+            }
+          </ul>
         </nav>
+
+        <!-- After the nav in the source, so Tab goes from the menu button
+             straight into the links it opens. On a desktop it is last in
+             the row anyway. Between 40rem and 64rem it is pulled forward
+             visually to sit beside the menu button. -->
+        <a class="button button-primary header-cta" href={anchor("#contact")}>
+          {site.hero.action}
+        </a>
       </div>
     </header>
 
@@ -156,221 +222,72 @@ const year = new Date().getFullYear();
       <slot />
     </main>
 
-    <footer class="footer band">
-      <div class="wrap footer-wrap">
-        <div class="footer-top">
-          <div class="stack" style="--flow: 0.5rem">
+    <!-- --------------------------------------------------------- footer -->
+    <footer class="footer theme-dark">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div class="footer-brand">
             <Wordmark />
-            <p class="small muted">
-              {business.city}, {business.state}
-            </p>
+            <p class="muted small">{site.footer.description}</p>
           </div>
 
-          <div class="stack" style="--flow: 0.375rem">
-            <p class="small">
-              <a class="link" href={`mailto:${business.email}`}>{business.email}</a>
-            </p>
-            {
-              phone && tel && (
-                <p class="small">
-                  <a class="link" href={tel}>{phone}</a>
-                </p>
-              )
-            }
+          <nav aria-labelledby="footer-links">
+            <h2 id="footer-links">Quick links</h2>
+            <ul class="footer-list">
+              {
+                site.nav.map((item) => (
+                  <li>
+                    <a href={anchor(item.href)}>{item.label}</a>
+                  </li>
+                ))
+              }
+            </ul>
+          </nav>
+
+          <div>
+            <h2>Contact</h2>
+            <ul class="footer-list">
+              <li>
+                <Icon name="mail" />
+                <a href={`mailto:${business.email}`}>{business.email}</a>
+              </li>
+              {
+                phone && tel && (
+                  <li>
+                    <Icon name="phone" />
+                    <a href={tel}>{phone}</a>
+                  </li>
+                )
+              }
+              <li>
+                <Icon name="map-pin" />
+                <span>{place}</span>
+              </li>
+            </ul>
           </div>
 
-          <nav class="footer-legal" aria-label="Policies">
-            {legal.map((item) => <a class="small" href={item.href}>{item.label}</a>)}
+          <nav aria-labelledby="footer-legal">
+            <h2 id="footer-legal">Legal</h2>
+            <ul class="footer-list">
+              {
+                legal.map((item) => (
+                  <li>
+                    <a href={item.href}>{item.label}</a>
+                  </li>
+                ))
+              }
+            </ul>
           </nav>
         </div>
 
         <p class="small muted footer-bottom">
-          &copy; {year} {owner}. {business.city}, {business.state}.
+          &copy; {year} {owner} &middot; {place}
         </p>
       </div>
     </footer>
 
-    <style>
-      .footer {
-        border-top: 1px solid var(--line);
-      }
-
-      .footer-wrap {
-        padding-block: clamp(2.5rem, 6vw, 4rem);
-      }
-
-      .footer-top {
-        display: grid;
-        gap: 2rem;
-      }
-
-      @media (min-width: 48rem) {
-        .footer-top {
-          grid-template-columns: 1fr auto auto;
-          gap: 3rem;
-          align-items: start;
-        }
-      }
-
-      .footer-legal {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem 1.25rem;
-      }
-
-      .footer-legal a {
-        color: var(--muted);
-        text-decoration: none;
-        transition: color 140ms ease;
-      }
-
-      .footer-legal a:hover {
-        color: var(--blue-bright);
-        text-decoration: underline;
-      }
-
-      .footer-bottom {
-        margin-top: 2.5rem;
-        padding-top: 1.25rem;
-        border-top: 1px solid var(--line);
-        /* p carries a 64ch measure globally, which would cut the divider rule
-           short of the footer's width. */
-        max-width: none;
-      }
-    </style>
-
     <script>
-      /* The page's only script besides the contact form.
-       *
-       * Two jobs: reveal sections as they scroll into view, and run the hero's
-       * rotating word. Both are decoration. Neither adds, removes or reorders
-       * any content, so the page is complete without it, and both are skipped
-       * outright when the visitor has asked for reduced motion.
-       *
-       * Bundled rather than inline so the Content Security Policy in
-       * vercel.json can stay at script-src 'self' with no 'unsafe-inline'.
-       */
-      (() => {
-        const reduced = window.matchMedia(
-          "(prefers-reduced-motion: reduce)"
-        ).matches;
-
-        /* ------------------------------------------------------- reveals */
-
-        const revealables = document.querySelectorAll("[data-reveal]");
-
-        /* Reveal everything at once rather than leaving it invisible. Used
-           when the visitor asked for no motion, and as the fallback on a
-           browser with no IntersectionObserver. */
-        const showAll = () => {
-          for (const el of revealables) el.setAttribute("data-shown", "");
-          for (const el of document.querySelectorAll(".timeline"))
-            el.setAttribute("data-shown", "");
-        };
-
-        /* `document.hidden` matters here and is not paranoia. A document that
-           is hidden, a tab opened in the background with a middle click, a
-           restored session, a prerender, gets no IntersectionObserver
-           callbacks at all: not deferred ones, none, even for an element
-           sitting in the middle of the viewport. Without this branch every
-           section would stay at zero opacity until the visitor switched to
-           the tab, which is a blank page for as long as they take to get
-           there. Revealing up front costs nothing, because nobody is watching
-           an animation on a tab they are not looking at. */
-        if (reduced || document.hidden || !("IntersectionObserver" in window)) {
-          showAll();
-        } else {
-          const observer = new IntersectionObserver(
-            (entries) => {
-              for (const entry of entries) {
-                if (!entry.isIntersecting) continue;
-                entry.target.setAttribute("data-shown", "");
-                /* Once only. Nothing re-hides on the way back up, so
-                   scrolling a section past twice does not replay it. */
-                observer.unobserve(entry.target);
-              }
-            },
-            /* Fires a little before the element's top edge reaches the
-               bottom of the viewport, so a section has finished arriving by
-               the time it is properly on screen. */
-            { rootMargin: "0px 0px -12% 0px", threshold: 0.01 }
-          );
-
-          for (const el of revealables) observer.observe(el);
-
-          /* The process line draws itself on its own container rather than
-             per step, so the whole line is one stroke. */
-          for (const el of document.querySelectorAll(".timeline"))
-            observer.observe(el);
-        }
-
-        /* ------------------------------------------------- rotating word */
-
-        const rotator = document.getElementById("rotator");
-        if (!rotator || reduced) return;
-
-        let words;
-        try {
-          words = JSON.parse(rotator.dataset.words || "[]");
-        } catch {
-          return;
-        }
-        if (!Array.isArray(words) || words.length < 2) return;
-
-        const TYPE = 95;
-        const DELETE = 45;
-        const HOLD = 1600;
-        const GAP = 420;
-
-        let index = 0;
-        let letters = words[0].length;
-        let deleting = true;
-        let timer = 0;
-
-        const tick = () => {
-          const word = words[index];
-
-          if (deleting) {
-            letters -= 1;
-            if (letters <= 0) {
-              deleting = false;
-              index = (index + 1) % words.length;
-              rotator.textContent = "";
-              timer = window.setTimeout(tick, GAP);
-              return;
-            }
-          } else {
-            letters += 1;
-            if (letters >= word.length) {
-              rotator.textContent = word;
-              deleting = true;
-              timer = window.setTimeout(tick, HOLD);
-              return;
-            }
-          }
-
-          rotator.textContent = word.slice(0, letters);
-          timer = window.setTimeout(tick, deleting ? DELETE : TYPE);
-        };
-
-        /* Hold the first word a beat before anything moves, so the line reads
-           as a sentence before it starts behaving like an animation. */
-        timer = window.setTimeout(tick, 2200);
-
-        /* A background tab throttles timers and the word ends up mid-delete
-           when the visitor comes back. Stop on hide, restart clean on show. */
-        document.addEventListener("visibilitychange", () => {
-          if (document.hidden) {
-            window.clearTimeout(timer);
-          } else {
-            window.clearTimeout(timer);
-            rotator.textContent = words[index];
-            letters = words[index].length;
-            deleting = true;
-            timer = window.setTimeout(tick, HOLD);
-          }
-        });
-      })();
+      import "../scripts/site.js";
     </script>
   </body>
 </html>

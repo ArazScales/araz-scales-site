@@ -25,6 +25,9 @@ export function professionalService() {
   const landing = planById("landing");
   const website = planById("website");
   const retainer = planById("retainer");
+  const companyProfiles = Object.values(business.social)
+    .map(real)
+    .filter((url): url is string => url !== null);
 
   return {
     "@context": "https://schema.org",
@@ -68,10 +71,15 @@ export function professionalService() {
       name: business.city,
       containedInPlace: { "@type": "State", name: business.state },
     },
+    /* Company profiles. Only the ones with a real URL in business.social,
+       so an unset profile is absent rather than an empty string. Omitted
+       entirely while none is set. */
+    ...(companyProfiles.length ? { sameAs: companyProfiles } : {}),
     founder: founders.map((person) => ({
       "@type": "Person",
       name: person.name,
       jobTitle: person.owns,
+      sameAs: [person.linkedin],
     })),
     makesOffer: [
       {
