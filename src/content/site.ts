@@ -37,6 +37,19 @@ export const site = {
        nowhere else, in sentence case, not tracked out. */
     eyebrow: "Websites, content, ads",
 
+    /* The rotating line under the h1. Exactly the three words in the eyebrow
+       above, one at a time, because the three things we sell are the three
+       things worth cycling. Do not add a fourth unless we start selling one.
+
+       These render in place of the eyebrow above, one at a time. A screen
+       reader is given `eyebrow` instead, as one static phrase, because a word
+       replacing itself every two seconds is not something to announce.
+
+       The animation types and deletes these. With prefers-reduced-motion set,
+       or with JavaScript off, the first entry renders as static text, which is
+       why every entry has to work as the only one a visitor ever sees. */
+    rotate: ["websites", "content", "ads"],
+
     /* The one h1 on the page. It has to say what we do and who for, in a
        sentence somebody can finish reading at a red light. */
     heading: "We build websites for local businesses.",
@@ -47,8 +60,13 @@ export const site = {
        what the client ends up holding, both of which /terms commits to. */
     lede: "We write it, build it and hand it over in your name.",
 
-    /* Reads under the oversized price in the band. */
-    priceNote: "paid half up front. Live in two weeks.",
+    /* Reads under the oversized price in the band, so it opens mid sentence:
+       the figure above it is the subject. It names the landing page too, since
+       the hero was quoting one of three prices as though it were the only one.
+       Both payment structures are named, because "paid half up front" sitting
+       next to "$100" would otherwise read as though the $100 is split too. */
+    priceNote:
+      "paid half up front. Live in two weeks. A landing page is $100 in full and live in one week.",
     action: "Send message",
   },
 

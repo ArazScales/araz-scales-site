@@ -1,15 +1,19 @@
 /* ==========================================================================
    ARAZ Scales: design tokens and base styles.
 
-   The whole site is one document, not a stack of cards. Sections are separated
-   by full width hairlines the way rules separate lines on a printed work
-   order. Nothing is centred. Nothing animates on scroll.
+   The site is dark. A deep slate navy ground carries a faint blue grid, and
+   the brand blue from the logo mark is the lead colour. One warm accent,
+   amber, is rationed to three jobs and nothing else: prices, the primary
+   action, and the focus ring.
 
-   Palette: six named values, plus two variants used on the dark bands, where
-   `muted` fails contrast against `ink` at 1.59:1. The sixth value is the
-   brand accent and it is band-only, for the contrast reason recorded beside
-   it. Verified contrast ratios sit beside each token. Every pair that carries
-   text has been checked, including the disabled and placeholder states.
+   The growth motif in the mark drives the motion. Bars rise once on load in
+   the hero, the process line draws itself as it scrolls into view, and the
+   hollow ring node from the mark marks every section heading. Everything
+   honours prefers-reduced-motion.
+
+   Palette: nine named values. Verified contrast ratios sit beside each one.
+   Every pair that carries text has been checked, including the disabled,
+   placeholder, hover and focus states.
    ========================================================================== */
 
 @font-face {
@@ -25,71 +29,98 @@
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* One weight only. The mono is used for short uppercase labels, the hero's
+   rotating line and step numbers, never for body copy, so 500 alone covers
+   every appearance and a second weight would be 21KB for nothing. Self hosted
+   from our own origin like the Archivo: no Google Fonts call. */
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-latin-500.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   /* ---------------------------------------------------------------- colour */
-  --ink: #0a0e1a;      /* 17.65:1 on stock. Text, buttons, hero and footer band.*/
-  --stock: #f4f5f7;    /* Page ground. Cool paper, deliberately not white.    */
-  --field: #ffffff;    /* Inputs and price rows only. "Fill this in".         */
-  --muted: #565e70;    /* 5.96:1 on stock. Secondary text and input borders.  */
-  --rule: #c2c8d4;     /* 1.54:1 on stock. Hairlines. Reads as a printed rule.*/
 
-  /* The brand accent, sampled from the ARAZ mark itself rather than chosen.
-     The logo is the source of truth here: the mark is #039CD8 and must not be
-     recoloured, so the site moved to it instead of the other way round. An
-     earlier build used #3B9EFF, which is a visibly different blue and would
-     have sat a few hundred pixels from the mark in the hero band.
+  /* The three grounds, deepest first. `deep` carries the hero and the footer,
+     `bg` is the page, `surface` is anything raised off it: a card, a panel,
+     an input. They are close together on purpose. The separation between a
+     card and the page is carried by the border and the shadow, not by a big
+     jump in lightness, which is what keeps the page reading as one object
+     rather than a tray of tiles. */
+  --deep: #141e29;     /* 15.50:1 with text. Hero band and footer.           */
+  --bg: #1b2734;       /* 13.95:1 with text. Page ground.                    */
+  --surface: #223142;  /* 12.19:1 with text. Cards, panels, inputs.          */
 
-     It is a band-only colour and the restriction is not stylistic: on the ink
-     band it reaches 6.19:1 and carries text safely, but on `stock` it measures
-     2.85:1, which fails both the 4.5:1 text floor and the 3:1 non-text floor
-     of WCAG 1.4.11. So on the light ground it is never text, never a control
-     border, never a focus ring and never the only thing signalling a state.
-     Large light-ground moments use `ink` instead. */
-  --accent: #039cd8;   /* 6.19:1 on ink. Band only, see above.               */
+  --text: #f2f6fa;     /* Headings and body.                                 */
+  --muted: #a9b8c8;    /* 7.49:1 on bg, 6.54:1 on surface. Secondary text.   */
 
-  /* The accent washed into `stock` at 6%, for a section that needs to lift off
-     the page ground without becoming a card or a box. It is the one way the
-     accent is allowed to appear on the light half of the site, and it is
-     allowed precisely because it carries no text and no meaning: it is a
-     ground, and the rule above bans the accent as text, as a border and as a
-     focus ring, not as a tint.
+  /* Hairlines and card edges. 1.56:1 on bg, which is deliberate and is not a
+     contrast failure: WCAG 1.4.11 covers boundaries needed to identify a
+     control or its state, and nothing here is either. Every card is already
+     told apart from the page by its own ground, and no state anywhere is
+     signalled by a border colour alone. Raising this to 3:1 would put a hard
+     cage around every panel and lose the quiet the design depends on. */
+  --line: #33465b;
 
-     Derived, not picked. mix(#039cd8, #f4f5f7, 6%). Keeping it a literal hex
-     rather than a color-mix() is the same decision recorded for the two
-     on-ink variants above: axe-core cannot parse a computed
-     color(srgb ...) and reports every node over it as unverifiable.
+  /* The lead accent. Lifted off the mark's own #039CD8 to #29A8E9 so it clears
+     4.5:1 as text on all three grounds: the mark's blue only reaches 4.87:1 on
+     bg and 4.20:1 on surface, so it would have failed on a card. The mark
+     itself is never repainted, it stays #039CD8, and the two sit close enough
+     that the header logo and the header link beside it read as one colour. */
+  --blue: #29a8e9;     /* 5.68:1 on bg, 4.96:1 on surface.                   */
 
-     Text checked against it: ink 16.64:1, muted 5.62:1. Both clear AA, so no
-     colour had to be darkened to sit on it. */
-  --wash: #e6f0f5;     /* Section ground. Muted still reads 5.62:1 on it.    */
+  /* The same blue opened up, for small mono labels set at 0.75rem where the
+     stroke is thin, and for the growth line, which has to hold its own against
+     a glow. Clears AAA on every ground. */
+  --blue-bright: #4fbcf5; /* 7.10:1 on bg, 6.21:1 on surface.               */
 
-  /* Dark band variants. `muted` only reaches 1.59:1 against the new `ink`, so
-     the band needs its own secondary grey and its own divider.
+  /* The warm accent. Rationed to three jobs: the price figures, the primary
+     action fill, and the focus ring. It appears nowhere else, which is what
+     stops the page turning into a blue and orange stripe and what makes the
+     price and the button the two things your eye lands on first.
 
-     These are literal hex rather than color-mix() for the reason recorded
-     when the band was first built: a color-mix() resolves to color(srgb ...)
-     in the computed style, axe-core cannot parse that, and it reported the
-     footer text as a contrast violation plus 47 further nodes as
-     unverifiable. Two extra tokens are cheaper than an unverifiable pass. */
-  --muted-on-ink: #98a1b5; /* 7.43:1 on ink. Band secondary text.          */
-  --rule-on-ink: #2b3550;  /* Divider on the band. Non-text, visibility only.*/
+     Chosen over coral and gold on contrast: 8.28:1 on bg against coral's
+     6.49:1, which matters because our buyers read this on a phone outdoors. */
+  --amber: #ffb020;    /* 8.28:1 on bg. Ink on it, 9.88:1.                   */
+
+  /* Text that sits on a blue or amber fill. Darker than `deep` so it clears
+     AA on the blue, which is the tighter of the two at 6.77:1. White on either
+     fill fails: 2.24:1 on the blue, 1.63:1 on the amber. Never use it. */
+  --on-fill: #0e1720;
+
+  /* --------------------------------------------------------------- effects */
+
+  /* Glows are box-shadows, not gradients. That is not a dodge around the old
+     no-gradient rule, it is the right tool: a shadow spreads a colour outward
+     from the element's own shape, including a pill's round ends, which a
+     gradient cannot follow. */
+  --glow-blue: 0 0 0 1px rgba(41, 168, 233, 0.35), 0 6px 28px -6px rgba(41, 168, 233, 0.45);
+  --glow-amber: 0 6px 28px -8px rgba(255, 176, 32, 0.55);
+  --lift: 0 18px 40px -24px rgba(0, 0, 0, 0.9);
 
   /* ------------------------------------------------------------------ type */
   --family: "Archivo Variable", system-ui, "Segoe UI", Roboto, Helvetica, Arial,
     sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
 
-  /* Width axis does the work a second typeface would normally do. */
+  /* Width axis does the work a second display typeface would normally do. */
   --width-display: 108;
   --width-body: 100;
 
   /* ---------------------------------------------------------------- metric */
-  --radius: 2px;          /* Square-ish, and the same everywhere. No pills.  */
+  --radius: 6px;          /* Panels and inputs. Buttons are pills, see below.*/
   --measure: 64ch;        /* Reading width for body copy.                    */
   --wrap: 72rem;
   --gutter: clamp(1.25rem, 5vw, 4rem);
-  --col-label: clamp(9rem, 18vw, 15rem);  /* The left question column.       */
-  --record-gap: clamp(1.5rem, 5vw, 4rem);
-  --band: clamp(3.5rem, 9vw, 7rem);       /* Vertical rhythm between records.*/
+  --band: clamp(3.5rem, 9vw, 6.5rem);     /* Vertical rhythm between rows.   */
+  --node: 0.75rem;                        /* The ring marker from the mark.  */
 }
 
 /* ------------------------------------------------------------------- reset */
@@ -102,25 +133,32 @@
 
 html {
   /* Anchor links land below the sticky header instead of under it. */
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
+  /* Tells the browser to paint form controls, scrollbars and the overscroll
+     area dark, so nothing flashes white at the edges of the page. */
+  color-scheme: dark;
 }
 
 body {
   margin: 0;
-  background: var(--stock);
-  color: var(--ink);
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--family);
   font-variation-settings: "wdth" var(--width-body);
   font-size: 1.0625rem;
   line-height: 1.6;
-  /* Kept off `optimizeLegibility` so nothing shifts once the font lands. */
   text-rendering: optimizeSpeed;
+  /* Belt and braces against a horizontal scrollbar at 320px. Nothing should
+     overflow, but a glow or a wide figure must never be able to widen the
+     document if one slips through. */
+  overflow-x: hidden;
 }
 
 h1,
 h2,
 h3,
+h4,
 p,
 ul,
 ol,
@@ -149,6 +187,7 @@ video {
 h1,
 h2,
 h3,
+h4,
 .answer,
 .figure {
   font-variation-settings: "wdth" var(--width-display);
@@ -177,15 +216,15 @@ h3 {
   letter-spacing: -0.005em;
 }
 
-/* The right column's opening line. Answers the question in the left column.
-   Styled like a heading but not marked up as one, so the document keeps a
+/* The line that opens a section body and answers the heading beside it.
+   Styled like a heading but marked up as a paragraph, so the document keeps a
    clean h1 > h2 > h3 order. */
 .answer {
-  font-size: clamp(1.375rem, 3vw, 2rem);
-  font-weight: 650;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-  max-width: 34ch;
+  font-size: clamp(1.5rem, 3.2vw, 2.125rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
+  max-width: 24ch;
 }
 
 p {
@@ -212,6 +251,20 @@ p {
   font-variant-numeric: tabular-nums;
 }
 
+/* The mono label. Short, uppercase, tracked out, blue. It is the one place
+   letter-spacing goes positive on the site, because mono caps at this size
+   need the air. Used for section markers and card labels. */
+.mono {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-bright);
+  /* Mono digits are already tabular, but the fallback stack might not be. */
+  font-variant-numeric: tabular-nums;
+}
+
 /* ------------------------------------------------------------------ layout */
 
 .wrap {
@@ -220,40 +273,83 @@ p {
   padding-inline: var(--gutter);
 }
 
-/* A record: the question on the left, the answer on the right. Collapses to a
-   single left aligned column below 60rem. */
-.record {
-  display: grid;
-  gap: var(--record-gap);
+/* The faint grid. A repeating pair of hairlines at 1px, which reads as graph
+   paper behind the content rather than as a pattern you look at. Drawn on a
+   pseudo element so it can be masked, and masked so it fades out downward
+   instead of stopping on a hard edge.
+
+   The grid is inert: it is behind everything, it carries no meaning, and
+   removing it changes nothing but the texture. It is used on three sections
+   only, the hero, the contact form and the 404, because a texture that runs
+   the length of a long document stops being texture.
+
+   CONTRAST. axe cannot resolve the background of text sitting over a pseudo
+   element, so every node in these sections comes back as "incomplete" rather
+   than as a pass. It is not a failure and it was checked by hand instead. The
+   line is #4FBCF5 at 7%, so the worst case ground is that colour composited
+   over the section's own, and the mask only ever makes it fainter:
+
+     over --deep #141E29 -> #182937.  text 13.69:1, muted 7.34:1,
+                                      blue-bright 6.97:1, amber 8.13:1
+     over --bg   #1B2734 -> #1F3142.  text 12.23:1, muted 6.56:1,
+                                      blue-bright 6.23:1, amber 7.26:1
+
+   Every pair clears the 4.5:1 body floor directly on top of a grid line.
+   Re-run those numbers if the line colour or the 7% ever changes. */
+.grid-ground {
+  position: relative;
+  isolation: isolate;
+}
+
+.grid-ground::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(79, 188, 245, 0.07) 0 1px,
+      transparent 1px 72px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(79, 188, 245, 0.07) 0 1px,
+      transparent 1px 72px
+    );
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 92%);
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 92%);
+  pointer-events: none;
+}
+
+/* A row of the document. Full width, so its ground and its top hairline run
+   to both edges of the viewport. */
+.row {
   padding-block: var(--band);
 }
 
-@media (min-width: 60rem) {
-  .record {
-    grid-template-columns: var(--col-label) minmax(0, 1fr);
-  }
+.row + .row {
+  border-top: 1px solid var(--line);
 }
 
-/* Full bleed hairline between records. The structural device of the whole
-   page, which is why `rule` is dark enough to actually see. The rule sits on
-   the outer `.row`, not on the padded `.wrap` inside it, so it runs edge to
-   edge of the viewport the way a rule runs across a printed form. */
-.row + .row,
-.hairline {
-  border-top: 1px solid var(--rule);
+/* Section heading with the mark's ring node beside it. The node is the third
+   use of the growth motif and the only decoration that repeats. */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 1.5rem;
 }
 
-.record-label {
-  /* Sticks while its own record scrolls past, so the question stays with the
-     answer on a long section. Not an animation. */
-  align-self: start;
-}
-
-@media (min-width: 60rem) {
-  .record-label {
-    position: sticky;
-    top: 5.5rem;
-  }
+.section-head::before {
+  content: "";
+  flex: none;
+  width: var(--node);
+  height: var(--node);
+  border: 2px solid var(--blue);
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 0 0 0 4px rgba(41, 168, 233, 0.12);
 }
 
 .stack > * + * {
@@ -262,21 +358,22 @@ p {
 
 /* --------------------------------------------------------------- the price */
 
-/* The one bold thing. Larger than the h1, because the number is what the
-   visitor came for and every agency site hides it. */
+/* The figure. Still the loudest thing on the page, now in amber so the number
+   and the button are the two things the eye finds first. */
 .figure {
   display: block;
-  font-size: clamp(4rem, 13vw, 8.5rem);
+  font-size: clamp(3rem, 8vw, 4.5rem);
   font-weight: 750;
   font-variation-settings: "wdth" 112;
   font-variant-numeric: tabular-nums;
-  line-height: 0.82;
+  line-height: 0.85;
   letter-spacing: -0.045em;
+  color: var(--amber);
 }
 
 .figure-unit {
   display: block;
-  margin-top: 0.6rem;
+  margin-top: 0.5rem;
   font-size: 0.9375rem;
   font-weight: 600;
   color: var(--muted);
@@ -284,53 +381,81 @@ p {
 
 /* ----------------------------------------------------------------- actions */
 
+/* Pills, with a glow on the primary. The radius is a full round rather than a
+   number, so the shape holds at any height. */
 .button {
-  display: inline-block;
-  padding: 0.8125rem 1.375rem;
-  border: 1px solid var(--ink);
-  border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--stock);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8125rem 1.625rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
   font: inherit;
-  font-weight: 600;
+  font-weight: 650;
   font-variation-settings: "wdth" 104;
+  line-height: 1.2;
+  text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: background-color 120ms ease, color 120ms ease;
+  transition: background-color 140ms ease, border-color 140ms ease,
+    color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
 }
 
 .button:hover {
-  background: var(--stock);
-  color: var(--ink);
+  border-color: var(--blue);
+  box-shadow: var(--glow-blue);
 }
 
-/* The button as it appears on an ink band. The default ink fill would be
-   invisible there. Accent fill with ink text is 6.90:1; the reflex pairing,
-   white text on accent, is 2.79:1 and fails, so it is not used anywhere. */
-/* Selector note: `.band a` below sets link colour to `stock` at specificity
-   (0,1,1), which beats a bare `.button-accent` at (0,1,0) and silently
-   repainted this button as stock-on-accent, 2.30:1. axe caught it. The
-   `.band a` prefix here restores ink-on-accent at 6.19:1. Keep the prefix. */
-.band a.button-accent,
-.button-accent {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--ink);
+/* The primary action. Amber fill, dark ink, warm glow. There is one of these
+   per screenful at most and it always goes to the form. */
+.button-primary {
+  background: var(--amber);
+  border-color: var(--amber);
+  color: var(--on-fill);
+  box-shadow: var(--glow-amber);
 }
 
-.band a.button-accent:hover,
-.button-accent:hover {
-  /* ink on stock, 17.65:1. */
-  background: var(--stock);
-  border-color: var(--stock);
-  color: var(--ink);
+.button-primary:hover {
+  background: #ffc14d;       /* Ink on it, 11.48:1. Lighter, not darker.     */
+  border-color: #ffc14d;
+  color: var(--on-fill);
+  box-shadow: 0 8px 34px -6px rgba(255, 176, 32, 0.7);
+  transform: translateY(-1px);
+}
+
+/* The secondary action. Outlined in the brand blue, used for the LinkedIn and
+   site links on the founder cards, where three amber buttons in a row would
+   outshout the one that matters. */
+.button-secondary {
+  background: transparent;
+  border-color: var(--blue);
+  color: var(--blue-bright);   /* 7.10:1 on bg, 6.21:1 on surface.           */
+}
+
+.button-secondary:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: var(--on-fill);       /* 6.77:1.                                    */
+  box-shadow: var(--glow-blue);
+}
+
+.button-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
 }
 
 .button:disabled {
-  /* stock on muted is 5.96:1, so disabled text stays readable. */
+  /* on-fill on muted is 6.40:1, so disabled text stays readable, and the
+     cursor plus the flattened shadow say "disabled" without relying on the
+     colour change alone. */
   background: var(--muted);
   border-color: var(--muted);
-  color: var(--stock);
+  color: var(--on-fill);
+  box-shadow: none;
+  transform: none;
   cursor: not-allowed;
 }
 
@@ -344,32 +469,48 @@ a:hover {
   text-decoration-thickness: 2px;
 }
 
-/* Every interactive element gets the same visible ring. */
-:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
+/* An inline link inside body copy, where the underline is doing the work and
+   the colour is a second signal rather than the only one. */
+.link {
+  color: var(--blue-bright);
+  font-weight: 600;
+  text-decoration: underline;
 }
 
-/* On the dark band the ink ring would be invisible. */
-.band :focus-visible {
-  outline-color: var(--stock);
+/* Every interactive element gets the same ring. Amber, because it is the one
+   colour that clears AA against all three grounds at once: 8.28:1 on bg,
+   7.24:1 on surface, 9.21:1 on deep.
+
+   The 2px offset matters and is not cosmetic. Amber on the amber button fill
+   is 1.00:1 and on the blue fill 1.46:1, so a ring drawn flush against either
+   would vanish. The offset puts the ring on the page ground every time. */
+:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+.button:focus-visible {
+  /* Follows the pill rather than cutting its ends square. */
+  border-radius: 999px;
 }
 
 .skip {
   position: absolute;
   left: -9999px;
   top: 0;
-  z-index: 10;
-  padding: 0.75rem 1rem;
-  background: var(--ink);
-  color: var(--stock);
-  border-radius: var(--radius);
-  font-weight: 600;
+  z-index: 20;
+  padding: 0.75rem 1.25rem;
+  background: var(--amber);
+  color: var(--on-fill);
+  border-radius: 999px;
+  font-weight: 650;
+  text-decoration: none;
 }
 
 .skip:focus {
   left: var(--gutter);
-  top: 0.5rem;
+  top: 0.75rem;
 }
 
 /* ------------------------------------------------------------------ header */
@@ -377,9 +518,13 @@ a:hover {
 .header {
   position: sticky;
   top: 0;
-  z-index: 5;
-  background: var(--stock);
-  border-bottom: 1px solid var(--rule);
+  z-index: 10;
+  background: rgba(20, 30, 41, 0.88);
+  border-bottom: 1px solid var(--line);
+  /* Progressive. Where it is unsupported the 0.88 alpha still reads as a
+     solid bar against the page, so nothing becomes unreadable. */
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .header-inner {
@@ -398,6 +543,7 @@ a:hover {
   font-variation-settings: "wdth" 106;
   letter-spacing: -0.01em;
   text-decoration: none;
+  color: var(--text);
 }
 
 /* The global `img { height: auto }` reset would override the height attribute
@@ -411,13 +557,27 @@ a:hover {
 
 .nav {
   display: none;
-  gap: 1.5rem;
-  font-size: 0.9375rem;
+  align-items: center;
+  gap: 1.75rem;
+  font-family: var(--mono);
+  font-size: 0.75rem;
   font-weight: 500;
-  /* Lowercase in the presentation only. The labels stay sentence case in
+  letter-spacing: 0.1em;
+  /* Uppercase in the presentation only. The labels stay sentence case in
      src/content/site.ts, so the accessible name a screen reader announces is
      unaffected and the styling can be lifted in one line. */
-  text-transform: lowercase;
+  text-transform: uppercase;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 140ms ease;
+}
+
+.nav a:hover {
+  color: var(--blue-bright);
+  text-decoration: underline;
 }
 
 @media (min-width: 48rem) {
@@ -426,23 +586,10 @@ a:hover {
   }
 }
 
-/* ------------------------------------------------------------- dark band */
+/* ------------------------------------------------------------- deep band */
 
 .band {
-  background: var(--ink);
-  color: var(--stock);
-}
-
-.band a {
-  color: var(--stock);
-}
-
-.band .muted {
-  color: var(--muted-on-ink);
-}
-
-.band .divider {
-  border-top: 1px solid var(--rule-on-ink);
+  background: var(--deep);
 }
 
 /* ------------------------------------------------------------------- forms */
@@ -450,14 +597,13 @@ a:hover {
 .form {
   display: grid;
   gap: 1.125rem;
-  max-width: 34rem;
 }
 
 .field label {
   display: block;
   font-size: 0.9375rem;
-  font-weight: 600;
-  margin-bottom: 0.375rem;
+  font-weight: 650;
+  margin-bottom: 0.4375rem;
 }
 
 .field-optional {
@@ -468,14 +614,26 @@ a:hover {
 .field input,
 .field textarea {
   width: 100%;
-  padding: 0.6875rem 0.75rem;
-  border: 1px solid var(--muted);
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--field);
-  color: var(--ink);
+  background: var(--deep);
+  color: var(--text);
   font: inherit;
   /* iOS zooms the page on focus for anything under 16px. */
   font-size: 1rem;
+  transition: border-color 140ms ease, box-shadow 140ms ease;
+}
+
+.field input:hover,
+.field textarea:hover {
+  border-color: var(--muted);
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(41, 168, 233, 0.18);
 }
 
 .field textarea {
@@ -485,13 +643,21 @@ a:hover {
 
 .field input::placeholder,
 .field textarea::placeholder {
-  /* 6.50:1 on field. Placeholders are hints, never labels. */
+  /* 8.32:1 on the deep field ground. Placeholders are hints, never labels. */
   color: var(--muted);
   opacity: 1;
 }
 
+.field input:disabled,
+.field textarea:disabled {
+  /* Muted text on the field ground is 8.32:1, so a disabled field is still
+     readable rather than a grey smear, and the cursor says why. */
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
 .field-hint {
-  margin-top: 0.375rem;
+  margin-top: 0.4375rem;
   font-size: 0.875rem;
   color: var(--muted);
   max-width: none;
@@ -500,18 +666,19 @@ a:hover {
 /* Errors are announced, tied to their field, and say how to fix the problem.
    The left bar means the state is not carried by colour alone. */
 .field-error {
-  margin-top: 0.375rem;
-  padding-left: 0.5rem;
-  border-left: 3px solid var(--ink);
+  margin-top: 0.4375rem;
+  padding-left: 0.625rem;
+  border-left: 3px solid var(--amber);
   font-size: 0.875rem;
   font-weight: 600;
+  color: var(--amber);          /* 8.28:1 on bg, 7.24:1 on surface.          */
   max-width: none;
 }
 
 .field[data-invalid] input,
 .field[data-invalid] textarea {
   border-width: 2px;
-  border-color: var(--ink);
+  border-color: var(--amber);
 }
 
 /* Honeypot. Off screen rather than display:none, which some bots check for. */
@@ -544,6 +711,7 @@ a:hover {
 .prose h3 {
   margin-top: 1.75rem;
   margin-bottom: 0.5rem;
+  color: var(--blue-bright);
 }
 
 .prose p,
@@ -552,15 +720,46 @@ a:hover {
   max-width: none;
 }
 
+.prose a {
+  color: var(--blue-bright);
+  font-weight: 600;
+}
+
 .prose ul {
-  list-style: disc;
+  list-style: none;
   padding-left: 1.25rem;
   margin-bottom: 1.25rem;
+}
+
+/* A short blue rule rather than a disc, matching the deliverable lists on the
+   pricing cards so the whole site marks a list the same way. */
+.prose li {
+  position: relative;
+}
+
+.prose li::before {
+  content: "";
+  position: absolute;
+  left: -1.25rem;
+  top: 0.7em;
+  width: 0.5rem;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--blue);
 }
 
 .prose dt {
   font-weight: 700;
   margin-top: 1.25rem;
+}
+
+.prose code {
+  font-family: var(--mono);
+  font-size: 0.875em;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--blue-bright);
 }
 
 /* -------------------------------------------------------------- utilities */
@@ -576,8 +775,30 @@ a:hover {
   white-space: nowrap;
 }
 
-/* Hover and focus transitions are the only motion on the site. Honour the
-   preference anyway, since it costs one rule. */
+/* ---------------------------------------------------------------- motion */
+
+/* Scroll reveal. The element starts shifted and transparent, and a single
+   IntersectionObserver in Base.astro sets data-shown once it enters the
+   viewport. It never runs backwards, so nothing re-animates on scroll up.
+
+   Written so that if the script never runs, for any reason, every element is
+   visible: the observer adds the hidden state itself on init rather than it
+   being in the markup. See the no-js guard below. */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 520ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal][data-shown] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Honour the preference for real. The reveals, the bar rise, the line draw and
+   the typewriter all check this in script as well, so the motion is not run
+   and then hidden: it never starts. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -586,5 +807,14 @@ a:hover {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .button-primary:hover {
+    transform: none;
   }
 }

@@ -3,10 +3,13 @@
  * Terms and Conditions. Draft. Needs a human read before launch.
  *
  * The entity paragraph adapts to whether business.legalName is still a
- * placeholder. Right now no entity is filed, so the page says so plainly
- * rather than naming a company that does not exist. The moment an LLC is
- * registered, filling in legalName in src/config/business.ts switches this
- * page to the corporate wording.
+ * placeholder. ARAZ SCALES LLC is now filed, so the corporate branch is the
+ * one that renders: the page names the LLC as the contracting party and reads
+ * it from the config rather than from a string typed in here.
+ *
+ * The partnership branch below is kept rather than deleted. It is the correct
+ * wording if legalName is ever emptied, and leaving it in place means the
+ * page can never silently claim an entity that does not exist.
  */
 import Legal from "../layouts/Legal.astro";
 import { business, real } from "../config/business";

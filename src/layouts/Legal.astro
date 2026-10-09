@@ -10,7 +10,7 @@
  * the README before launch.
  */
 import Base from "./Base.astro";
-import { business, real } from "../config/business";
+import { business, real, phoneDisplay, phoneHref } from "../config/business";
 
 interface Props {
   title: string;
@@ -24,7 +24,13 @@ interface Props {
 
 const { title, description, path, heading, standfirst } = Astro.props;
 const address = real(business.address);
-const phone = real(business.phone);
+const phone = phoneDisplay();
+const tel = phoneHref();
+/* These pages are issued by the entity, not by the brand, so the line below
+   the heading names it. Omitted entirely while no entity is filed, rather
+   than falling back to the trading name, because a policy page that names a
+   company is making a statement about who is bound by it. */
+const legalName = real(business.legalName);
 ---
 
 <Base title={title} description={description} path={path}>
@@ -32,8 +38,11 @@ const phone = real(business.phone);
     <div class="wrap legal">
       <div class="stack" style="--flow: 1rem">
         <h1>{heading}</h1>
-        <p class="lede">{standfirst}</p>
-        <p class="small muted">Last updated {business.policiesUpdated}.</p>
+        <p class="lede muted">{standfirst}</p>
+        <p class="small muted">
+          Last updated {business.policiesUpdated}.
+          {legalName && ` Issued by ${legalName}, registered in ${business.state}.`}
+        </p>
       </div>
 
       <div class="prose">
@@ -41,16 +50,22 @@ const phone = real(business.phone);
 
         <h2>How to reach us about this</h2>
         <p>
-          Email <a href={`mailto:${business.email}`}>{business.email}</a> and one
+          Email <a class="link" href={`mailto:${business.email}`}>{business.email}</a> and one
           of the three of us will answer. Put the name of the policy in the
           subject line so it reaches the right person quickly.
         </p>
-        {phone && <p>You can also call us on {phone}.</p>}
+        {
+          phone && tel && (
+            <p>
+              You can also call us on <a class="link" href={tel}>{phone}</a>.
+            </p>
+          )
+        }
         {address && <p>Post reaches us at {address}.</p>}
       </div>
 
       <p class="back">
-        <a href="/">Back to the homepage</a>
+        <a class="link" href="/">Back to the homepage</a>
       </p>
     </div>
   </section>
@@ -73,7 +88,7 @@ const phone = real(business.phone);
   .back {
     margin-top: 3rem;
     padding-top: 1.25rem;
-    border-top: 1px solid var(--rule);
+    border-top: 1px solid var(--line);
     font-weight: 600;
     max-width: none;
   }

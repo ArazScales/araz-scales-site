@@ -88,20 +88,57 @@ other. Which means the next item blocks this one.
 
 ## 7. Values the site still does not have
 
-These are literal `TODO_NEEDS_REAL_VALUE` placeholders in
-`src/config/business.ts`. The site omits each row rather than printing the
-marker, so nothing leaks, but each absence costs something:
+**None. Nothing in `src/config/business.ts` blocks the launch.**
 
-- **`legalName`.** No entity is filed, so `/terms` currently tells clients they
-  are contracting with the three of you personally. That is honest and it is
-  also unlimited personal liability. Filing an LLC with the Texas Secretary of
-  State and putting the name here switches the page to corporate wording.
-- **`phone`.** The process copy says "thirty minutes on the phone" and the form
-  asks the prospect for their number, but the site gives them no number to
-  call. A Google Voice line that rings all three of you closes that gap, and
-  the Business Profile above needs it.
-- **`address`.** Texas privacy law expects a physical contact point rather than
-  just an email. A mailbox service address is fine.
+`address` moved out of this list: it is `null` by decision rather than
+missing, the site ships without it, and it is now item 7b below because it
+gates outreach email rather than the launch.
+
+**Done, and no longer blocking:**
+
+- **`legalName`** is `ARAZ SCALES LLC`, matching the Texas Certificate of
+  Formation. `/terms` switched itself to the corporate wording: it now says
+  ARAZ Scales is a trade name of ARAZ SCALES LLC, registered in Texas, and
+  that the LLC is the contracting party. The four policy pages carry an
+  "Issued by" line, the footer copyright names the LLC, and the schema.org
+  block carries it as `legalName` alongside the brand as `name`. The all-caps
+  spelling with no comma is the filed name, so leave it alone.
+- **`phone`** is `+1-346-645-0919`, the Google Voice line that rings all three
+  of you. It shows as `(346) 645-0919` in the footer and on the policy pages,
+  and dials `+13466450919`. This is a stopgap: swap it for a dedicated
+  business line when you have one, which is a one-line change.
+
+Note for item 6 above: the Google Business Profile name, address and phone
+must be character for character identical to the site. The site now says
+`(346) 645-0919`, so use exactly that formatting in the Profile. The address
+is still the one blocker on that item, and it is the same mailbox that item 7b
+is waiting on.
+
+## 7b. Before any outreach email
+
+**This is the one that has a legal deadline attached, and it is not the
+launch.**
+
+CAN-SPAM requires every commercial email to carry the sender's valid physical
+postal address. We do not have one. The website is fine without it, because
+the address is not among the details `CLAUDE.md` section 3 requires on the
+site and `address` is `null` rather than a placeholder. **A cold email is not
+fine without it.**
+
+So the ordering is: the site can go live now, and the first outreach email
+cannot go out until there is a mailbox.
+
+- **Get a virtual mailbox.** A mailbox service address is fine, a PO box is
+  generally accepted, your home address is legal and a bad idea to publish.
+  Houston has several providers and this is a cheap monthly cost.
+- **Put it in `src/config/business.ts`** as a string in place of the `null`.
+  That is the whole code change. The postal line then appears on all four
+  policy pages and `streetAddress` appears in the schema.org block on its own.
+- **Then** the Google Business Profile in item 6 is unblocked too, since that
+  needs the same address and needs it to match the site exactly.
+
+Replying to somebody who filled in the contact form is not commercial email
+and is not affected. This is about cold outreach only.
 
 ## 8. After the first deploy
 

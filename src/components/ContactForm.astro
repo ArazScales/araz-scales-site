@@ -29,8 +29,10 @@ const endpoint = formId ? `https://formspree.io/f/${formId}` : undefined;
 ---
 
 <div class="stack" style="--flow: 1.5rem">
-  <p class="answer">{site.contact.heading}</p>
-  <p>{site.contact.intro}</p>
+  <div class="stack" style="--flow: 0.875rem">
+    <p class="answer">{site.contact.heading}</p>
+    <p class="muted">{site.contact.intro}</p>
+  </div>
 
   {
     !endpoint && (
@@ -38,136 +40,154 @@ const endpoint = formId ? `https://formspree.io/f/${formId}` : undefined;
         This form is not connected yet. Set <code>PUBLIC_FORMSPREE_ID</code> in
         <code>.env.local</code> and on the Vercel project, then rebuild. Until
         then, email
-        <a href={`mailto:${business.email}`}>{business.email}</a>.
+        <a class="link" href={`mailto:${business.email}`}>{business.email}</a>.
       </p>
     )
   }
 
-  <form
-    class="form"
-    id="contact-form"
-    method="POST"
-    action={endpoint}
-    novalidate
-  >
-    <div class="field" id="field-name">
-      <label for="name">{f.name.label}</label>
-      <input
-        id="name"
-        name="name"
-        type="text"
-        autocomplete={f.name.autocomplete}
-        required
-        disabled={!endpoint}
-        aria-describedby="error-name"
-      />
-      <p class="field-error" id="error-name" hidden></p>
-    </div>
+  <div class="contact-panel">
+    <form
+      class="form"
+      id="contact-form"
+      method="POST"
+      action={endpoint}
+      novalidate
+    >
+      <div class="field" id="field-name">
+        <label for="name">{f.name.label}</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          autocomplete={f.name.autocomplete}
+          required
+          disabled={!endpoint}
+          aria-describedby="error-name"
+        />
+        <p class="field-error" id="error-name" hidden></p>
+      </div>
 
-    <div class="field" id="field-email">
-      <label for="email">{f.email.label}</label>
-      <input
-        id="email"
-        name="email"
-        type="email"
-        autocomplete={f.email.autocomplete}
-        required
-        disabled={!endpoint}
-        aria-describedby="error-email"
-      />
-      <p class="field-error" id="error-email" hidden></p>
-    </div>
+      <div class="field" id="field-email">
+        <label for="email">{f.email.label}</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete={f.email.autocomplete}
+          required
+          disabled={!endpoint}
+          aria-describedby="error-email"
+        />
+        <p class="field-error" id="error-email" hidden></p>
+      </div>
 
-    <div class="field" id="field-business">
-      <label for="business">{f.businessName.label}</label>
-      <input
-        id="business"
-        name="business"
-        type="text"
-        autocomplete={f.businessName.autocomplete}
-        required
-        disabled={!endpoint}
-        aria-describedby="error-business"
-      />
-      <p class="field-error" id="error-business" hidden></p>
-    </div>
+      <div class="field" id="field-business">
+        <label for="business">{f.businessName.label}</label>
+        <input
+          id="business"
+          name="business"
+          type="text"
+          autocomplete={f.businessName.autocomplete}
+          required
+          disabled={!endpoint}
+          aria-describedby="error-business"
+        />
+        <p class="field-error" id="error-business" hidden></p>
+      </div>
 
-    <div class="field" id="field-phone">
-      <label for="phone">
-        {f.phone.label} <span class="field-optional">({f.phone.optional})</span>
-      </label>
-      <input
-        id="phone"
-        name="phone"
-        type="tel"
-        autocomplete={f.phone.autocomplete}
-        disabled={!endpoint}
-      />
-    </div>
+      <div class="field" id="field-phone">
+        <label for="phone">
+          {f.phone.label} <span class="field-optional">({f.phone.optional})</span>
+        </label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          autocomplete={f.phone.autocomplete}
+          disabled={!endpoint}
+        />
+      </div>
 
-    <div class="field" id="field-message">
-      <label for="message">{f.message.label}</label>
-      <textarea
-        id="message"
-        name="message"
-        required
-        disabled={!endpoint}
-        aria-describedby="hint-message error-message"></textarea>
-      <p class="field-hint" id="hint-message">{f.message.hint}</p>
-      <p class="field-error" id="error-message" hidden></p>
-    </div>
+      <div class="field" id="field-message">
+        <label for="message">{f.message.label}</label>
+        <textarea
+          id="message"
+          name="message"
+          required
+          disabled={!endpoint}
+          aria-describedby="hint-message error-message"></textarea>
+        <p class="field-hint" id="hint-message">{f.message.hint}</p>
+        <p class="field-error" id="error-message" hidden></p>
+      </div>
 
-    <!-- Honeypot. Off screen, never tabbable, hidden from assistive tech. -->
-    <div class="honeypot" aria-hidden="true">
-      <label for="_gotcha">Leave this field empty</label>
-      <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
-    </div>
+      <!-- Honeypot. Off screen, never tabbable, hidden from assistive tech. -->
+      <div class="honeypot" aria-hidden="true">
+        <label for="_gotcha">Leave this field empty</label>
+        <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+      </div>
 
-    <div class="submit-row">
-      <button class="button" type="submit" disabled={!endpoint}>
-        {site.contact.submit}
-      </button>
-      <p class="form-note">
-        {site.contact.consent}{" "}
-        <a href="/privacy">{site.contact.consentLinkLabel}</a>.
-      </p>
-    </div>
-  </form>
+      <div class="submit-row">
+        <button class="button button-primary" type="submit" disabled={!endpoint}>
+          {site.contact.submit}
+        </button>
+        <p class="form-note">
+          {site.contact.consent}{" "}
+          <a class="link" href="/privacy">{site.contact.consentLinkLabel}</a>.
+        </p>
+      </div>
+    </form>
 
-  <!-- Submission outcome. Empty until something happens, so screen readers do
-       not announce anything on load. -->
-  <div
-    id="form-status"
-    class="status"
-    hidden
-    data-success-heading={site.contact.success.heading}
-    data-success-body={site.contact.success.body}
-    data-error-heading={site.contact.error.heading}
-    data-error-body={site.contact.error.body}
-  >
-    <p class="answer" id="status-heading"></p>
-    <p id="status-body"></p>
+    <!-- Submission outcome. Empty until something happens, so screen readers do
+         not announce anything on load. -->
+    <div
+      id="form-status"
+      class="status"
+      hidden
+      data-success-heading={site.contact.success.heading}
+      data-success-body={site.contact.success.body}
+      data-error-heading={site.contact.error.heading}
+      data-error-body={site.contact.error.body}
+    >
+      <p class="answer" id="status-heading"></p>
+      <p id="status-body"></p>
+    </div>
   </div>
 </div>
 
 <style>
+  /* The form sits in its own panel, the way the pricing and founder cards do,
+     so the one thing the whole page routes to reads as an object rather than
+     as text at the bottom of a scroll. */
+  .contact-panel {
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: var(--lift);
+    max-width: 38rem;
+  }
+
   .setup-notice {
     padding: 0.875rem 1rem;
-    border: 2px solid var(--ink);
+    border: 1px solid var(--amber);
+    border-left-width: 3px;
     border-radius: var(--radius);
-    background: var(--field);
+    background: var(--deep);
     font-size: 0.9375rem;
-    max-width: 34rem;
+    max-width: none;
   }
 
   .setup-notice code {
-    font-size: 0.875rem;
+    font-family: var(--mono);
+    font-size: 0.8125rem;
+    color: var(--blue-bright);
   }
 
   .submit-row {
     display: grid;
     gap: 1rem;
-    align-items: start;
+    align-items: center;
+    margin-top: 0.25rem;
   }
 
   @media (min-width: 34rem) {
@@ -177,15 +197,41 @@ const endpoint = formId ? `https://formspree.io/f/${formId}` : undefined;
     }
   }
 
+  .submit-row .button {
+    /* Full width on a phone, where a button the width of your thumb beside a
+       paragraph is the thing people miss. */
+    width: 100%;
+  }
+
+  @media (min-width: 34rem) {
+    .submit-row .button {
+      width: auto;
+    }
+  }
+
+  /* Success and failure. The left bar carries the outcome as well as the
+     colour, and the heading is focused after a send so a screen reader lands
+     on it rather than on an empty form. */
   .status {
-    padding: 1.25rem;
-    border-left: 3px solid var(--ink);
-    background: var(--field);
-    max-width: 34rem;
+    /* No outer border: it sits inside the panel, which already has one, and a
+       box drawn inside a box reads as a mistake. The left bar alone carries
+       the outcome. */
+    padding: 0.25rem 0 0.25rem 1rem;
+    border-left: 3px solid var(--blue);
+    max-width: none;
+  }
+
+  .status[data-kind="error"] {
+    border-left-color: var(--amber);
   }
 
   .status p + p {
     margin-top: 0.5rem;
+    color: var(--muted);
+  }
+
+  .status .answer {
+    font-size: clamp(1.25rem, 2.6vw, 1.5rem);
   }
 </style>
 
@@ -277,6 +323,9 @@ const endpoint = formId ? `https://formspree.io/f/${formId}` : undefined;
       statusHeading.textContent = status.dataset[`${kind}Heading`];
       statusBody.textContent = status.dataset[`${kind}Body`];
       status.setAttribute("role", kind === "success" ? "status" : "alert");
+      /* Drives the colour of the left bar. The bar is a second signal: the
+         heading and body already say which outcome this is in words. */
+      status.dataset.kind = kind;
       status.hidden = false;
     }
 

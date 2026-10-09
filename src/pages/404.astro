@@ -24,7 +24,7 @@ const copy = site.notFound;
   path="/404"
   noindex
 >
-  <section class="row">
+  <section class="row grid-ground">
     <div class="wrap notfound">
       <div class="stack" style="--flow: 1rem">
         <h1>{copy.heading}</h1>
@@ -32,8 +32,8 @@ const copy = site.notFound;
       </div>
 
       <p class="actions">
-        <a class="button" href="/">{copy.home}</a>
-        <a class="alt" href="/#contact">{copy.contact}</a>
+        <a class="button button-primary" href="/">{copy.home}</a>
+        <a class="link" href="/#contact">{copy.contact}</a>
       </p>
     </div>
   </section>
@@ -55,7 +55,7 @@ const copy = site.notFound;
     max-width: none;
   }
 
-  .alt {
-    font-weight: 600;
+  .notfound .lede {
+    color: var(--muted);
   }
 </style>

@@ -27,14 +27,30 @@ These are non-negotiable. If a rule conflicts with something you'd normally do, 
 
 **Never put these on the site:**
 
-- Purple gradients. No gradient as decoration anywhere.
+- Purple gradients. No gradient as a decorative colour blend anywhere. The one
+  permitted use is the faint blue grid on the hero, the contact section and the
+  404, which is a `repeating-linear-gradient` drawing 1px hairlines plus a
+  `linear-gradient` mask that fades it out. That is a texture, not a colour
+  wash, and it is the only gradient in the stylesheet. Anything that blends two
+  colours across a shape is still banned.
 - Vague hero text. No "Elevate your digital presence" or "We help brands grow." The hero must say literally what we do and who for.
 - Fake counters or animated number tickers.
 - Fake reviews or testimonials. Not as placeholders, not as "example" content, not commented out for later.
 - Fake metrics. No "500+ clients," no "3x average ROI," no invented percentages.
 - Unsupported claims of any kind. Every factual statement on the site has to be something we could defend if a client asked us to prove it. No "guaranteed results," no "#1 in Texas," no "industry leading," no implied certifications or partnerships we don't have.
-- Scroll animations. No fade-and-slide-up on every section. No parallax. No scroll-triggered reveals.
-- Pill-shaped buttons. Use square or slightly rounded corners, and keep the radius consistent with the rest of the design.
+- Parallax. Still banned outright.
+- Scroll reveals are permitted, at the level currently built and no further: a
+  section fades up 12px once as it enters the viewport, never replaying on the
+  way back up, and the process timeline draws its growth line once. They are
+  driven by a single IntersectionObserver that unobserves each element after it
+  fires. Every one is skipped, not merely hidden, under
+  `prefers-reduced-motion`, and the page renders complete with JavaScript off.
+  Do not add a second kind of reveal, and do not animate anything on a scroll
+  position rather than on a one-time entry.
+- Buttons are pills, `border-radius: 999px`, with a glow on the primary. Panels
+  and inputs use the flat `--radius` instead. Those are the only two radii on
+  the site and the split is deliberate: a control you press is round, a surface
+  you read is not. Keep it that way rather than introducing a third.
 - Emoji icons. No emoji anywhere in the UI or copy. If you need icons, use a real icon set with a permissive license and record the license in the README.
 - Cursor animations. No custom cursor, no cursor-following blobs, no magnetic buttons.
 - AI-generated images. Use real photos or no photos.
@@ -57,7 +73,7 @@ Every page below gets real content written for our actual situation, not lorem i
 - **`/refunds`**. Refund Policy. Covers both the $300 one-time website fee and the $500/month retainer, including deposit handling, what happens if a client cancels mid-build, and the notice period for cancelling the monthly retainer. Flag this one for me before you write it: I need to make the actual business decision, don't invent terms.
 - **`/cookies`**. Cookie Policy. Only meaningful if we actually set cookies. See section 4.
 
-**Real business details.** The site must show, at minimum: the full legal entity name, the state of registration, a real contact email on our own domain, and a real phone number. Do not invent any of these, and do not use a placeholder that could ship by accident. Put them in one config file (`src/config/business.ts` or equivalent) and pull them into the footer and legal pages from there. Where a value isn't finalized yet, leave it as the literal string `TODO_NEEDS_REAL_VALUE` so it fails an obvious grep before launch, and list every one of them in your handoff notes.
+**Real business details.** The site must show, at minimum: the full legal entity name, the state of registration, a real contact email on our own domain, and a real phone number. Do not invent any of these, and do not use a placeholder that could ship by accident. Put them in one config file (`src/config/business.ts` or equivalent) and pull them into the footer and legal pages from there. Where a value isn't finalized yet, leave it as the literal string `TODO_NEEDS_REAL_VALUE` so it fails an obvious grep before launch, and list every one of them in your handoff notes. Where we have decided to ship without a value, set it to `null` instead, which says "there is none" rather than "we forgot" and does not block a launch. Either way it is read through `real()` and the row is omitted, so nothing blank reaches a page. A postal address is deliberately not in the minimum list above: `address` is `null` and the site ships without one.
 
 **Local laws.** We are a Texas entity selling to Texas small businesses. Relevant considerations: Texas Deceptive Trade Practices Act (this is the real reason the "no unsupported claims" rule above matters), CAN-SPAM if we ever email marketing content from the site, and the Texas Data Privacy and Security Act. If the site is reachable from outside the US, note in your handoff whether anything we're doing would trigger GDPR or CCPA obligations, and if the answer is "only if we add analytics," say so plainly.
 
@@ -99,8 +115,18 @@ Before you write any code, produce a short design plan and show it to me. Do not
 
 The plan should cover:
 
-- **Palette:** 4 to 6 named hex values. Not purple. Not the warm-cream-plus-terracotta combination that every AI-designed site currently uses. Justify the choice against the audience, and confirm the pairs you intend to use pass contrast.
-- **Type:** one or two typefaces with clear roles. Pick deliberately. Avoid Inter as a reflex.
+- **Palette:** already decided and built. Deep slate navy grounds
+  (`#141E29` / `#1B2734` / `#223142`), white text, the brand blue `#29A8E9`
+  lifted off the mark's own `#039CD8` so it clears AA as text, and one warm
+  accent, amber `#FFB020`, rationed to prices, the primary action and the focus
+  ring. Every value and every verified ratio is recorded in
+  `src/styles/global.css`. Do not repaint the site. If a colour is added,
+  compute its contrast against all three grounds first and write the number
+  next to the token.
+- **Type:** two typefaces, both self hosted. Archivo for everything you read,
+  its width axis doing the work a display face would. JetBrains Mono at weight
+  500 for section labels, step numbers, the nav and the hero's rotating word,
+  and never for body copy.
 - **Layout:** a one-paragraph concept plus a rough ASCII wireframe of the homepage. State the alignment strategy.
 - **The one bold thing:** name the single element that carries the design. Everything else stays quiet.
 
@@ -113,7 +139,16 @@ Additional guardrails:
 - Do not accent one word in a headline with a different color or italics.
 - Do not use numbered markers (01 / 02 / 03) unless the content is genuinely a sequence. Our process section is a sequence, so numbering is fine there and nowhere else.
 - Do not append arrows to link and button text.
-- Motion: hover states and focus states only. One page-load moment at most, and only if it earns its place.
+- Motion, in full, and this is the whole budget:
+  1. Hover and focus states.
+  2. One page-load moment: the hero bars rise, the growth line draws and the
+     nodes appear, once.
+  3. The typewriter in the hero eyebrow, cycling the three things we sell.
+  4. The scroll reveals described in section 2.
+  Nothing else moves. Every one of the four is off under
+  `prefers-reduced-motion`, and the fourth also needs the page to be readable
+  with JavaScript disabled, which is what the `scripting: none` and `noscript`
+  blocks in `src/layouts/Base.astro` are for. Do not add a fifth.
 
 Performance floor: Lighthouse 95+ on performance and accessibility, no layout shift, images sized and lazy-loaded below the fold.
 
@@ -181,16 +216,31 @@ You are writing the copy. Treat it as part of the design.
 - [ ] Grep the whole repo for `—` and confirm zero results.
 - [ ] Grep for emoji and confirm zero results.
 - [ ] Every banned word from section 8 grepped and confirmed absent.
-- [ ] No gradient in any CSS file.
-- [ ] No `border-radius: 9999px` or `rounded-full` on any button.
-- [ ] No scroll-triggered animation of any kind.
+- [ ] Grep for `gradient` and confirm the only hits are the three that draw the
+      grid texture and its fade mask. No colour blend anywhere.
+- [ ] Every button is a pill and every panel and input is `--radius`. No third
+      radius anywhere.
+- [ ] Scroll reveals are the one-time fade-up and the timeline draw, nothing
+      else, and both are skipped under `prefers-reduced-motion`.
+- [ ] Load the homepage with JavaScript disabled and confirm every section is
+      visible and readable.
 - [ ] No testimonial, logo wall, review, or case study anywhere, including commented-out code.
 - [ ] Every number on the site is one we can prove. List them and their basis.
 - [ ] Every image and icon accounted for in `credits.md` with its source and license.
 
 **Legal and business**
 - [ ] `/privacy`, `/terms`, `/refunds`, `/cookies` all written, reachable from the footer of every page.
-- [ ] Grep for `TODO_NEEDS_REAL_VALUE` and list every hit so I can fill them in.
+- [ ] Run `grep -rnE "^[[:space:]]*[a-zA-Z_]+:[[:space:]]*TODO,?[[:space:]]*$" src/`
+      and list every hit so I can fill them in. An empty result means nothing
+      is blocking. Match field assignments rather than the bare string: the
+      fields are written `address: TODO,`, so searching for the literal value
+      finds only the constant's definition and reports clean while a field is
+      genuinely empty, and searching `:\s*TODO,` matches that definition too
+      and so never returns empty.
+- [ ] A field set to `null` is a decision to ship without it and does not
+      block. Only `TODO` blocks. `address` is `null`: we are launching with no
+      postal address. That is fine for the site and not fine for outreach
+      email, which needs one under CAN-SPAM.
 - [ ] Legal entity name, state, email, and phone all pulled from one config file.
 - [ ] Handoff note stating the policy pages are drafts needing legal review.
 

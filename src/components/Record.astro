@@ -1,60 +1,60 @@
 ---
 /**
- * One row of the document: the visitor's question on the left, the answer on
- * the right.
+ * One section of the homepage.
  *
- * The outer `.row` is full width and carries the hairline that separates this
- * record from the one above, so the rule runs to both edges of the viewport.
- * The inner `.wrap.record` holds the two column grid, which collapses to a
- * single left aligned column below 60rem.
+ * The old two column record put the visitor's question in a sticky left rail
+ * and the answer beside it. That layout gave a third of every row to a four
+ * word label and left the content in a narrow column, which is the wrong trade
+ * once the content is cards rather than paragraphs.
  *
- * The question is the section's h2. The answer line inside the slot is styled
- * like a heading but marked up as a paragraph, which keeps the document at a
- * clean h1 > h2 > h3.
+ * Now the question is a mono label across the top, marked with the hollow ring
+ * node lifted from the logo, and the body gets the full width beneath it. The
+ * props are unchanged, so the pages using this did not have to move.
  *
- * `wash` puts the section on the tinted ground rather than the page ground.
- * It is a prop rather than an id selector in global.css so that the decision
- * reads where the section is declared. Use it sparingly: the point of a
- * document made of hairlines is that one section lifting off the page means
- * something, and it stops meaning anything once two do.
+ * `deep` sits the section on the darker ground. Use it sparingly: the page is
+ * a run of hairline separated rows, and one section changing ground means
+ * something only while it is the only one that does.
  */
 interface Props {
   id: string;
   question: string;
-  /** Sit this record on `--wash` instead of the page ground. */
-  wash?: boolean;
+  /** Sit this section on the deeper ground instead of the page ground. */
+  deep?: boolean;
+  /** Draw the faint grid behind this section. Hero and contact only. */
+  grid?: boolean;
 }
-const { id, question, wash = false } = Astro.props;
+const { id, question, deep = false, grid = false } = Astro.props;
 ---
 
 <section
-  class:list={["row", { wash }]}
+  class:list={["row", { band: deep, "grid-ground": grid }]}
   id={id}
   aria-labelledby={`${id}-question`}
 >
-  <div class="wrap record">
-    <div class="record-label">
-      <h2 id={`${id}-question`}>{question}</h2>
-    </div>
-    <div class="record-body">
+  <div class="wrap">
+    <h2 class="section-head mono" id={`${id}-question`}>{question}</h2>
+    <div class="section-body">
       <slot />
     </div>
   </div>
 </section>
 
 <style>
-  /* Nothing here fights the grid in global.css. The body column just needs a
-     minimum width so long words do not force a horizontal scrollbar at 320px. */
-  .record-body {
+  /* The body column just needs a minimum width so a long unbroken word cannot
+     force a horizontal scrollbar at 320px. */
+  .section-body {
     min-width: 0;
   }
 
-  /* Full bleed, because the ground belongs to the whole row rather than to the
-     padded column inside it. The hairlines above and below are the existing
-     `.row + .row` rules and are left alone: they land on the tint's own edges
-     and read as the section being ruled off, which is what they already do
-     everywhere else. */
-  .wash {
-    background: var(--wash);
+  /* The h2 is set at mono label size, which is smaller than the `.answer`
+     line beneath it. That inverts the usual size hierarchy on purpose: the
+     question is a tab on a file, the answer is the content of it. The heading
+     order in the document is still correct, which is what a screen reader
+     and an outline tool read. */
+  .section-head {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.12em;
   }
 </style>
