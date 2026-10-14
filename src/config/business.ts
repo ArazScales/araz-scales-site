@@ -127,7 +127,7 @@ export const business = {
   },
 
   /** Last substantive edit to the policy pages. Shown at the top of each. */
-  policiesUpdated: "September 28, 2026",
+  policiesUpdated: "October 13, 2026",
 } as const;
 
 /**
@@ -214,7 +214,7 @@ export const founders: readonly Founder[] = [
     owns: "Meta ad creative",
     major: "Architecture student",
     detail:
-      "Builds the ad creative, tests it, tells you which cuts did better.",
+      "Builds the ads, runs the campaigns, tells you which ads did better.",
     linkedin: "https://www.linkedin.com/in/roshan-mohammad24/",
   },
   {

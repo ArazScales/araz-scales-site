@@ -106,9 +106,10 @@ and in the README under "Swap in real photos". When an image is replaced:
 3. Update its entry below with the source and licence.
 
 No image from texasroadside.org may be used, and nothing pulled from a search
-engine. Note that CLAUDE.md section 2 still says "AI-generated images. Use
-real photos": the three Gemini images below were added on Zain's explicit
-instruction on October 13, 2026, and that rule has not been updated.
+engine. CLAUDE.md section 2 allows AI-generated images for scenery and objects
+only, never people, client work, example websites or ads, or results. Each
+one is labeled below with the tool and date, and must carry no readable text,
+logos or license plates.
 
 ### Photo credits
 

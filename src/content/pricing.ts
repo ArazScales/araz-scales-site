@@ -123,19 +123,20 @@ export const plans: Plan[] = [
         timeline: "First drafts in your inbox within a week of starting.",
       },
       {
-        name: "Meta ad creative",
+        name: "Meta ad campaigns",
         summary:
-          "The images, video cuts and text that run in your Facebook and Instagram ads.",
+          "We build your Facebook and Instagram ads and run the campaigns in your Meta ad account.",
         includes: [
           "New ad creative every month, images and short video cuts",
           "The ad copy that runs with each one",
+          "We set up, run and adjust the campaigns in your Meta ad account",
           "A short note each month saying which ones got the most clicks",
         ],
         timeline: "First creative ready inside two weeks.",
       },
     ],
     excludes:
-      "We do not manage your ad account and we do not spend your budget. You keep the account and the card. We build what runs in it.",
+      "The money you spend on ads is not part of the $500. Meta charges it to your card, in your own ad account. You set the budget and you can stop it at any time.",
   },
 ];
 

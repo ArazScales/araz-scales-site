@@ -69,13 +69,18 @@ These are non-negotiable. If a rule conflicts with something you'd normally do, 
   surface you read is not.
 - Emoji icons. No emoji anywhere in the UI or copy. If you need icons, use a real icon set with a permissive license and record the license in the README.
 - Cursor animations. No custom cursor, no cursor-following blobs, no magnetic buttons.
-- AI-generated images. Use real photos, or the generated neutral placeholders
-  in `public/assets/img/` until real photos exist.
+- AI-generated images of anything except scenery and objects. AI images are
+  allowed for scenery and objects only: desks, devices, streets, abstract
+  scenes. Never AI-generate people, founders, team photos, client work,
+  example websites or ads, or anything presented as results or testimonials.
+  Every AI image must be labeled in `credits.md` with the tool and the date,
+  and must contain no readable text, no logos and no license plates (blur or
+  crop them out before it ships).
 - Em dashes. Not in headings, not in body copy, not in alt text. Use a period, a comma, or a colon.
 - Any "made with AI" or "built with" badge.
 - AI-sounding copy. See section 8.
 
-**Image sourcing:** every image on the site must be one we have the right to use. Real photos we took, or images from a source with a clear license (public domain, CC0, or a stock license we hold). No pulling images from Google, and nothing from texasroadside.org. For each image, record the source and license in a `credits.md` file in the repo. Until real photos exist, each slot in `src/content/images.ts` holds a flat neutral placeholder made by `npm run placeholders`, marked with a `PHOTO SLOT` comment in the markup, with empty alt text while it is a placeholder. These placeholders are intended and stay until real photos replace them.
+**Image sourcing:** every image on the site must be one we have the right to use. Real photos we took, images from a source with a clear license (public domain, CC0, or a stock license we hold), or AI-generated scenery and objects within the limits in the list above. No pulling images from Google, and nothing from texasroadside.org. For each image, record the source and license in a `credits.md` file in the repo. Until real photos exist, each slot in `src/content/images.ts` holds a flat neutral placeholder made by `npm run placeholders`, marked with a `PHOTO SLOT` comment in the markup, with empty alt text while it is a placeholder. These placeholders are intended and stay until real photos replace them.
 
 **Important honesty constraint:** ARAZ has no completed client work yet. That means no testimonials, no logo wall, no case studies, no "trusted by" strip, and no numbers we cannot prove. Build credibility a different way: be specific about process, pricing, and timeline. Design the layout so it looks finished and intentional without social proof, and so a testimonial section can be added later without a redesign.
 
@@ -249,6 +254,9 @@ You are writing the copy. Treat it as part of the design.
 - [ ] No testimonial, logo wall, review, or case study anywhere, including commented-out code.
 - [ ] Every number on the site is one we can prove. List them and their basis.
 - [ ] Every image and icon accounted for in `credits.md` with its source and license.
+- [ ] Every AI-generated image is scenery or objects only (no people, client
+      work, example websites or ads, or results), labeled in `credits.md`
+      with the tool and date, with no readable text, logos or license plates.
 
 **Legal and business**
 - [ ] `/privacy`, `/terms`, `/refunds`, `/cookies` all written, reachable from the footer of every page.

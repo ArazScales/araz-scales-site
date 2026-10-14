@@ -124,7 +124,7 @@ export function professionalService() {
         itemOffered: {
           "@type": "Service",
           name: retainer.name,
-          serviceType: "Social media content and advertising creative",
+          serviceType: "Social media content and Meta ad campaign management",
         },
       },
     ],

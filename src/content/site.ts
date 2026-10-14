@@ -187,7 +187,7 @@ export const site = {
       },
       {
         q: "What do you not do?",
-        a: "We do not run your ad account or spend your budget. We do not build online stores, booking systems or customer logins.",
+        a: "We do not pay for your ads. Your ad budget goes from your card straight to Meta, and you set it. We do not build online stores, booking systems or customer logins.",
       },
     ],
   },
