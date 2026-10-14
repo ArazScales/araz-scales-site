@@ -64,7 +64,8 @@ These are non-negotiable. If a rule conflicts with something you'd normally do, 
   on a one-time entry.
 - Three radii and no more. Buttons are pills, `border-radius: 999px`, with a
   blue glow on the primary. Panels, cards, images, inputs and badges use
-  `--radius`. Founder headshots are circles. A control you press is round, a
+  `--radius`. The small icon discs are circles. There are no founder photos:
+  each founder card links to that person's LinkedIn. A control you press is round, a
   surface you read is not.
 - Emoji icons. No emoji anywhere in the UI or copy. If you need icons, use a real icon set with a permissive license and record the license in the README.
 - Cursor animations. No custom cursor, no cursor-following blobs, no magnetic buttons.
@@ -240,7 +241,7 @@ You are writing the copy. Treat it as part of the design.
 - [ ] Every banned word from section 8 grepped and confirmed absent.
 - [ ] Grep `src/` for `gradient` and confirm zero hits in CSS.
 - [ ] Buttons are pills, panels, cards, images, inputs and badges are
-      `--radius`, headshots are circles. No fourth radius.
+      `--radius`, icon discs are circles. No fourth radius.
 - [ ] Scroll entrances are the one-time `data-animate` system, nothing else,
       and are skipped under `prefers-reduced-motion`.
 - [ ] Load the homepage with JavaScript disabled and confirm every section is

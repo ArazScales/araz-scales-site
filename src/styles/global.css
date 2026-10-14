@@ -91,7 +91,7 @@
 
   /* ---------------------------------------------------------------- metric */
   /* Three radii and only three. Buttons are pills. Panels, cards, images,
-     inputs and badges are --radius. Headshots are circles. */
+     inputs and badges are --radius. The small icon discs are circles. */
   --radius: 10px;
   --measure: 64ch;
   --wrap: 76rem;
@@ -1092,51 +1092,46 @@ a:hover {
   }
 }
 
+/* No portrait. A 4px blue rule along the top edge finishes the card, the
+   name carries it at display size, and the links row is pinned to the
+   bottom so the three cards line up however long each description runs. */
 .founder {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   padding: clamp(1.5rem, 3.5vw, 2rem);
   border: 1px solid var(--line);
+  border-top: 4px solid var(--blue);
   border-radius: var(--radius);
   background: var(--surface);
 }
 
-.founder-photo {
-  width: 7.5rem;
-  height: 7.5rem;
-  margin-bottom: 0.75rem;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--blue);
+.founder-name {
+  font-size: clamp(1.375rem, 2.4vw, 1.625rem);
+  font-weight: 800;
+  font-variation-settings: "wdth" 118;
+  line-height: 1.15;
 }
 
 .founder-name a {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
   color: var(--ink);
   text-decoration: underline;
   text-decoration-color: var(--blue);
   text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
 }
 
 .founder-name a:hover {
   color: var(--blue-ink);
 }
 
-.founder-name .icon {
-  width: 1.125rem;
-  height: 1.125rem;
-  color: var(--blue-ink);
-}
-
 .founder-role {
+  margin-top: 0.125rem;
   font-size: 0.8125rem;
   font-weight: 750;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--blue-ink);
+  color: var(--blue-ink);       /* 5.26:1 on paper.                          */
 }
 
 .founder-major {
@@ -1148,10 +1143,43 @@ a:hover {
   font-size: 0.9375rem;
 }
 
-.founder-site {
+.founder-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
   margin-top: auto;
-  padding-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  max-width: none;
+}
+
+/* A floor under whatever sits directly above the links row (the description,
+   or a bio once there is one). margin-top: auto on the row takes the rest, so
+   on a card whose name wraps to two lines the divider never ends up hard
+   against the text. */
+.founder > :nth-last-child(2) {
+  margin-bottom: 0.75rem;
+}
+
+.founder-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4375rem;
+  /* 24px minimum target height, WCAG 2.2. */
+  min-height: 1.75rem;
+  color: var(--blue-ink);
   font-size: 0.9375rem;
+  font-weight: 650;
+  text-decoration: underline;
+}
+
+.founder-links a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.founder-links .icon {
+  width: 1rem;
+  height: 1rem;
 }
 
 /* The honesty block. A panel with a blue bar, so it reads as a statement
@@ -1651,7 +1679,7 @@ a:hover {
       and then stops watching it. Nothing replays on the way back up.
 
    "slide-left" comes in from the left, "slide-right" from the right. Images
-   (anything with .media, or a .founder-photo) start 120px out on a desktop
+   (anything with .media) start 120px out on a desktop
    and 40px on a phone, and scale from 0.96. Text never scales. Only
    transform and opacity animate.
 
@@ -1701,13 +1729,11 @@ a:hover {
     transform: translateX(40px);
   }
 
-  .js .media[data-animate="slide-left"],
-  .js .founder-photo[data-animate="slide-left"] {
+  .js .media[data-animate="slide-left"] {
     transform: translateX(-40px) scale(0.96);
   }
 
-  .js .media[data-animate="slide-right"],
-  .js .founder-photo[data-animate="slide-right"] {
+  .js .media[data-animate="slide-right"] {
     transform: translateX(40px) scale(0.96);
   }
 

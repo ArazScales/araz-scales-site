@@ -179,11 +179,9 @@ export function phoneHref(): string | null {
  * that card and the other two cards simply do not get one, rather than the
  * layout reserving an empty slot for a link that does not exist.
  *
- * PHOTO. `photo` names a slot in public/assets/img/ (see src/content/images.ts
- * and the image table in the README). Each slot holds a neutral placeholder
- * until a real headshot replaces the file. Swap the file, keep the name, and
- * record the source in credits.md. Do not substitute a stock photo or an AI
- * image.
+ * NO PHOTO. The founder cards have no portrait by decision. Each person's
+ * LinkedIn profile is their profile, linked from their name and from a
+ * "View on LinkedIn" link on the card.
  *
  * BIO. There is a bio slot on each card, marked <!-- BIO: fill in --> in
  * src/pages/index.astro. It renders nothing until a real bio is written. Do
@@ -199,8 +197,6 @@ export type Founder = {
   readonly linkedin: string;
   /** A personal site, if the person has one. Only Zain does. */
   readonly site?: string;
-  /** Slot name of the headshot in public/assets/img/, without extension. */
-  readonly photo: string;
 };
 
 export const founders: readonly Founder[] = [
@@ -211,7 +207,6 @@ export const founders: readonly Founder[] = [
     detail:
       "Scopes the job, builds the site, hands it over in your name.",
     linkedin: "https://www.linkedin.com/in/zainbah/",
-    photo: "founder-zain",
     site: "https://zainbahalim.dev/",
   },
   {
@@ -221,7 +216,6 @@ export const founders: readonly Founder[] = [
     detail:
       "Builds the ad creative, tests it, tells you which cuts did better.",
     linkedin: "https://www.linkedin.com/in/roshan-mohammad24/",
-    photo: "founder-roshan",
   },
   {
     name: "Abayjit Singh",
@@ -230,7 +224,6 @@ export const founders: readonly Founder[] = [
     detail:
       "Interviews you once, then writes the posts that go out under your name.",
     linkedin: "https://www.linkedin.com/in/abayjit-singh-36251839a/",
-    photo: "founder-abayjit",
   },
 ];
 

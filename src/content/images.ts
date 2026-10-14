@@ -1,10 +1,12 @@
 /**
  * Every image slot on the site, in one place.
  *
- * Each slot below points at a file in public/assets/img/. Six hold real
- * photos. The hero and the three founder headshots still hold the flat
- * neutral placeholder made by scripts/generate-placeholders.mjs. To put a
- * real photo in a slot:
+ * Each slot below points at a file in public/assets/img/, and all seven now
+ * hold a photo. Four are stock photos (licences TO CONFIRM in credits.md),
+ * three are AI-generated with Gemini. The founder cards have no photos by
+ * decision. If a new slot is added, `npm run placeholders` writes a flat
+ * neutral placeholder for it until a photo exists. To put a photo in a
+ * slot:
  *
  *   1. Export it as .webp at the size in `width` x `height` (same ratio at
  *      least, so nothing reflows) and overwrite the file of the same name.
@@ -27,6 +29,12 @@ export type ImageSlot = {
   readonly alt: string;
   /** True while the file is still the generated neutral tile. */
   readonly placeholder: boolean;
+  /**
+   * A smaller copy on disk as `<name>-<width>.webp`, served to narrow
+   * screens. Only the hero has one: it is the one image loaded up front, and
+   * at 2400px and 225 KB it dropped Lighthouse mobile performance to 91.
+   */
+  readonly small?: number;
 };
 
 const slot = (
@@ -44,15 +52,15 @@ const slot = (
 });
 
 export const images = {
-  /* Decorative. It sits under a dark overlay behind the headline, and the
-     headline says everything the section needs to, so its alt stays empty
-     even once a real photo is in. */
-  hero: slot("hero", 1920, 1080, ""),
+  /* AI-generated with Gemini: a small town main street at dusk, lit
+     storefronts on the right, dark sky and road on the left where the
+     headline sits. Decorative: it sits under a dark overlay and the headline
+     says everything the section needs to, so its alt stays empty. */
+  hero: { ...slot("hero", 2400, 1350, "", false), small: 1200 },
 
-  /* The six below are real photos, swapped in October 2026. Their alt text
-     describes what is actually in each photo. None of them shows us, so none
-     of them may be described as the founders or as our work. Source and
-     licence for each are in credits.md. */
+  /* Alt text on every slot below describes only what is visible. None of
+     these shows us or work we did, so none may be described as the founders
+     or as our work. Source and licence for each are in credits.md. */
   whoWeAre: slot(
     "who-we-are",
     1200,
@@ -61,15 +69,12 @@ export const images = {
     false
   ),
 
-  /* 682x426, not 800x500: the source photo is only 682px wide, and it is not
-     upscaled. Same 16:10 ratio as the other two cards, so the layout is
-     identical. Replace it with a source at least 800px wide when there is
-     one. */
+  /* AI-generated with Gemini. */
   serviceLanding: slot(
     "service-landing",
-    682,
-    426,
-    "A hand holding a phone over a table, with a one page website on the screen.",
+    800,
+    500,
+    "A laptop on a wooden desk showing a simple web page in navy, blue and white, beside a small potted plant and a notebook.",
     false
   ),
   serviceWebsite: slot(
@@ -79,11 +84,12 @@ export const images = {
     "A laptop on a wooden desk showing a website homepage, next to a black mug and a phone.",
     false
   ),
+  /* AI-generated with Gemini. */
   serviceContentAds: slot(
     "service-content-ads",
     800,
     500,
-    "A person holding a phone up to the camera, its screen filled with a grid of social media posts.",
+    "A phone resting on an open notebook of hand drawn sketches, beside a compact camera and a dark mug on a wooden desk.",
     false
   ),
 
@@ -102,13 +108,13 @@ export const images = {
     "An OPEN sign hanging in the glass door of a shop, beside a PULL sign on the door handle.",
     false
   ),
-
-  "founder-zain": slot("founder-zain", 400, 400, "Headshot of Zain Bahalim."),
-  "founder-roshan": slot("founder-roshan", 400, 400, "Headshot of Roshan Mohammad."),
-  "founder-abayjit": slot("founder-abayjit", 400, 400, "Headshot of Abayjit Singh."),
 } as const;
 
 export type ImageKey = keyof typeof images;
+
+/** Path of a slot's smaller copy, or null if it has none. */
+export const smallSrc = (image: ImageSlot) =>
+  image.small ? image.src.replace(/\.webp$/, `-${image.small}.webp`) : null;
 
 /** The alt attribute to render: empty while the slot is a placeholder. */
 export const altFor = (image: ImageSlot) => (image.placeholder ? "" : image.alt);

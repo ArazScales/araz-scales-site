@@ -78,7 +78,7 @@ was replaced by the logo above and no longer appears anywhere on the site.
   do. Full text: <https://github.com/lucide-icons/lucide/blob/main/LICENSE>.
 - Glyphs used, copied in as inline SVG path data in
   `src/components/Icon.astro`: `linkedin`, `instagram`, `facebook`, `check`,
-  `menu`, `x`, `mail`, `map-pin`, `phone`. The `image` and `user` glyphs are
+  `menu`, `x`, `mail`, `map-pin`, `phone`. The `image` glyph is
   also drawn into the placeholder images by
   `scripts/generate-placeholders.mjs`.
 - The three brand glyphs (LinkedIn, Instagram, Facebook) are Lucide's own
@@ -91,34 +91,45 @@ the FAQ rows and the dots beside list items on the policy pages.
 
 ## Photographs
 
-**Six real photos, four placeholders.** The six photos are listed under
-"Photo credits" below. The hero and the three founder headshots still hold a
-generated placeholder: a flat neutral fill with a Lucide outline glyph in the
-middle, made by `npm run placeholders` (`scripts/generate-placeholders.mjs`).
-Those are our own generated artwork, not photographs, not stock and not AI
-generated. While a slot is a placeholder its alt text is empty, because
-describing a photo that is not there would mislead a screen reader user.
+**Seven images, no placeholders.** Four are stock photos and three are
+AI-generated with Gemini, all listed under "Photo credits" below. The founder
+cards have no photos by decision. If a new image slot is ever added,
+`npm run placeholders` (`scripts/generate-placeholders.mjs`) writes a flat
+neutral placeholder for it, which is our own generated artwork, with empty alt
+text until a real image replaces it.
 
 The slots, their files and their sizes are listed in `src/content/images.ts`
-and in the README under "Swap in real photos". When a real photo goes in:
+and in the README under "Swap in real photos". When an image is replaced:
 
 1. Overwrite the file in `public/assets/img/` with the same name.
-2. Set `placeholder: false` on its entry in `src/content/images.ts`.
-3. Add an entry below naming the photographer and confirming we have the
-   right to publish it.
+2. Rewrite its alt text in `src/content/images.ts` to match the new image.
+3. Update its entry below with the source and licence.
 
-CLAUDE.md section 2 forbids AI generated images and images pulled from a search
-engine. Real photographs we own, or a placeholder. No image from
-texasroadside.org may be used.
+No image from texasroadside.org may be used, and nothing pulled from a search
+engine. Note that CLAUDE.md section 2 still says "AI-generated images. Use
+real photos": the three Gemini images below were added on Zain's explicit
+instruction on October 13, 2026, and that rule has not been updated.
 
 ### Photo credits
 
 Added October 13, 2026. Each was cropped to its slot, resized down (never up)
 and converted to WebP with sharp, with all EXIF, XMP and ICC metadata
-stripped. None of them shows the founders or work we did. Fill in each
-**Source and licence** line before launch: where the file came from (site
-and photographer, or "taken by" and who), and the licence (for example the
-Unsplash or Pexels licence, or our own photo).
+stripped. None of them shows the founders or work we did. For the four stock
+photos, fill in each **Source and licence** line before launch: where the
+file came from (site and photographer, or "taken by" and who), and the
+licence (for example the Unsplash or Pexels licence, or our own photo).
+
+**`hero.webp`**, from `Gemini_Generated_Image_bp84r1bp84r1bp84.jpeg`
+
+- Shows: a small town main street at dusk, lit storefronts with blank
+  hanging signs on the right, dark sky and empty road on the left, two cars
+  parked at the kerb.
+- Source and licence: **AI-generated with Gemini, October 13, 2026. No
+  third-party content.**
+- Edits: the licence plate on the dark sedan carried plate-like characters
+  and was blurred before cropping. No visible Gemini watermark in any corner.
+  Gemini's invisible SynthID watermark is embedded in the pixels and
+  survives cropping.
 
 **`who-we-are.webp`**, from `Three people in college, no office, no sales team..jpg`
 
@@ -141,22 +152,23 @@ Unsplash or Pexels licence, or our own photo).
   | Business", which is a third party website template, not ours. "MacBook
   Pro" is printed under the screen, small.
 
-**`service-content-ads.webp`**, from `Content & Ads.jpg`
+**`service-content-ads.webp`**, from `Gemini_Generated_Image_z8wzqmz8wzqmz8wz.jpeg`
 
-- Shows: a person holding up a phone with a grid of social media posts on
-  screen.
-- Source and licence: **TO CONFIRM**
-- Note: the grid is a real Instagram profile belonging to someone else, with
-  a recognisable Instagram interface, a photo of a person in one post, and
-  post headlines in French ("La FridayNews" is legible).
+- Shows: a phone on an open notebook of hand drawn sketches, a compact
+  camera and a dark mug on a wooden desk, a monitor behind.
+- Source and licence: **AI-generated with Gemini, October 13, 2026. No
+  third-party content.**
+- Checked: no readable text, no brand on the camera, phone icons blurred.
+  No visible Gemini watermark.
 
-**`service-landing.webp`**, from `Landing page.jpg`
+**`service-landing.webp`**, from `Gemini_Generated_Image_rvt2mmrvt2mmrvt2.jpeg`
 
-- Shows: a hand holding a phone over a table, with a one page website on the
-  screen. The page on screen is blurred and unreadable.
-- Source and licence: **TO CONFIRM**
-- Note: the source is only 682x1024, so this slot ships at 682x426 rather
-  than 800x500. Not upscaled.
+- Shows: a laptop on a wooden desk showing a simple web page in navy, blue
+  and white, a potted plant and a notebook beside it.
+- Source and licence: **AI-generated with Gemini, October 13, 2026. No
+  third-party content.**
+- Checked: the page on screen has no readable text, no logo on the laptop.
+  No visible Gemini watermark.
 
 **`quote.webp`**, from `Get a quote.jpg`
 

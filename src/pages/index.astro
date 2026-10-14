@@ -20,7 +20,7 @@ import Icon from "../components/Icon.astro";
 import { site } from "../content/site";
 import { plans, pricingNote, planById } from "../content/pricing";
 import { business, founders, real } from "../config/business";
-import { images, altFor, type ImageKey } from "../content/images";
+import { images, altFor, smallSrc, type ImageKey } from "../content/images";
 import { professionalService, faqPage } from "../content/structured-data";
 
 const website = planById("website");
@@ -47,15 +47,21 @@ const STAGGER = 150;
   <section class="hero" aria-labelledby="hero-heading">
     <!-- PHOTO SLOT: hero.webp. Behind a flat navy overlay. Not lazy: it is
          the first thing on the page. -->
-    <img
-      class="hero-bg"
-      src={images.hero.src}
-      width={images.hero.width}
-      height={images.hero.height}
-      alt={altFor(images.hero)}
-      fetchpriority="high"
-      decoding="async"
-    />
+    <!-- On a phone the hero box is tall, so the photo is drawn about 1250px
+         wide and only its middle shows. The 1200px copy covers that for a
+         fifth of the bytes. Wider screens get the full 2400px file. -->
+    <picture>
+      <source media="(max-width: 48rem)" srcset={smallSrc(images.hero)} />
+      <img
+        class="hero-bg"
+        src={images.hero.src}
+        width={images.hero.width}
+        height={images.hero.height}
+        alt={altFor(images.hero)}
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
 
     <div class="wrap hero-content">
       <h1 id="hero-heading" class="hero-rise">{site.hero.heading}</h1>
@@ -295,57 +301,54 @@ const STAGGER = 150;
 
       <ul class="founders">
         {
-          founders.map((person, index) => {
-            const photo = images[person.photo as ImageKey];
-            return (
-              <li class="founder" data-animate="slide-up" data-delay={index * STAGGER}>
-                {/* PHOTO SLOT: see src/content/images.ts */}
-                <img
-                  class="founder-photo"
-                  src={photo.src}
-                  width="120"
-                  height="120"
-                  alt={altFor(photo)}
-                  loading="lazy"
-                  decoding="async"
-                />
+          founders.map((person, index) => (
+            /* No photo. The LinkedIn profile is the profile: the name links
+               to it, and so does the "View on LinkedIn" row at the foot. The
+               blue rule along the top edge is what finishes the card in
+               place of a portrait. */
+            <li class="founder" data-animate="slide-up" data-delay={index * STAGGER}>
+              <h3 class="founder-name">
+                <a
+                  href={person.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${person.name} on LinkedIn (opens in new tab)`}
+                >
+                  {person.name}
+                </a>
+              </h3>
+              <p class="founder-role">{person.owns}</p>
+              <p class="founder-major">{person.major}</p>
+              <p class="founder-detail">{person.detail}</p>
 
-                <h3 class="founder-name">
+              {/* BIO: fill in. Add a <p class="founder-detail"> here with a
+                  real bio once the person has written or approved one.
+                  Renders nothing until then. Do not invent details. */}
+              <Fragment set:html={`<!-- BIO: fill in (${person.name}) -->`} />
+
+              <p class="founder-links">
+                <a
+                  href={person.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`View on LinkedIn: ${person.name} (opens in new tab)`}
+                >
+                  <Icon name="linkedin" />
+                  View on LinkedIn
+                </a>
+                {person.site && (
                   <a
-                    href={person.linkedin}
+                    href={person.site}
                     target="_blank"
                     rel="noopener noreferrer"
-                    aria-label={`${person.name} on LinkedIn (opens in new tab)`}
+                    aria-label={`Personal site: ${person.name} (opens in new tab)`}
                   >
-                    {person.name}
-                    <Icon name="linkedin" />
+                    Personal site
                   </a>
-                </h3>
-                <p class="founder-role">{person.owns}</p>
-                <p class="founder-major">{person.major}</p>
-                <p class="founder-detail">{person.detail}</p>
-
-                {/* BIO: fill in. Add a <p class="founder-detail"> here with a
-                    real bio once the person has written or approved one.
-                    Renders nothing until then. Do not invent details. */}
-                <Fragment set:html={`<!-- BIO: fill in (${person.name}) -->`} />
-
-                {person.site && (
-                  <p class="founder-site">
-                    <a
-                      class="link"
-                      href={person.site}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`${person.name}'s personal site (opens in new tab)`}
-                    >
-                      Personal site
-                    </a>
-                  </p>
                 )}
-              </li>
-            );
-          })
+              </p>
+            </li>
+          ))
         }
       </ul>
 

@@ -43,18 +43,13 @@ and nothing else needs to change.
 | What | Who | Where it goes |
 | --- | --- | --- |
 | Founder bios, a few sentences each, written or approved by the person | Zain, Roshan, Abayjit | `src/pages/index.astro`, at the `<!-- BIO: fill in -->` slot in the founder card. Add `<p class="founder-detail">...</p>` there. Nothing renders until then |
-| Founder headshots, square, 400x400, face centred, `.webp` | Zain, Roshan, Abayjit | Overwrite `public/assets/img/founder-zain.webp`, `founder-roshan.webp`, `founder-abayjit.webp`, then set `placeholder: false` on that slot in `src/content/images.ts` |
-| Hero photo, 2400x1350 landscape, under 250 KB | Anyone | `public/assets/img/hero.webp`. Sits under a dark overlay, so a busy photo is fine |
-| Who we are photo, 1200x900 | Anyone | `public/assets/img/who-we-are.webp` |
-| Service card photos, 800x500 each | Anyone | `service-landing.webp`, `service-website.webp`, `service-content-ads.webp` in `public/assets/img/` |
-| Why us photo, 1200x900 | Anyone | `public/assets/img/why-us.webp` |
-| Get a quote photo, 1000x1200 portrait, subject centred (cropped to 16:9 on phones) | Anyone | `public/assets/img/quote.webp` |
+| Source and licence for the four stock photos (who we are, website card, why us, get a quote) | Whoever downloaded them | `credits.md`, replacing each **TO CONFIRM**. If a licence does not cover commercial use, replace that photo |
 | Mailing address (a virtual mailbox is fine) | Zain | `address` in `src/config/business.ts`, replacing `null`. It then appears on all four policy pages and in the schema.org block. It does **not** appear in the footer yet: that needs a one line addition to the footer contact list in `src/layouts/Base.astro`. Required before any outreach email, see 7b |
 
-For every photo: real photos only, no AI images, no stock we do not hold a
-licence for. After swapping a file, set `placeholder: false` on its entry in
-`src/content/images.ts` so its alt text switches on, and add a line to
-`credits.md` naming who took it.
+Every image slot is filled: four stock photos and three AI-generated with
+Gemini (the hero, the landing page card and the content and ads card). The
+founder cards have no photos by decision, so no headshots are needed. To
+replace any image, see "Swap in real photos" in the README.
 
 ## 1. Email authentication on arazscales.com
 

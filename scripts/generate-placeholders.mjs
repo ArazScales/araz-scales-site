@@ -5,8 +5,7 @@
  *   npm run placeholders
  *
  * Each placeholder is a flat neutral fill with a small outline glyph in the
- * middle: the Lucide "image" icon, or "user" for a headshot (ISC licence,
- * recorded in credits.md). Flat fills only, no gradient, no text, no AI.
+ * middle: the Lucide "image" icon (ISC licence, recorded in credits.md). Flat fills only, no gradient, no text, no AI.
  *
  * It never overwrites. A slot that already has a file is skipped, so running
  * this after a real photo has been dropped in cannot destroy the photo. To
@@ -20,8 +19,6 @@ const OUT = "public/assets/img";
 
 const IMAGE_GLYPH =
   '<rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>';
-const USER_GLYPH =
-  '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>';
 
 /* Light tile for everything that sits on its own, a dark one for the hero,
    which is seen only through the navy overlay. */
@@ -36,9 +33,6 @@ const slots = [
   ["service-content-ads", 800, 500, LIGHT, IMAGE_GLYPH],
   ["why-us", 1200, 900, LIGHT, IMAGE_GLYPH],
   ["quote", 1000, 1200, LIGHT, IMAGE_GLYPH],
-  ["founder-zain", 400, 400, LIGHT, USER_GLYPH],
-  ["founder-roshan", 400, 400, LIGHT, USER_GLYPH],
-  ["founder-abayjit", 400, 400, LIGHT, USER_GLYPH],
 ];
 
 mkdirSync(OUT, { recursive: true });
