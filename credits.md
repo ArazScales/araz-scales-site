@@ -91,12 +91,13 @@ the FAQ rows and the dots beside list items on the policy pages.
 
 ## Photographs
 
-**None yet.** Every image slot on the site holds a generated placeholder: a
-flat neutral fill with a Lucide outline glyph in the middle, made by
-`npm run placeholders` (`scripts/generate-placeholders.mjs`). They are our own
-generated artwork, not photographs, not stock and not AI generated. While a
-slot is a placeholder its alt text is empty, because describing a photo that
-is not there would mislead a screen reader user.
+**Six real photos, four placeholders.** The six photos are listed under
+"Photo credits" below. The hero and the three founder headshots still hold a
+generated placeholder: a flat neutral fill with a Lucide outline glyph in the
+middle, made by `npm run placeholders` (`scripts/generate-placeholders.mjs`).
+Those are our own generated artwork, not photographs, not stock and not AI
+generated. While a slot is a placeholder its alt text is empty, because
+describing a photo that is not there would mislead a screen reader user.
 
 The slots, their files and their sizes are listed in `src/content/images.ts`
 and in the README under "Swap in real photos". When a real photo goes in:
@@ -112,7 +113,56 @@ texasroadside.org may be used.
 
 ### Photo credits
 
-None yet.
+Added October 13, 2026. Each was cropped to its slot, resized down (never up)
+and converted to WebP with sharp, with all EXIF, XMP and ICC metadata
+stripped. None of them shows the founders or work we did. Fill in each
+**Source and licence** line before launch: where the file came from (site
+and photographer, or "taken by" and who), and the licence (for example the
+Unsplash or Pexels licence, or our own photo).
+
+**`who-we-are.webp`**, from `Three people in college, no office, no sales team..jpg`
+
+- Shows: three people at a wooden table taking notes, notebooks, a red
+  folder, a closed laptop, a glass of iced coffee.
+- Source and licence: **TO CONFIRM**
+- Note: the Apple logo on the laptop lid is clearly visible.
+
+**`why-us.webp`**, from `What you can hold us to.jpg`
+
+- Shows: two people in dark blue suits shaking hands.
+- Source and licence: **TO CONFIRM**
+
+**`service-website.webp`**, from `Website.jpg`
+
+- Shows: a laptop on a wooden desk with a website on screen, a black mug, a
+  phone.
+- Source and licence: **TO CONFIRM**
+- Note: the screen reads "Build your dream website." and "Portfolio | Resume
+  | Business", which is a third party website template, not ours. "MacBook
+  Pro" is printed under the screen, small.
+
+**`service-content-ads.webp`**, from `Content & Ads.jpg`
+
+- Shows: a person holding up a phone with a grid of social media posts on
+  screen.
+- Source and licence: **TO CONFIRM**
+- Note: the grid is a real Instagram profile belonging to someone else, with
+  a recognisable Instagram interface, a photo of a person in one post, and
+  post headlines in French ("La FridayNews" is legible).
+
+**`service-landing.webp`**, from `Landing page.jpg`
+
+- Shows: a hand holding a phone over a table, with a one page website on the
+  screen. The page on screen is blurred and unreadable.
+- Source and licence: **TO CONFIRM**
+- Note: the source is only 682x1024, so this slot ships at 682x426 rather
+  than 800x500. Not upscaled.
+
+**`quote.webp`**, from `Get a quote.jpg`
+
+- Shows: an OPEN sign hanging in a glass shop door, a PULL sign on the
+  handle.
+- Source and licence: **TO CONFIRM**
 
 ## Generated assets
 

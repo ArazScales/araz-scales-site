@@ -1,9 +1,10 @@
 /**
  * Every image slot on the site, in one place.
  *
- * We have no real photos yet. Each slot below points at a file in
- * public/assets/img/ that currently holds a flat neutral placeholder made by
- * scripts/generate-placeholders.mjs. To put a real photo in a slot:
+ * Each slot below points at a file in public/assets/img/. Six hold real
+ * photos. The hero and the three founder headshots still hold the flat
+ * neutral placeholder made by scripts/generate-placeholders.mjs. To put a
+ * real photo in a slot:
  *
  *   1. Export it as .webp at the size in `width` x `height` (same ratio at
  *      least, so nothing reflows) and overwrite the file of the same name.
@@ -48,44 +49,58 @@ export const images = {
      even once a real photo is in. */
   hero: slot("hero", 1920, 1080, ""),
 
+  /* The six below are real photos, swapped in October 2026. Their alt text
+     describes what is actually in each photo. None of them shows us, so none
+     of them may be described as the founders or as our work. Source and
+     licence for each are in credits.md. */
   whoWeAre: slot(
     "who-we-are",
     1200,
     900,
-    "The three founders of ARAZ Scales working together at a table."
+    "Three people at a wooden table taking notes, with notebooks, a red folder, a closed laptop and a glass of iced coffee.",
+    false
   ),
 
+  /* 682x426, not 800x500: the source photo is only 682px wide, and it is not
+     upscaled. Same 16:10 ratio as the other two cards, so the layout is
+     identical. Replace it with a source at least 800px wide when there is
+     one. */
   serviceLanding: slot(
     "service-landing",
-    800,
-    500,
-    "A one page website for a local business shown on a phone."
+    682,
+    426,
+    "A hand holding a phone over a table, with a one page website on the screen.",
+    false
   ),
   serviceWebsite: slot(
     "service-website",
     800,
     500,
-    "A five page website for a local business shown on a laptop."
+    "A laptop on a wooden desk showing a website homepage, next to a black mug and a phone.",
+    false
   ),
   serviceContentAds: slot(
     "service-content-ads",
     800,
     500,
-    "A Facebook post and an Instagram ad for a local business shown on a phone."
+    "A person holding a phone up to the camera, its screen filled with a grid of social media posts.",
+    false
   ),
 
   whyUs: slot(
     "why-us",
     1200,
     900,
-    "One of the founders on a call with a business owner, going over a written price."
+    "Two people in dark blue suits shaking hands.",
+    false
   ),
 
   quote: slot(
     "quote",
     1000,
     1200,
-    "One of the founders replying to an email from a business owner."
+    "An OPEN sign hanging in the glass door of a shop, beside a PULL sign on the door handle.",
+    false
   ),
 
   "founder-zain": slot("founder-zain", 400, 400, "Headshot of Zain Bahalim."),
