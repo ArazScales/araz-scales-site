@@ -162,14 +162,18 @@ licence (for example the Unsplash or Pexels licence, or our own photo).
 - Checked: no readable text, no brand on the camera, phone icons blurred.
   No visible Gemini watermark.
 
-**`service-landing.webp`**, from `Gemini_Generated_Image_rvt2mmrvt2mmrvt2.jpeg`
+**`service-landing.webp`**, from `Gemini_Generated_Image_krak3wkrak3wkrak.jpeg`
 
-- Shows: a laptop on a wooden desk showing a simple web page in navy, blue
-  and white, a potted plant and a notebook beside it.
+- Shows: an open laptop with a dark, switched-off screen on a wooden desk,
+  beside a spiral notepad with a pen, a potted plant and a navy mug.
 - Source and licence: **AI-generated with Gemini, October 13, 2026. No
-  third-party content.**
-- Checked: the page on screen has no readable text, no logo on the laptop.
-  No visible Gemini watermark.
+  third-party content, no readable text, screen off.**
+- Checked: no visible Gemini watermark in any corner. No logo on the laptop,
+  mug, notepad or pen. The key legends are single generic characters,
+  faintly visible only at full source resolution and unreadable at the
+  shipped 800x500. The notepad pages are blank.
+- Replaces an earlier Gemini image that showed a mock website on the screen,
+  which the image rule in CLAUDE.md section 2 bans.
 
 **`quote.webp`**, from `Get a quote.jpg`
 

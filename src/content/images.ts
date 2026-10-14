@@ -69,12 +69,13 @@ export const images = {
     false
   ),
 
-  /* AI-generated with Gemini. */
+  /* AI-generated with Gemini. Screen deliberately off: the image rule in
+     CLAUDE.md bans AI-generated example websites. */
   serviceLanding: slot(
     "service-landing",
     800,
     500,
-    "A laptop on a wooden desk showing a simple web page in navy, blue and white, beside a small potted plant and a notebook.",
+    "An open laptop with a dark, switched-off screen on a wooden desk, beside a spiral notepad with a pen, a potted plant and a navy mug.",
     false
   ),
   serviceWebsite: slot(
